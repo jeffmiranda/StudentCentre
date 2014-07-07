@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model package="studentcentre" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" version="1.1">
+	<!-- !scModUser -->
+	<object class="scModUser" extends="modUser">
+        <composite alias="StudentAssignment" class="scStudentAssignment" local="id" foreign="student_id" cardinality="many" owner="local" />
+        <composite alias="Comment" class="scComment" local="id" foreign="user_id" cardinality="many" owner="local" />
+        <composite alias="AssignmentEnrollment" class="scAssignmentEnrollment" local="id" foreign="student_id" cardinality="many" owner="local" />
+        <composite alias="Test" class="scTest" local="id" foreign="student_id" cardinality="many" owner="local" />
+        <composite alias="ClassProgress" class="scClassProgress" local="id" foreign="student_id" cardinality="many" owner="local" />
+        <composite alias="ClassEnrollment" class="scClassEnrollment" local="id" foreign="student_id" cardinality="many" owner="local" />
+        <composite alias="Attendance" class="scAttendance" local="id" foreign="student_id" cardinality="many" owner="local" />
+    </object>
+    
+    <!-- !=== Assignment Module === -->
+    <!-- !scAssignmentLevel -->
+	<object class="scAssignmentLevel" table="assignment_levels" extends="xPDOSimpleObject">
+		<field key="program_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="name" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="Program" class="scAssignmentProgram" local="program_id" foreign="id" cardinality="one" owner="foreign" />
+		<composite alias="Assignment" class="scAssignment" local="id" foreign="level_id" cardinality="many" owner="local" />
+	</object>
+	<!-- !scAssignmentProgram -->
+	<object class="scAssignmentProgram" table="assignment_programs" extends="xPDOSimpleObject">
+		<field key="name" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<composite alias="Level" class="scAssignmentLevel" local="id" foreign="program_id" cardinality="many" owner="local" />
+		<composite alias="Assignment" class="scAssignment" local="id" foreign="program_id" cardinality="many" owner="local" />
+		<composite alias="AssignmentEnrollment" class="scAssignmentEnrollment" local="id" foreign="program_id" cardinality="many" owner="local" />
+	</object>
+	<!-- !scAssignmentProgress -->
+	<object class="scAssignmentProgress" table="assignment_progress" extends="xPDOObject">
+		<field key="progress" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" index="pk" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+
+		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE" >
+			<column key="progress" length="" collation="A" null="false" />
+		</index>
+		
+		<composite alias="StudentAssignment" class="scStudentAssignment" local="progress" foreign="progress" cardinality="many" owner="local" />
+	</object>
+	<!-- !scAssignmentStatus -->
+	<object class="scAssignmentStatus" table="assignment_status" extends="xPDOObject">
+		<field key="status" dbtype="varchar" precision="100" phptype="string" null="false" index="pk" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+
+		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE" >
+			<column key="status" length="" collation="A" null="false" />
+		</index>
+		
+		<composite alias="StudentAssignment" class="scStudentAssignment" local="status" foreign="status" cardinality="many" owner="local" />
+	</object>
+	<!-- !scAssignment -->
+	<object class="scAssignment" table="assignments" extends="xPDOSimpleObject">
+		<field key="name" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="description" dbtype="text" phptype="string" null="false" />
+		<field key="program_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="Program" class="scAssignmentProgram" local="program_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Level" class="scAssignmentLevel" local="level_id" foreign="id" cardinality="one" owner="foreign" />
+		<composite alias="StudentAssignment" class="scStudentAssignment" local="id" foreign="assignment_id" cardinality="many" owner="local" />
+	</object>
+	<!-- !scStudentAssignment -->
+	<object class="scStudentAssignment" table="student_assignments" extends="xPDOSimpleObject">
+		<field key="student_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="assignment_id" dbtype="smallint" precision="5" attributes="unsigned" phptype="integer" null="false" />
+		<field key="status" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="progress" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="Student" class="scModUser" local="student_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Assignment" class="scAssignment" local="assignment_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Status" class="scAssignmentStatus" local="status" foreign="status" cardinality="one" owner="foreign" />
+		<aggregate alias="Progress" class="scAssignmentProgress" local="progress" foreign="progress" cardinality="one" owner="foreign" />
+		<composite alias="Comment" class="scComment" local="id" foreign="student_assignment_id" cardinality="many" owner="local" />
+	</object>
+	<!-- !scComment -->
+	<object class="scComment" table="assignment_comments" extends="xPDOSimpleObject">
+		<field key="student_assignment_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="user_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="comment" dbtype="text" phptype="string" null="false" />
+		<field key="date_created" dbtype="datetime" phptype="datetime" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="StudentAssignment" class="scStudentAssignment" local="student_assignment_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="User" class="scModUser" local="user_id" foreign="id" cardinality="one" owner="foreign" />
+	</object>
+	<!-- !scAssignmentEnrollment -->
+	<object class="scAssignmentEnrollment" table="assignment_program_enrollment" extends="xPDOSimpleObject">
+		<field key="student_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="program_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="datetime" phptype="datetime" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="Student" class="scModUser" local="student_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Program" class="scAssignmentProgram" local="program_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Level" class="scAssignmentLevel" local="level_id" foreign="id" cardinality="one" owner="foreign" />
+	</object>
+	
+    <!-- !=== Attendance Module === -->
+    <!-- !scClass -->
+	<object class="scClass" table="classes" extends="xPDOSimpleObject">
+		<field key="class_level_category_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="name" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="description" dbtype="text" phptype="string" null="false" />
+		<field key="duration" dbtype="float" attributes="unsigned" phptype="float" null="false" default="1" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="ClassLevelCategory" class="scClassLevelCategory" local="class_level_category_id" foreign="id" cardinality="one" owner="foreign" />
+		<composite alias="ClassProgress" class="scClassProgress" local="id" foreign="class_id" cardinality="many" owner="local" />
+		<composite alias="ScheduledClass" class="scScheduledClass" local="id" foreign="class_id" cardinality="many" owner="local" />
+	</object>
+	<!-- !scClassLevelCategory -->
+	<object class="scClassLevelCategory" table="class_level_categories" extends="xPDOSimpleObject">
+		<field key="name" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="description" dbtype="text" phptype="string" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<composite alias="Class" class="scClass" local="id" foreign="class_level_category_id" cardinality="many" owner="local" />
+		<composite alias="ClassLevel" class="scClassLevel" local="id" foreign="class_level_category_id" cardinality="many" owner="local" />
+	</object>
+    <!-- !scClassLevel -->
+	<object class="scClassLevel" table="class_levels" extends="xPDOSimpleObject">
+		<field key="class_level_category_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="name" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="description" dbtype="text" phptype="string" null="false" />
+		<field key="hours_required" dbtype="smallint" precision="5" attributes="unsigned" phptype="integer" null="false" />
+		<field key="test_threshold" dbtype="float" attributes="unsigned" phptype="float" null="false" default="0.75" />
+		<field key="order" dbtype="float" attributes="unsigned" phptype="float" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="ClassLevelCategory" class="scClassLevelCategory" local="class_level_category_id" foreign="id" cardinality="one" owner="foreign" />
+		<composite alias="LevelTechnique" class="scLevelTechnique" local="id" foreign="level_id" cardinality="many" owner="local" />
+		<composite alias="StudentTest" class="scStudentTest" local="id" foreign="level_id" cardinality="many" owner="local" />
+		<composite alias="ClassProgress" class="scClassProgress" local="id" foreign="level_id" cardinality="many" owner="local" />
+	</object>
+	<!-- !scTechnique -->
+	<object class="scTechnique" table="techniques" extends="xPDOSimpleObject">
+		<field key="name" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="description" dbtype="text" phptype="string" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<composite alias="LevelTechnique" class="scLevelTechnique" local="id" foreign="technique_id" cardinality="many" owner="local" />
+		<composite alias="StudentTestTechnique" class="scStudentTestTechnique" local="id" foreign="technique_id" cardinality="many" owner="local" />
+	</object>
+	<!-- !scLevelTechnique -->
+	<object class="scLevelTechnique" table="level_techniques" extends="xPDOSimpleObject">
+		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="technique_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="order" dbtype="float" attributes="unsigned" phptype="float" null="false" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="ClassLevel" class="scClassLevel" local="level_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Technique" class="scTechnique" local="technique_id" foreign="id" cardinality="one" owner="foreign" />
+	</object>
+	<!-- !scStudentTest -->
+	<object class="scStudentTest" table="student_tests" extends="xPDOSimpleObject">
+		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="student_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="type" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="comment" dbtype="text" phptype="string" null="false" />
+		<field key="pass" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="0" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="Student" class="scModUser" local="student_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="ClassLevel" class="scClassLevel" local="level_id" foreign="id" cardinality="one" owner="foreign" />
+		<composite alias="StudentTestTechnique" class="scStudentTestTechnique" local="id" foreign="student_test_id" cardinality="many" owner="local" />
+	</object>
+	<!-- !scStudentTestTechnique -->
+	<object class="scStudentTestTechnique" table="student_test_techniques" extends="xPDOSimpleObject">
+		<field key="student_test_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="technique_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="pass" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="0" />
+		<field key="comment" dbtype="text" phptype="string" null="false" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="StudentTest" class="scStudentTest" local="student_test_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Technique" class="scTechnique" local="technique_id" foreign="id" cardinality="one" owner="foreign" />
+	</object>
+	<!-- !scClassProgress -->
+	<object class="scClassProgress" table="class_progress" extends="xPDOSimpleObject">
+		<field key="class_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="student_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="hours_since_leveling" dbtype="float" attributes="unsigned" phptype="float" null="false" />
+		<field key="total_hours" dbtype="float" attributes="unsigned" phptype="float" null="false" />
+		<field key="test_ready" dbtype="tinyint" precision="1" attributes="unsigned" phptype="integer" null="false" default="0" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="Student" class="scModUser" local="student_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Class" class="scClass" local="class_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="ClassLevel" class="scClassLevel" local="level_id" foreign="id" cardinality="one" owner="foreign" />
+	</object>
+	<!-- !scLocation -->
+	<object class="scLocation" table="locations" extends="xPDOSimpleObject">
+		<field key="name" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="description" dbtype="text" phptype="string" null="false" />
+		<field key="address" dbtype="tinytext" phptype="string" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<composite alias="ScheduledClass" class="scScheduledClass" local="id" foreign="class_id" cardinality="many" owner="local" />
+	</object>
+	<!-- !scScheduledClass -->
+	<object class="scScheduledClass" table="scheduled_classes" extends="xPDOSimpleObject">
+		<field key="class_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="location_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="start_date" dbtype="date" phptype="date" null="false" />
+		<field key="end_date" dbtype="date" phptype="date" null="false" />
+		<field key="description" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<!--
+		<field key="start_time" dbtype="datetime" phptype="datetime" null="false" />
+		<field key="end_time" dbtype="datetime" phptype="datetime" null="false" />
+		<field key="day" dbtype="varchar" precision="100" phptype="string" null="false" />
+		-->
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="Class" class="scClass" local="class_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Location" class="scLocation" local="location_id" foreign="id" cardinality="one" owner="foreign" />
+		<composite alias="ClassEnrollment" class="scClassEnrollment" local="id" foreign="scheduled_class_id" cardinality="many" owner="local" />
+		<composite alias="Attendance" class="scAttendance" local="id" foreign="scheduled_class_id" cardinality="many" owner="local" />
+	</object>
+	<!-- !scClassEnrollment -->
+	<object class="scClassEnrollment" table="enrollments" extends="xPDOSimpleObject">
+		<field key="student_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="scheduled_class_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="Student" class="scModUser" local="student_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="ScheduledClass" class="scScheduledClass" local="scheduled_class_id" foreign="id" cardinality="one" owner="foreign" />
+	</object>
+	<!-- !scAttendance -->
+	<object class="scAttendance" table="attendance" extends="xPDOSimpleObject">
+		<field key="student_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="scheduled_class_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="test" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="0" />
+		<field key="hours" dbtype="float" attributes="unsigned" phptype="float" null="false" />
+		<field key="date" dbtype="date" phptype="date" null="false" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="Student" class="scModUser" local="student_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="ScheduledClass" class="scScheduledClass" local="scheduled_class_id" foreign="id" cardinality="one" owner="foreign" />
+	</object>
+</model>

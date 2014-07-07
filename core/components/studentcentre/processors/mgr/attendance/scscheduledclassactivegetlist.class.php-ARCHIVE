@@ -1,0 +1,54 @@
+<?php
+class scScheduledClassActiveGetList extends modObjectGetListProcessor {
+    
+    public $classKey = 'scScheduledClass';
+    public $languageTopics = array('studentcentre:default');
+    public $defaultSortField = 'name';
+    public $defaultSortDirection = 'ASC';
+    public $objectType = 'studentcentre.att';
+
+	public function prepareQueryBeforeCount(xPDOQuery $c) {
+	    
+        // Join the class table
+    	$c->innerJoin('scClass', 'Class', array (
+			'scScheduledClass.class_id = Class.id'
+		));
+		
+        $scheduledClassId = $this->getProperty('scheduled_class_id');
+        $locationId = $this->getProperty('location_id');
+        //$this->modx->log(1,print_r('Location ID: ' . $locationId,true));
+        // if scheduledClassId exists
+	    if (!empty($scheduledClassId)) {
+	    	// Since a scheduled class ID exists, only grab that scheduled class
+	        $c->where(array(
+	            'scScheduledClass.id:=' => $scheduledClassId
+	        ));
+	    }
+	    // if locationId exists
+	    if (!empty($locationId)) {
+	    	// Since a location ID exists, only grab the scheduled classes for that location
+	        $c->where(array(
+	            'scScheduledClass.location_id:=' => $locationId
+	        ));
+	    }
+        
+        // Ensure you only grab active scheduled classes
+        $c->where(array('scScheduledClass.active' => 1));
+        
+        $c->select(array('
+			scScheduledClass.*,
+			Class.name AS `class_name`,
+			Class.description AS `class_description`,
+			Class.duration AS `class_duration`,
+			CONCAT(Class.name, " (", scScheduledClass.day, ")") AS `class_day_name`
+		'));
+		//$c->prepare();
+		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
+        
+	    return $c;
+	    
+	}
+    
+}
+
+return 'scScheduledClassActiveGetList';

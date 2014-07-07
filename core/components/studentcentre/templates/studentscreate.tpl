@@ -1,0 +1,1 @@
+<div id="sc-students-panel-create-div"></div>

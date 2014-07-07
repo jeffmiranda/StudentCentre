@@ -1,0 +1,1 @@
+<div id="sc-attendance-panel-home-div"></div>
