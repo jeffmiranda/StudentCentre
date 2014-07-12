@@ -303,6 +303,6 @@ $_lang['studentcentre.att_err_ns_date'] = 'Please specify a date';
 $_lang['studentcentre.att_err_ns_hours'] = 'Please specify hours';
 $_lang['studentcentre.att_err_upd_attendance'] = 'Could not update the attendance';
 $_lang['studentcentre.att_err_test_load'] = 'Could not load test techniques';
-
 $_lang['studentcentre.stu'] = 'Student Centre - Student Manager';
 $_lang['studentcentre.stu_desc'] = 'Manage your students and profiles.';
+$_lang['user_created_password_message'] = 'Student successfully created!';
