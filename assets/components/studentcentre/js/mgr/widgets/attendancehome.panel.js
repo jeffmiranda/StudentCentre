@@ -226,6 +226,7 @@ Ext.extend(StudentCentre.panel.AttendanceHome,MODx.Panel, {
 		   ,params: {
 		        action: 'mgr/attendance/scClassEnrollmentGetList'
 		        ,scheduled_class_id: schedClassId
+		        ,limit: 0
 		        ,activeOnly: 1
 		    }
 		   ,success: function(response, opts) { // upon success

@@ -9,7 +9,10 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
     
     public function beforeQuery() {
 	    
-	    $this->setProperty('limit', 0);
+	    $limit = $this->getProperty('limit');
+	    if (!empty($limit)) {
+		    $this->setProperty('limit', $limit);
+		}
 	    return parent::beforeQuery();
 	    
     }
@@ -35,7 +38,8 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
 	    $query = $this->getProperty('query');
 	    if (!empty($query)) {
 	        $c->where(array(
-	            'Profile.fullname:LIKE' => '%'.$query.'%'
+	            'StudentProfile.firstname:LIKE' => '%'.$query.'%'
+	            ,'OR:StudentProfile.lastname:LIKE' => '%'.$query.'%'
 	            ,'OR:Class.name:LIKE' => '%'.$query.'%'
 	            ,'OR:Location.name:LIKE' => '%'.$query.'%'
 	        ));
