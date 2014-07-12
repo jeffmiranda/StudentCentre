@@ -7,13 +7,20 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
     public $defaultSortDirection = 'ASC';
     public $objectType = 'studentcentre.att';
     
+    public function beforeQuery() {
+	    
+	    $this->setProperty('limit', 0);
+	    return parent::beforeQuery();
+	    
+    }
+    
     public function prepareQueryBeforeCount(xPDOQuery $c) {
 	    	    
 	    $c->innerJoin('scModUser', 'Student', array (
 			'scClassEnrollment.student_id = Student.id'
 		));
-		$c->innerJoin('modUserProfile', 'Profile', array (
-			'Student.id = Profile.internalKey'
+		$c->innerJoin('scStudentProfile', 'StudentProfile', array (
+			'Student.id = StudentProfile.internalKey'
 		));
 		$c->innerJoin('scScheduledClass', 'ScheduledClass', array (
 			'scClassEnrollment.scheduled_class_id = ScheduledClass.id'
@@ -54,7 +61,7 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
 	    	    	    
 	    $c->select(array('
 			scClassEnrollment.*
-			,Profile.fullname AS `student_name`
+			,CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`
 			,Class.name AS `class_name`
 			,Location.name AS `location_name`
 			,ScheduledClass.description AS `description`
@@ -66,7 +73,7 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
 	    return $c;
 	    
 	}
-    
+	    
     public function prepareRow(xPDOObject $object) {
 	
         $ta = $object->toArray('', false, true, true);

@@ -12,6 +12,9 @@ class scModUserGetList extends modObjectGetListProcessor {
 	    $c->innerJoin('modUserProfile', 'Profile', array (
 			'scModUser.id = Profile.internalKey'
 		));
+		$c->innerJoin('scStudentProfile', 'StudentProfile', array (
+			'scModUser.id = StudentProfile.internalKey'
+		));
 		$scheduledClassId = $this->getProperty('scheduled_class_id');
 		if (!empty($scheduledClassId)) {
 	    	// Since a scheduled class ID exists, only grab the students for that class
@@ -26,9 +29,9 @@ class scModUserGetList extends modObjectGetListProcessor {
             'scModUser.active' => 1
         ));
 		$c->select(array('
-			scModUser.*,
-			scModUser.id AS `student_id`,
-			Profile.fullname AS `student_name`
+			scModUser.*
+			,scModUser.id AS `student_id`
+			,CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`
 		'));
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
