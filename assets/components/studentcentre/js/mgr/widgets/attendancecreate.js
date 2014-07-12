@@ -101,6 +101,7 @@ StudentCentre.panel.AttendanceCreate = function(config) {
 	        ,title: _('studentcentre.att_enrolled_students')
 			,collapsible: true
 			,autoHeight: true
+			,labelWidth: 150
         },{
 	        xtype: 'fieldset'
 	        ,id: 'attendance-fieldset-visitors-create-attendance'

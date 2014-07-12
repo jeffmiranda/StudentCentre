@@ -245,7 +245,6 @@ Ext.extend(StudentCentre.panel.AttendanceHome,MODx.Panel, {
 							var row = {
 								xtype: 'compositefield'
 								,fieldLabel: student.student_name
-								,labelWidth: 120
 								//,id: 'student_id_' + student.student_id
 								,flex: 1
 								,items: [{
