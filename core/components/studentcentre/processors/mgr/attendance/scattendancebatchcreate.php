@@ -77,13 +77,7 @@ if (!empty($attendees)) {
 
 	// loop through all attendees
 	foreach ($attendees as $attendee) {
-		
-		// save attendance object to db
-		if (!$attendee->save()) {
-			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the attendee object!');
-			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_att'));
-		}
-		
+				
 		// if class progress object exists grab it
 		$classProgress = $modx->getObject('scClassProgress', array(
 			'class_id' => $class->get('id'),
@@ -93,8 +87,9 @@ if (!empty($attendees)) {
 		if (!$classProgress) {
 			// get the first level of the class
 			$classLevel = $modx->getObject('scClassLevel', array(
-				'class_level_category_id' => $class->get('class_level_category_id'),
-				'order' => 1
+				'class_level_category_id' => $class->get('class_level_category_id')
+				,'order' => 1
+				,'active' => 1
 			));
 			if (!$classLevel) {
 				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the first level of the class!');
@@ -138,11 +133,17 @@ if (!empty($attendees)) {
 		}
 	*/
 		
-		// save class progress object to db
-		if (!$classProgress->save()) {
-			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the class progress object!');
+		// save attendance object to db
+		if ($attendee->save()) {
+			// save class progress object to db
+			if (!$classProgress->save()) {
+				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the class progress object!');
+				return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_att'));
+			}	
+		} else {
+			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the attendee object!');
 			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_att'));
-		}	
+		}
 	
 	}
 
