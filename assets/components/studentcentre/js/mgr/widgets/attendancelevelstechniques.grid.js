@@ -200,6 +200,7 @@ StudentCentre.combo.LevelTechniqueGridLevelName = function(config) {
 	    ,url: StudentCentre.config.connectorUrl
 	    ,baseParams: {
 	        action: 'mgr/attendance/scClassLevelGetList'
+	        ,activeOnly: 1
 	    }
     });
     
@@ -226,6 +227,7 @@ StudentCentre.combo.LevelTechniqueGridTechniqueName = function(config) {
 	    ,url: StudentCentre.config.connectorUrl
 	    ,baseParams: {
 	        action: 'mgr/attendance/scTechniqueGetList'
+	        ,activeOnly: 1
 	    }
     });
     
