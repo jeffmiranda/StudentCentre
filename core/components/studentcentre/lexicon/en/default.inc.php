@@ -194,6 +194,7 @@ $_lang['studentcentre.ass_err_invalid_data'] = 'Invalid data';
 $_lang['studentcentre.att'] = 'Student Centre - Attendance';
 $_lang['studentcentre.att_remove_attendance'] = 'Remove attendance';
 $_lang['studentcentre.att_remove_attendance_text'] = 'Removing this attendance record is permanent and cannot be undone. Are you sure you want to proceed?';
+$_lang['studentcentre.att_remove_attendance_select_one_text'] = 'Please select one attendance record!';
 $_lang['studentcentre.att_desc'] = 'Manage your student attendance.';
 $_lang['studentcentre.att_levels'] = 'Levels';
 $_lang['studentcentre.att_levels_desc'] = 'Levels are the sequential skill levels that a student ascends during the class. Each level must be grouped by a Category.';
