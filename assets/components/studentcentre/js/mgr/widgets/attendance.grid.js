@@ -164,18 +164,20 @@ Ext.extend(StudentCentre.grid.StudentAttendance,MODx.grid.Grid,{
 		this.updateAttendanceWindow.show(e.target);
 	}
 	,removeAttendance: function() {
-	    MODx.msg.confirm({
-	        title: _('studentcentre.att_remove_attendance')
-	        ,text: _('studentcentre.att_remove_attendance_text')
-	        ,url: StudentCentre.config.connectorUrl
-	        ,params: {
-	            action: 'mgr/attendance/scAttendanceRemove'
-	            ,id: this.menu.record.id
-	        }
-	        ,listeners: {
-	            'success': {fn:this.refresh, scope:this}
-	        }
-	    });
+	    if (this.selModel.selections.items.length == 1) {
+		    MODx.msg.confirm({
+		        title: _('studentcentre.att_remove_attendance')
+		        ,text: _('studentcentre.att_remove_attendance_text')
+		        ,url: StudentCentre.config.connectorUrl
+		        ,params: {
+		            action: 'mgr/attendance/scAttendanceRemove'
+		            ,id: this.selModel.selections.items[0].id
+		        }
+		        ,listeners: {
+		            'success': {fn:this.refresh, scope:this}
+		        }
+		    });
+		}
 	}
 });
 Ext.reg('studentcentre-grid-attendance',StudentCentre.grid.StudentAttendance);
