@@ -34,6 +34,16 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
 		$c->innerJoin('scLocation', 'Location', array (
 			'ScheduledClass.location_id = Location.id'
 		));
+		
+		$sortStudents = $this->getProperty('sortStudents');
+	    if (!empty($sortStudents)) {
+	    	$c->leftJoin('scClassProgress', 'ClassProgress', array (
+				'Student.id = ClassProgress.student_id'
+			));
+			$c->leftJoin('scClassLevel', 'ClassLevel', array (
+				'ClassProgress.level_id = ClassLevel.id'
+			));
+	    }
 	    
 	    $query = $this->getProperty('query');
 	    if (!empty($query)) {
@@ -71,6 +81,19 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
 			,ScheduledClass.description AS `description`
 			,ScheduledClass.duration AS `duration`
 		'));
+		
+		if (!empty($sortStudents)) {
+			$c->select(array('
+				ClassProgress.level_id
+				,ClassProgress.hours_since_leveling
+				,ClassProgress.total_hours
+				,ClassLevel.order
+			'));
+			$c->groupby('scClassEnrollment.student_id');
+			$c->sortby('ClassLevel.order', 'DESC');
+			$c->sortby('ClassProgress.hours_since_leveling', 'DESC');
+			$c->sortby('ClassProgress.total_hours', 'DESC');
+		}
 		
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
