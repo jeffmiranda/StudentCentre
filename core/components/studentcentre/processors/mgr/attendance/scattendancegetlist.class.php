@@ -12,8 +12,8 @@ class scAttendanceGetListProcessor extends modObjectGetListProcessor {
 	    $c->innerJoin('scModUser', 'Student', array (
 			'scAttendance.student_id = Student.id'
 		));
-		$c->innerJoin('modUserProfile', 'Profile', array (
-			'Student.id = Profile.internalKey'
+		$c->innerJoin('scStudentProfile', 'StudentProfile', array (
+			'Student.id = StudentProfile.internalKey'
 		));
 		$c->innerJoin('scScheduledClass', 'ScheduledClass', array (
 			'scAttendance.scheduled_class_id = ScheduledClass.id'
@@ -28,19 +28,20 @@ class scAttendanceGetListProcessor extends modObjectGetListProcessor {
 		$query = $this->getProperty('query');
 	    if (!empty($query)) {
 	        $c->where(array(
-	            'Profile.fullname:LIKE' => '%'.$query.'%',
-	            'OR:Location.name:LIKE' => '%'.$query.'%',
-	            'OR:Class.name:LIKE' => '%'.$query.'%'
+	            'StudentProfile.firstname:LIKE' => '%'.$query.'%'
+	            ,'StudentProfile.lastname:LIKE' => '%'.$query.'%'
+	            ,'OR:Location.name:LIKE' => '%'.$query.'%'
+	            ,'OR:Class.name:LIKE' => '%'.$query.'%'
 	        ));
 	    }
 
 		$c->select(array('
-			scAttendance.*,
-			Student.id AS `student_id`,
-			Profile.fullname AS `student_name`,
-			Location.id AS `location_id`,
-			Location.name AS `location_name`,
-			Class.name AS `class_name`
+			scAttendance.*
+			,Student.id AS `student_id`
+			,CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`
+			,Location.id AS `location_id`
+			,Location.name AS `location_name`
+			,Class.name AS `class_name`
 		'));
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
