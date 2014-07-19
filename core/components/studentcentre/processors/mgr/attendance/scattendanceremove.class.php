@@ -17,7 +17,10 @@ class scAttendanceRemoveProcessor extends modObjectRemoveProcessor {
 			return $this->modx->error->failure($this->modx->lexicon('studentcentre.att_err_removing_attendance'));
 		}
 		
-		$progress->deleteHours($this->object->get('hours'), $this->object->get('date'));
+		if (!$progress->deleteHours($this->object->get('hours'), $this->object->get('date'))) {
+			$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not remove the hours from the progress object!');
+			return $this->modx->error->failure($this->modx->lexicon('studentcentre.att_err_removing_attendance'));
+		}
 		
 		// Recheck the threshold and update test_ready flag if necessary
 		if ($progress->isTestReady()) {
