@@ -10,7 +10,7 @@ class StudentCentre {
 
         $basePath = $this->modx->getOption('studentcentre.core_path',$config,$this->modx->getOption('core_path').'components/studentcentre/');
         $assetsUrl = $this->modx->getOption('studentcentre.assets_url',$config,$this->modx->getOption('assets_url').'components/studentcentre/');
-        //$this->modx->log(1,print_r('assetsUrl: ' . $assetsUrl,true));
+        //$this->modx->log(1,print_r('basePath: ' . $basePath,true));
         $this->config = array_merge(array(
             'basePath' => $basePath,
             'corePath' => $basePath,

@@ -228,6 +228,7 @@ Ext.extend(StudentCentre.panel.AttendanceHome,MODx.Panel, {
 		        ,scheduled_class_id: schedClassId
 		        ,limit: 0
 		        ,activeOnly: 1
+		        ,sortStudents: 1
 		    }
 		   ,success: function(response, opts) { // upon success
 		      	var responseObj = Ext.decode(response.responseText); // decode the JSON response text into an object
