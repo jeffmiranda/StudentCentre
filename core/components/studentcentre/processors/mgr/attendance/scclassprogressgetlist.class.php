@@ -3,7 +3,7 @@ class scClassProgressGetListProcessor extends modObjectGetListProcessor {
     
     public $classKey = 'scClassProgress';
     public $languageTopics = array('studentcentre:default');
-    public $defaultSortField = 'last_modified';
+    public $defaultSortField = 'student_id';
     public $defaultSortDirection = 'DESC';
     public $objectType = 'studentcentre.att';
     

@@ -14,6 +14,7 @@ class scStudentAssignment extends xPDOSimpleObject {
 		$sa = $this->xpdo->getObjectGraph('scStudentAssignment', array(
 			'Student' => array(
 				'Profile' => array()
+				,'StudentProfile' => array()
 			),
 			'Assignment' => array()
 		), array(
@@ -21,7 +22,7 @@ class scStudentAssignment extends xPDOSimpleObject {
 		));
 		if ($sa) {
 			$email = $sa->Student->Profile->get('email');
-			$fullname = $sa->Student->Profile->get('fullname');
+			$fullname = $sa->Student->StudentProfile->get('firstname') . ' ' . $sa->Student->StudentProfile->get('lastname');
 			//$this->xpdo->log(1,print_r('Email: ' . $email,true));
 			$assignment_name = $sa->Assignment->get('name');
 		} else {
@@ -61,14 +62,14 @@ class scStudentAssignment extends xPDOSimpleObject {
 		$success = false;
 		$sa = $this->xpdo->getObjectGraph('scStudentAssignment', array(
 			'Student' => array(
-				'Profile' => array()
+				'StudentProfile' => array()
 			),
 			'Assignment' => array()
 		), array(
 			'scStudentAssignment.id' => $this->get('id')
 		));
 		if ($sa) {
-			$fullname = $sa->Student->Profile->get('fullname');
+			$fullname = $sa->Student->StudentProfile->get('firstname') . ' ' . $sa->Student->StudentProfile->get('lastname');
 			//$this->xpdo->log(1,print_r('Email: ' . $email,true));
 			$assignment_name = $sa->Assignment->get('name');
 		} else {
