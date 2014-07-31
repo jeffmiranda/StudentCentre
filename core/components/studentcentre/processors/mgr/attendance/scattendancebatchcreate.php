@@ -86,11 +86,16 @@ if (!empty($attendees)) {
 		// else create a new one and assign the first level to it
 		if (!$classProgress) {
 			// get the first level of the class
-			$classLevel = $modx->getObject('scClassLevel', array(
+			$q = $modx->newQuery('scClassLevel');
+			$q->where(array(
 				'class_level_category_id' => $class->get('class_level_category_id')
-				,'order' => 1
 				,'active' => 1
 			));
+			$q->sortby('`order`', 'ASC');
+			$q->limit(1);
+			//$q->prepare();
+			//$modx->log(1,print_r('SQL Statement: ' . $q->toSQL(),true));			
+			$classLevel = $modx->getObject('scClassLevel', $q);
 			if (!$classLevel) {
 				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the first level of the class!');
 				return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
