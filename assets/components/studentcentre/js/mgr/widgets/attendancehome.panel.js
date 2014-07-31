@@ -89,6 +89,18 @@ StudentCentre.panel.AttendanceHome = function(config) {
                     ,preventRender: true
                 }]
             },{
+	            title: _('studentcentre.progress')
+                ,defaults: { autoHeight: true }
+                ,items: [{
+                    html: '<p>'+_('studentcentre.progress_desc')+'</p>'
+                    ,border: false
+                    ,bodyCssClass: 'panel-desc'
+                },{
+                    xtype: 'studentcentre-grid-attendance-progress'
+                    ,cls: 'main-wrapper'
+                    ,preventRender: true
+                }]
+            },{
 	            title: _('studentcentre.att_level_categories')
                 ,defaults: { autoHeight: true }
                 ,items: [{

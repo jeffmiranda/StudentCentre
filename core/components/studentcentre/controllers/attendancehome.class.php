@@ -17,6 +17,7 @@ class StudentCentreAttendanceHomeManagerController extends StudentCentreManagerC
 		$this->addJavascript($this->sc->config['jsUrl'].'mgr/widgets/attendancelocations.grid.js');
 		$this->addJavascript($this->sc->config['jsUrl'].'mgr/widgets/attendancescheduledclasses.grid.js');
 		$this->addJavascript($this->sc->config['jsUrl'].'mgr/widgets/attendanceenrollments.grid.js');
+		$this->addJavascript($this->sc->config['jsUrl'].'mgr/widgets/attendanceprogress.grid.js');
 		$this->addJavascript($this->sc->config['jsUrl'].'mgr/widgets/attendancehome.panel.js');
 		$this->addLastJavascript($this->sc->config['jsUrl'].'mgr/sections/attendanceindex.js');
     }
