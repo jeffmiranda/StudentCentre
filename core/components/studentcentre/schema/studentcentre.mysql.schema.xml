@@ -175,7 +175,6 @@
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
 		
 		<aggregate alias="ClassLevelCategory" class="scClassLevelCategory" local="class_level_category_id" foreign="id" cardinality="one" owner="foreign" />
-		<composite alias="ClassProgress" class="scClassProgress" local="id" foreign="class_id" cardinality="many" owner="local" />
 		<composite alias="ScheduledClass" class="scScheduledClass" local="id" foreign="class_id" cardinality="many" owner="local" />
 	</object>
 	<!-- !scClassLevelCategory -->
@@ -186,6 +185,7 @@
 		<field key="date_created" dbtype="date" phptype="date" null="false" />
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
 		
+		<composite alias="ClassProgress" class="scClassProgress" local="id" foreign="class_level_category_id" cardinality="many" owner="local" />
 		<composite alias="Class" class="scClass" local="id" foreign="class_level_category_id" cardinality="many" owner="local" />
 		<composite alias="ClassLevel" class="scClassLevel" local="id" foreign="class_level_category_id" cardinality="many" owner="local" />
 	</object>
@@ -255,7 +255,14 @@
 		<aggregate alias="Technique" class="scTechnique" local="technique_id" foreign="id" cardinality="one" owner="foreign" />
 	</object>
 	<!-- !scClassProgress -->
+	<!-- * This should really be called scCategoryProgress because it tracks the progress
+		 * of the student through the level category (not the class). It's too late to 
+		 * change now though. A student could be enrolled in many classes that are all
+		 * part of the same category and there will only be one progress record for him
+		 -->
 	<object class="scClassProgress" table="class_progress" extends="xPDOSimpleObject">
+		<!-- class_level_category_id field was add on July 31, 2014 -->
+		<field key="class_level_category_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
 		<field key="class_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
 		<field key="student_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
 		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
@@ -266,7 +273,7 @@
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
 		
 		<aggregate alias="Student" class="scModUser" local="student_id" foreign="id" cardinality="one" owner="foreign" />
-		<aggregate alias="Class" class="scClass" local="class_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="ClassLevelCategory" class="scClassLevelCategory" local="class_level_category_id" foreign="id" cardinality="one" owner="foreign" />
 		<aggregate alias="ClassLevel" class="scClassLevel" local="level_id" foreign="id" cardinality="one" owner="foreign" />
 	</object>
 	<!-- !scLocation -->
