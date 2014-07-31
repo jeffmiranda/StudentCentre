@@ -24,8 +24,8 @@ class StudentCentre {
             'connectorUrl' => $assetsUrl.'connector.php',
             'userId' => $this->modx->user->get('id'),
         ),$config);
+        //$this->modx->log(1,print_r('Model Path: ' . $this->config['modelPath'],true));
         $this->modx->addPackage('studentcentre', $this->config['modelPath'], 'sc_');
-        //$this->modx->log(1,print_r('Tpl Path: ' . $this->config['templatesPath'],true));
     }
     
     public function getChunk($name,$properties = array()) {

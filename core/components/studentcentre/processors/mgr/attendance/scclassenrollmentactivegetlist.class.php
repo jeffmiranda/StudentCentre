@@ -14,8 +14,8 @@ class scClassEnrollmentActiveGetList extends modObjectGetListProcessor {
     	$c->innerJoin('scModUser', 'Student', array (
 			'scClassEnrollment.student_id = Student.id'
 		));
-		$c->innerJoin('modUserProfile', 'Profile', array (
-			'Student.id = Profile.internalKey'
+		$c->innerJoin('scModUserProfile', 'StudentProfile', array (
+			'Student.id = StudentProfile.internalKey'
 		));
         // if $scheduledClassId exists from cascading combobox
 	    if (!empty($scheduledClassId)) {
@@ -36,11 +36,11 @@ class scClassEnrollmentActiveGetList extends modObjectGetListProcessor {
         $c->where(array('scClassEnrollment.active' => 1));
         
         $c->select(array('
-			scClassEnrollment.*,
-			ScheduledClass.id,
-			Class.*,
-			Student.id,
-			Profile.fullname AS `student_name`
+			scClassEnrollment.*
+			,ScheduledClass.id
+			,Class.*
+			,Student.id
+			,CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`
 		'));
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));

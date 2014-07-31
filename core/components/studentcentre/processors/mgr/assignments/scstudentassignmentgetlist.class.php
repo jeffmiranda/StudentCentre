@@ -12,8 +12,8 @@ class scStudentAssignmentGetListProcessor extends modObjectGetListProcessor {
 	    $c->innerJoin('modUser', 'User', array (
 			'scStudentAssignment.student_id = User.id'
 		));
-		$c->innerJoin('modUserProfile', 'Profile', array (
-			'User.id = Profile.id'
+		$c->innerJoin('scModUserProfile', 'StudentProfile', array (
+			'User.id = StudentProfile.id'
 		));
 		$c->innerJoin('scAssignment', 'Assignment', array (
 			'scStudentAssignment.assignment_id = Assignment.id'
@@ -31,21 +31,22 @@ class scStudentAssignmentGetListProcessor extends modObjectGetListProcessor {
 		$query = $this->getProperty('query');
 	    if (!empty($query)) {
 	        $c->where(array(
-	            'Profile.fullname:LIKE' => '%'.$query.'%',
-	            'OR:Assignment.name:LIKE' => '%'.$query.'%',
-	            'OR:status:LIKE' => '%'.$query.'%',
-	            'OR:AssignmentProgram.name:LIKE' => '%'.$query.'%',
-	            'OR:AssignmentLevel.name:LIKE' => '%'.$query.'%'
+	            'StudentProfile.firstname:LIKE' => '%'.$query.'%'
+	            ,'OR:StudentProfile.lastname:LIKE' => '%'.$query.'%'
+	            ,'OR:Assignment.name:LIKE' => '%'.$query.'%'
+	            ,'OR:status:LIKE' => '%'.$query.'%'
+	            ,'OR:AssignmentProgram.name:LIKE' => '%'.$query.'%'
+	            ,'OR:AssignmentLevel.name:LIKE' => '%'.$query.'%'
 	        ));
 	    }
 
 		$c->select(array('
-			scStudentAssignment.*,
-			Profile.fullname AS `student_name`,
-			Assignment.name AS `assignment_name`,
-			Assignment.description AS `assignment_desc`,
-			AssignmentProgram.name AS `program_name`,
-			AssignmentLevel.name AS `level_name`
+			scStudentAssignment.*
+			,CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`
+			,Assignment.name AS `assignment_name`
+			,Assignment.description AS `assignment_desc`
+			,AssignmentProgram.name AS `program_name`
+			,AssignmentLevel.name AS `level_name`
 		'));
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));

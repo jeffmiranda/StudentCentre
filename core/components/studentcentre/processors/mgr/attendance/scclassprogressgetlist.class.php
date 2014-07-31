@@ -12,8 +12,8 @@ class scClassProgressGetListProcessor extends modObjectGetListProcessor {
 	    $c->innerJoin('scModUser', 'Student', array (
 			'scClassProgress.student_id = Student.id'
 		));
-		$c->innerJoin('modUserProfile', 'Profile', array (
-			'Student.id = Profile.internalKey'
+		$c->innerJoin('scModUserProfile', 'StudentProfile', array (
+			'Student.id = StudentProfile.internalKey'
 		));
 		$c->innerJoin('scClass', 'Class', array (
 			'scClassProgress.class_id = Class.id'
@@ -34,20 +34,21 @@ class scClassProgressGetListProcessor extends modObjectGetListProcessor {
 		$query = $this->getProperty('query');
 	    if (!empty($query)) {
 	        $c->where(array(
-	            'Profile.fullname:LIKE' => '%'.$query.'%'
+	            'StudentProfile.firstname:LIKE' => '%'.$query.'%'
+	            ,'OR:StudentProfile.lastname:LIKE' => '%'.$query.'%'
 	            ,'OR:Class.name:LIKE' => '%'.$query.'%'
 	            ,'OR:ClassLevel.name:LIKE' => '%'.$query.'%'
 	        ));
 	    }
 
 		$c->select(array('
-			scClassProgress.*,
-			Student.id AS `student_id`,
-			Profile.fullname AS `student_name`,
-			Class.id AS `class_id`,
-			Class.name AS `class_name`,
-			ClassLevel.id AS `level_id`,
-			ClassLevel.name AS `level_name`
+			scClassProgress.*
+			,Student.id AS `student_id`
+			,CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`
+			,Class.id AS `class_id`
+			,Class.name AS `class_name`
+			,ClassLevel.id AS `level_id`
+			,ClassLevel.name AS `level_name`
 		'));
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
