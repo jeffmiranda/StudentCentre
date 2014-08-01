@@ -80,7 +80,7 @@ if (!empty($attendees)) {
 				
 		// if class progress object exists grab it
 		$classProgress = $modx->getObject('scClassProgress', array(
-			'class_id' => $class->get('id'),
+			'class_level_category_id' => $class->get('class_level_category_id'),
 			'student_id' => $attendee->get('student_id')
 		));
 		// else create a new one and assign the first level to it
@@ -101,7 +101,7 @@ if (!empty($attendees)) {
 				return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
 			}
 			$classProgress = $modx->newObject('scClassProgress', array(
-				'class_id' => $class->get('id'),
+				'class_level_category_id' => $class->get('class_level_category_id'),
 				'student_id' => $attendee->get('student_id'),
 				'level_id' => $classLevel->get('id'),
 				'hours_since_leveling' => 0,
@@ -115,7 +115,7 @@ if (!empty($attendees)) {
 		$classProgress->addHours($attendee->get('hours'));
 		
 		// !Threshold Test
-		if ($classProgress->isTestReady()) {
+		if ($classProgress->isTestReady() || ($attendee->get('test') == 1)) {
 			$classProgress->set('test_ready', 1);
 		} else {
 			$classProgress->set('test_ready', 0);

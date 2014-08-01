@@ -162,8 +162,8 @@ StudentCentre.window.UpdateProgress = function(config) {
             ,anchor: '100%'
         },{
             xtype: 'displayfield'
-            ,fieldLabel: _('studentcentre.att_class')
-            ,name: 'class_name'
+            ,fieldLabel: _('studentcentre.att_level_category')
+            ,name: 'class_level_category_name'
             ,anchor: '100%'
         },{
             xtype: 'displayfield'

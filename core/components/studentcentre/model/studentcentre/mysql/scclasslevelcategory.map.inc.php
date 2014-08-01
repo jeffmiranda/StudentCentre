@@ -53,6 +53,14 @@ $xpdo_meta_map['scClassLevelCategory']= array (
   ),
   'composites' => 
   array (
+    'ClassProgress' => 
+    array (
+      'class' => 'scClassProgress',
+      'local' => 'id',
+      'foreign' => 'class_level_category_id',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
     'Class' => 
     array (
       'class' => 'scClass',

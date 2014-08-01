@@ -6,6 +6,7 @@ $xpdo_meta_map['scClassProgress']= array (
   'extends' => 'xPDOSimpleObject',
   'fields' => 
   array (
+    'class_level_category_id' => NULL,
     'class_id' => NULL,
     'student_id' => NULL,
     'level_id' => NULL,
@@ -17,6 +18,14 @@ $xpdo_meta_map['scClassProgress']= array (
   ),
   'fieldMeta' => 
   array (
+    'class_level_category_id' => 
+    array (
+      'dbtype' => 'tinyint',
+      'precision' => '3',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => false,
+    ),
     'class_id' => 
     array (
       'dbtype' => 'tinyint',
@@ -89,10 +98,10 @@ $xpdo_meta_map['scClassProgress']= array (
       'cardinality' => 'one',
       'owner' => 'foreign',
     ),
-    'Class' => 
+    'ClassLevelCategory' => 
     array (
-      'class' => 'scClass',
-      'local' => 'class_id',
+      'class' => 'scClassLevelCategory',
+      'local' => 'class_level_category_id',
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',

@@ -62,14 +62,6 @@ $xpdo_meta_map['scClass']= array (
   ),
   'composites' => 
   array (
-    'ClassProgress' => 
-    array (
-      'class' => 'scClassProgress',
-      'local' => 'id',
-      'foreign' => 'class_id',
-      'cardinality' => 'many',
-      'owner' => 'local',
-    ),
     'ScheduledClass' => 
     array (
       'class' => 'scScheduledClass',
