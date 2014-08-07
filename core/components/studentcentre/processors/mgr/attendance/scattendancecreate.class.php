@@ -16,6 +16,19 @@ class scAttendanceCreateProcessor extends modObjectCreateProcessor {
     public function beforeSave() {
         $schedClassId = $this->getProperty('scheduled_class_id');
         $studentId = $this->getProperty('student_id');
+        $date = $this->getProperty('date');
+        if (empty($date)) {
+            $this->addFieldError('date',$this->modx->lexicon('studentcentre.att_err_ns_date'));
+        } else {
+	        // get the class date in the right format
+	        $attDate = date('Y-m-d', strtotime(str_replace('/','-',$date)));
+	        $today = date('Y-m-d');
+	        if ($attDate > $today) {
+	        	$this->addFieldError('date',$this->modx->lexicon('studentcentre.att_err_future_date'));
+	        } else {
+		        $this->addFieldError('date','The date is good!');
+	        }
+        }
         if (empty($schedClassId)) {
             $this->addFieldError('scheduled_class_id',$this->modx->lexicon('studentcentre.att_err_select_class'));
         }

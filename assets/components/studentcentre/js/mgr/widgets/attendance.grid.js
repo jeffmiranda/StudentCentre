@@ -63,7 +63,7 @@ StudentCentre.grid.StudentAttendance = function(config) {
 			,allowNegative: false
             ,editor: { xtype: 'numberfield' }
         },{
-            header: _('studentcentre.att_tested')
+            header: _('studentcentre.att_test_pretest')
             ,dataIndex: 'test'
             ,name: 'test'
             ,sortable: true
@@ -224,7 +224,7 @@ StudentCentre.window.CreateAttendance = function(config) {
             ,name: 'date'
             ,allowBlank: false
             ,fieldLabel: _('studentcentre.att_class_date')
-            ,format: 'M d, Y'
+            ,format: 'd/m/Y'
             ,value: dateToday
         },{
             xtype: 'attendance-combo-location' // this combobox is defined in attendancecreate.js
@@ -263,7 +263,7 @@ StudentCentre.window.CreateAttendance = function(config) {
 			,fieldLabel: _('studentcentre.att_hours')
 		},{
 			xtype: 'xcheckbox'
-			,fieldLabel: _('studentcentre.att_testing')
+			,fieldLabel: _('studentcentre.att_test_pretest')
 			,name: 'test'
 		}]
     });
@@ -379,7 +379,7 @@ StudentCentre.window.UpdateAttendance = function(config) {
 			,fieldLabel: _('studentcentre.att_hours')
 		},{
 			xtype: 'xcheckbox'
-			,fieldLabel: _('studentcentre.att_testing')
+			,fieldLabel: _('studentcentre.att_test_pretest')
 			,name: 'test'
 		}]
     });
