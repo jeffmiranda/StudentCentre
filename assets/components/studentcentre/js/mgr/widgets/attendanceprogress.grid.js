@@ -10,7 +10,7 @@ StudentCentre.grid.AttendanceProgress = function(config) {
         ,remoteSort: true
         ,anchor: '97%'
         ,autoExpandColumn: 'student_name'
-        ,grouping: true
+        ,grouping: false
         ,groupBy: 'student_name'
         ,pluralText: 'Class level categories'
         ,singleText: 'Class level category'
@@ -166,9 +166,10 @@ StudentCentre.window.UpdateProgress = function(config) {
             ,name: 'class_level_category_name'
             ,anchor: '100%'
         },{
-            xtype: 'displayfield'
-            ,fieldLabel: _('studentcentre.att_level')
-            ,name: 'level_name'
+            xtype: 'attendance-class-level-combo'
+            ,id: 'attendance-progress-update-class-level-combo'
+            ,name: 'level_id'
+            ,hiddenName: 'level_id'
             ,anchor: '100%'
         },{
             xtype: 'numberfield'
