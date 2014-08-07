@@ -57,7 +57,7 @@ class scClassProgress extends xPDOSimpleObject {
 		
 			//$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'A previous level has been found!');
 			// Get the test object
-			$c = $this->xpdo->newQuery('scTest');
+			$c = $this->xpdo->newQuery('scStudentTest');
 			$c->where(array(
 			   'level_id' => $prevLevel->get('id')
 			   ,'student_id' => $this->get('student_id')
@@ -65,7 +65,7 @@ class scClassProgress extends xPDOSimpleObject {
 			));
 			$c->sortby('date_created','DESC');
 			$c->limit(1);
-			$lastTest = $this->xpdo->getObject('scTest', $c);
+			$lastTest = $this->xpdo->getObject('scStudentTest', $c);
 			if ($lastTest) { // if last test exists
 				//$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'LastTest exists!');
 				//return false;
