@@ -3,10 +3,23 @@ class scClassLevelGetList extends modObjectGetListProcessor {
     
     public $classKey = 'scClassLevel';
     public $languageTopics = array('studentcentre:default');
-    public $defaultSortField = 'order';
+    public $defaultSortField = '`order`';
     public $defaultSortDirection = 'ASC';
     public $objectType = 'studentcentre.att';
     
+/*
+    public function beforeQuery() {
+	    
+	    $limit = $this->getProperty('limit');
+	    if (!empty($limit)) {
+		    $this->setProperty('limit', $limit);
+		}
+		$this->modx->log(1,print_r('Limit: ' . $limit,true));
+	    return parent::beforeQuery();
+	    
+    }
+*/
+
     public function prepareQueryBeforeCount(xPDOQuery $c) {
 	    	    
 	    $c->innerJoin('scClassLevelCategory', 'ClassLevelCategory', array (
@@ -19,6 +32,15 @@ class scClassLevelGetList extends modObjectGetListProcessor {
 	            'scClassLevel.name:LIKE' => '%'.$query.'%'
 	            ,'OR:scClassLevel.description:LIKE' => '%'.$query.'%'
 	            ,'OR:ClassLevelCategory.name:LIKE' => '%'.$query.'%'
+	        ));
+	    }
+	    
+	    // if categoryId parameter exists,
+		// then only get the levels for that category
+		$categoryId = $this->getProperty('category_id');
+		if (!empty($categoryId)) {
+	        $c->where(array(
+	            'scClassLevel.category_id' => $categoryId
 	        ));
 	    }
 	    
@@ -36,7 +58,9 @@ class scClassLevelGetList extends modObjectGetListProcessor {
 			,ClassLevelCategory.name AS `category_name`
 		'));
 
-	    
+		$c->sortby('category_name','ASC');
+		$c->sortby('`order`','ASC');
+			    
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
 	    return $c;
