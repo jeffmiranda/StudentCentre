@@ -309,7 +309,7 @@ Ext.extend(StudentCentre.panel.AttendanceHome,MODx.Panel, {
 									xtype: 'xcheckbox'
 									,id: 'student_testing_' + index
 									,name: 'students[' + index + '][test]'
-									,boxLabel: _('studentcentre.att_testing')
+									,boxLabel: _('studentcentre.att_test_pretest')
 									,value: 1
 								}]
 							};
