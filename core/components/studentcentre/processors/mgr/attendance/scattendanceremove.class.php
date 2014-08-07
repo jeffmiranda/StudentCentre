@@ -8,8 +8,9 @@ class scAttendanceRemoveProcessor extends modObjectRemoveProcessor {
     
     	// Get the ClassProgress object, but we need the ScheduledClass object first
 		$schedClass = $this->object->getOne('ScheduledClass');
+		$class = $schedClass->getOne('Class');
 		$progress = $this->modx->getObject('scClassProgress', array(
-			'class_id' => $schedClass->get('class_id'),
+			'class_level_category_id' => $class->get('class_level_category_id'),
 			'student_id' => $this->object->get('student_id')
 		));
 		if (!$progress) {
