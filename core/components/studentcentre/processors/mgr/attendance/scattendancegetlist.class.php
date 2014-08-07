@@ -29,7 +29,7 @@ class scAttendanceGetListProcessor extends modObjectGetListProcessor {
 	    if (!empty($query)) {
 	        $c->where(array(
 	            'StudentProfile.firstname:LIKE' => '%'.$query.'%'
-	            ,'StudentProfile.lastname:LIKE' => '%'.$query.'%'
+	            ,'OR:StudentProfile.lastname:LIKE' => '%'.$query.'%'
 	            ,'OR:Location.name:LIKE' => '%'.$query.'%'
 	            ,'OR:Class.name:LIKE' => '%'.$query.'%'
 	        ));
