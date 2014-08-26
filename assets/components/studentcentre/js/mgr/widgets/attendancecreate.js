@@ -60,6 +60,7 @@ StudentCentre.combo.StudentName = function(config) {
 	    ,url: StudentCentre.config.connectorUrl
 	    ,baseParams: {
 	        action: 'mgr/attendance/scModUserGetList'
+	        ,activeOnly: 1
 	    }
     });
     

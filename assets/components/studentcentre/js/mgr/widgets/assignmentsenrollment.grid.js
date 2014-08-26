@@ -5,13 +5,13 @@ StudentCentre.grid.StudentAssignmentEnrollment = function(config) {
         id: 'studentcentre-grid-student-enrollment'
         ,url: StudentCentre.config.connectorUrl
         ,baseParams: { action: 'mgr/assignments/scAssignmentEnrollmentGetList' }
-        ,fields: ['id','student_id','student_name','program_id','program_name','level_id','level_name','active','last_modified']
+        ,fields: ['id','student_id','username','program_id','program_name','level_id','level_name','active','last_modified']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
         ,autoExpandColumn: 'program_name'
         ,grouping: false
-        ,groupBy: 'student_name'
+        ,groupBy: 'username'
         ,pluralText: 'Programs'
         ,singleText: 'Program'
         ,save_action: 'mgr/assignments/scAssignmentEnrollmentToggleActive'
@@ -25,8 +25,8 @@ StudentCentre.grid.StudentAssignmentEnrollment = function(config) {
             ,hidden: true
             ,dataIndex: 'student_id'
         },{
-            header: _('studentcentre.ass_student_name')
-            ,dataIndex: 'student_name'
+            header: _('studentcentre.username')
+            ,dataIndex: 'username'
             ,sortable: true
             ,width: 50
         },{
@@ -176,17 +176,17 @@ StudentCentre.combo.StudentName = function(config) {
     config = config || {};
     Ext.applyIf(config, {
     	id: 'assignment-combo-student-name'
-	    ,fieldLabel: _('studentcentre.ass_student')
-	    ,name: 'student_name'
+	    ,fieldLabel: _('studentcentre.username')
+	    ,name: 'username'
 	    ,width: 300
 	    ,hiddenName: 'student_id'
 	    ,hiddenValue: ''
 	    ,emptyText: 'Select student...'
 	    ,typeAhead: true
 	    ,valueField: 'student_id'
-	    ,displayField: 'student_name'
+	    ,displayField: 'username'
 	    ,pageSize: 20
-	    ,fields: ['student_id', 'student_name']
+	    ,fields: ['student_id', 'username']
 	    ,url: StudentCentre.config.connectorUrl
 	    ,baseParams: {
 	        action: 'mgr/assignments/scModUserGetList'
@@ -268,6 +268,10 @@ StudentCentre.window.CreateAssignmentEnrollment = function(config) {
             xtype: 'assignment-combo-student-name'
             ,fieldLabel: _('studentcentre.ass_student')
             ,anchor: '100%'
+            ,baseParams: {
+		        action: 'mgr/assignments/scModUserGetList'
+		        ,activeOnly: 1
+		    }
         },{
             xtype: 'assignment-combo-enrollment-program-name'
             ,fieldLabel: _('studentcentre.ass_program')
@@ -276,7 +280,6 @@ StudentCentre.window.CreateAssignmentEnrollment = function(config) {
 		        action: 'mgr/assignments/scAssignmentProgramActiveGetList'
 		        ,activeOnly: 1
 		    }
-
             ,listeners: {
 	            select: { fn: this.getLevels, scope: this }
 	        }

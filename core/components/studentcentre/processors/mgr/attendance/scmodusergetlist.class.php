@@ -25,9 +25,14 @@ class scModUserGetList extends modObjectGetListProcessor {
 	            'ClassEnrollment.scheduled_class_id:=' => $scheduledClassId
 	        ));
 	    }
-		$c->where(array(
-            'scModUser.active' => 1
-        ));
+	    // if activeOnly parameter exists and equals 1,
+		// then only get the active records
+		$activeOnly = $this->getProperty('activeOnly');
+		if (!empty($activeOnly)) {
+	        $c->where(array(
+	            'scModUser.active' => 1
+	        ));
+	    }
 		$c->select(array('
 			scModUser.*
 			,scModUser.id AS `student_id`

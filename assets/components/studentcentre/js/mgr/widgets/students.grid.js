@@ -4,7 +4,10 @@ StudentCentre.grid.Students = function(config) {
     Ext.applyIf(config,{
         id: 'sc-grid-students'
         ,url: StudentCentre.config.connectorUrl
-        ,baseParams: { action: 'mgr/students/scModUserGetList' }
+        ,baseParams: {
+        	action: 'mgr/students/scModUserGetList'
+        	,activeOnly: 1
+        }
         ,fields: ['id','internalKey','username','firstname','lastname','email','phone','active']
         ,paging: true
         ,remoteSort: true
@@ -21,6 +24,8 @@ StudentCentre.grid.Students = function(config) {
             header: _('studentcentre.id')
             ,dataIndex: 'internalKey'
             ,name: 'internalKey'
+            ,sortable: true
+            ,width: 40
         },{
             header: _('studentcentre.username')
             ,dataIndex: 'username'
@@ -102,6 +107,7 @@ Ext.extend(StudentCentre.grid.Students,MODx.grid.Grid,{
     ,clearStudentSearch: function() {
 	    this.getStore().baseParams = {
             action: 'mgr/students/scModUserGetList'
+            ,activeOnly: 1
     	};
         Ext.getCmp('students-search-filter').reset();
         this.getBottomToolbar().changePage(1);

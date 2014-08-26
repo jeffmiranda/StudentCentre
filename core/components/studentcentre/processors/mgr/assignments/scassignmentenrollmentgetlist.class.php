@@ -3,7 +3,7 @@ class scStudentAssignmentEnrollmentGetListProcessor extends modObjectGetListProc
     
     public $classKey = 'scAssignmentEnrollment';
     public $languageTopics = array('studentcentre:default');
-    public $defaultSortField = 'student_name';
+    public $defaultSortField = 'username';
     public $defaultSortDirection = 'ASC';
     public $objectType = 'studentcentre.ass';
     
@@ -21,9 +21,6 @@ class scStudentAssignmentEnrollmentGetListProcessor extends modObjectGetListProc
 		$c->innerJoin('scModUser', 'Student', array (
 			'scAssignmentEnrollment.student_id = Student.id'
 		));
-		$c->innerJoin('scModUserProfile', 'StudentProfile', array (
-			'Student.id = StudentProfile.internalKey'
-		));
 		$c->innerJoin('scAssignmentProgram', 'AssignmentProgram', array (
 			'scAssignmentEnrollment.program_id = AssignmentProgram.id'
 		));
@@ -34,8 +31,7 @@ class scStudentAssignmentEnrollmentGetListProcessor extends modObjectGetListProc
 		$query = $this->getProperty('query');
 	    if (!empty($query)) {
 	        $c->where(array(
-	            'StudentProfile.firstname:LIKE' => '%'.$query.'%'
-	            ,'OR:StudentProfile.lastname:LIKE' => '%'.$query.'%'
+	            'Student.username:LIKE' => '%'.$query.'%'
 	            ,'OR:AssignmentProgram.name:LIKE' => '%'.$query.'%'
 	            ,'OR:AssignmentLevel.name:LIKE' => '%'.$query.'%'
 	        ));
@@ -43,7 +39,7 @@ class scStudentAssignmentEnrollmentGetListProcessor extends modObjectGetListProc
 
 		$c->select(array('
 			scAssignmentEnrollment.*
-			,CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`
+			,Student.username
 			,AssignmentProgram.name AS `program_name`
 			,AssignmentLevel.name AS `level_name`
 		'));

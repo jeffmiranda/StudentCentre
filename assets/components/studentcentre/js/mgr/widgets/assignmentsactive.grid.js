@@ -5,7 +5,7 @@ StudentCentre.grid.StudentAssignments = function(config) {
         id: 'studentcentre-grid-student-assignments'
         ,url: StudentCentre.config.connectorUrl
         ,baseParams: { action: 'mgr/assignments/scStudentAssignmentGetList' }
-        ,fields: ['id','student_id','student_name','assignment_name','assignment_desc','program_name','level_name','status','progress']
+        ,fields: ['id','student_id','username','assignment_name','assignment_desc','program_name','level_name','status','progress']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
@@ -21,14 +21,14 @@ StudentCentre.grid.StudentAssignments = function(config) {
             ,hidden: true
             ,dataIndex: 'id'
             ,sortable: true
-            ,width: 20
+            ,width: 30
         },{
             header: _('studentcentre.ass_student_id')
             ,hidden: true
             ,dataIndex: 'student_id'
         },{
-            header: _('studentcentre.ass_student_name')
-            ,dataIndex: 'student_name'
+            header: _('studentcentre.username')
+            ,dataIndex: 'username'
             ,sortable: true
             ,width: 50
         },{
@@ -221,8 +221,8 @@ StudentCentre.window.UpdateStudentAssignment = function(config) {
             ,name: 'id'
         },{
             xtype: 'displayfield'
-            ,fieldLabel: _('studentcentre.ass_student_name')
-            ,name: 'student_name'
+            ,fieldLabel: _('studentcentre.username')
+            ,name: 'username'
             ,anchor: '100%'
         },{
             xtype: 'displayfield'
@@ -296,14 +296,14 @@ StudentCentre.grid.StudentAssignmentComments = function(config) {
         	action: 'mgr/assignments/scStudentAssignmentCommentsGetList'
         }
         ,autoHeight: false
-        ,fields: ['id','full_name','comment','date_created']
+        ,fields: ['id','username','comment','date_created']
         ,paging: true
         ,remoteSort: true
         ,anchor: '100%'
         ,autoExpandColumn: 'comment'
         ,columns: [{
-            header: _('studentcentre.ass_full_name')
-            ,dataIndex: 'full_name'
+            header: _('studentcentre.username')
+            ,dataIndex: 'username'
             ,sortable: false
             ,width: 100
         },{

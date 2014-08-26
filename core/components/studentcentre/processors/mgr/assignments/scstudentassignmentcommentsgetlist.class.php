@@ -9,11 +9,8 @@ class scStudentAssignmentCommentsGetListProcessor extends modObjectGetListProces
     
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 	    	    
-	    $c->innerJoin('modUser', 'User', array (
-			'scComment.user_id = User.id'
-		));
-		$c->innerJoin('modUserProfile', 'Profile', array (
-			'User.id = Profile.internalKey'
+	    $c->innerJoin('scModUser', 'Student', array (
+			'scComment.user_id = Student.id'
 		));
 		
 		$id = $this->getProperty('id');
@@ -25,8 +22,8 @@ class scStudentAssignmentCommentsGetListProcessor extends modObjectGetListProces
         }
 
 		$c->select(array('
-			scComment.*,
-			Profile.fullname AS `full_name`
+			scComment.*
+			,Student.username
 		'));
 
 	    return $c;

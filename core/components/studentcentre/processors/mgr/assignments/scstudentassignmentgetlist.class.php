@@ -9,11 +9,8 @@ class scStudentAssignmentGetListProcessor extends modObjectGetListProcessor {
     
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 	    	    
-	    $c->innerJoin('modUser', 'User', array (
-			'scStudentAssignment.student_id = User.id'
-		));
-		$c->innerJoin('scModUserProfile', 'StudentProfile', array (
-			'User.id = StudentProfile.id'
+	    $c->innerJoin('scModUser', 'Student', array (
+			'scStudentAssignment.student_id = Student.id'
 		));
 		$c->innerJoin('scAssignment', 'Assignment', array (
 			'scStudentAssignment.assignment_id = Assignment.id'
@@ -31,8 +28,7 @@ class scStudentAssignmentGetListProcessor extends modObjectGetListProcessor {
 		$query = $this->getProperty('query');
 	    if (!empty($query)) {
 	        $c->where(array(
-	            'StudentProfile.firstname:LIKE' => '%'.$query.'%'
-	            ,'OR:StudentProfile.lastname:LIKE' => '%'.$query.'%'
+	            'Student.username:LIKE' => '%'.$query.'%'
 	            ,'OR:Assignment.name:LIKE' => '%'.$query.'%'
 	            ,'OR:status:LIKE' => '%'.$query.'%'
 	            ,'OR:AssignmentProgram.name:LIKE' => '%'.$query.'%'
@@ -42,7 +38,7 @@ class scStudentAssignmentGetListProcessor extends modObjectGetListProcessor {
 
 		$c->select(array('
 			scStudentAssignment.*
-			,CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`
+			,Student.username
 			,Assignment.name AS `assignment_name`
 			,Assignment.description AS `assignment_desc`
 			,AssignmentProgram.name AS `program_name`
