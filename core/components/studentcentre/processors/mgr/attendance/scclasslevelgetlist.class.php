@@ -3,7 +3,7 @@ class scClassLevelGetList extends modObjectGetListProcessor {
     
     public $classKey = 'scClassLevel';
     public $languageTopics = array('studentcentre:default');
-    public $defaultSortField = '`order`';
+    public $defaultSortField = 'name';
     public $defaultSortDirection = 'ASC';
     public $objectType = 'studentcentre.att';
     
@@ -14,7 +14,7 @@ class scClassLevelGetList extends modObjectGetListProcessor {
 	    if (!empty($limit)) {
 		    $this->setProperty('limit', $limit);
 		}
-		$this->modx->log(1,print_r('Limit: ' . $limit,true));
+		//$this->modx->log(1,print_r('Limit: ' . $limit,true));
 	    return parent::beforeQuery();
 	    
     }
@@ -57,9 +57,14 @@ class scClassLevelGetList extends modObjectGetListProcessor {
 			scClassLevel.*
 			,ClassLevelCategory.name AS `category_name`
 		'));
-
-		$c->sortby('category_name','ASC');
-		$c->sortby('`order`','ASC');
+		
+		// if sortByOrder parameter exists,
+		// then sort the levels by category and then by order
+		$sortByOrder = $this->getProperty('sortByOrder');
+		if (!empty($sortByOrder)) {
+			$c->sortby('category_name','ASC');
+			$c->sortby('`order`','ASC');
+		}
 			    
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
