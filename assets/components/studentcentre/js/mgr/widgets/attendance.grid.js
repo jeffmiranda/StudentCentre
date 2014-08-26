@@ -9,14 +9,15 @@ StudentCentre.grid.StudentAttendance = function(config) {
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
-        ,autoExpandColumn: 'location_name'
+        ,autoExpandColumn: 'student_name'
         ,save_action: 'mgr/attendance/scAttendanceUpdateFromGrid'
         ,autosave: true
         ,columns: [{
             header: _('studentcentre.id')
-            ,hidden: true
+            ,hidden: false
             ,dataIndex: 'id'
             ,name: 'id'
+            ,width: 30
         },{
             header: _('studentcentre.att_student_id')
             ,hidden: true
@@ -39,13 +40,13 @@ StudentCentre.grid.StudentAttendance = function(config) {
             ,width: 50
             ,name: 'date'
         },{
-            header: _('studentcentre.location')
-            ,dataIndex: 'location_name'
+            header: _('studentcentre.att_student_name')
+            ,dataIndex: 'student_name'
             ,sortable: true
             ,width: 50
         },{
-            header: _('studentcentre.att_student_name')
-            ,dataIndex: 'student_name'
+            header: _('studentcentre.location')
+            ,dataIndex: 'location_name'
             ,sortable: true
             ,width: 50
         },{
