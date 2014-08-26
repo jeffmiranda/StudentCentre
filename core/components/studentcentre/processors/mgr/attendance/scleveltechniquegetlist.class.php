@@ -30,6 +30,9 @@ class scLevelTechniqueGetList extends modObjectGetListProcessor {
 			,Technique.name AS `technique_name`
 		'));
 		
+		$c->sortby('level_id','ASC');
+		$c->sortby('`order`','ASC');
+		
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
 	    return $c;
