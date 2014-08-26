@@ -4,7 +4,10 @@ StudentCentre.grid.AttendanceProgress = function(config) {
     Ext.applyIf(config,{
         id: 'studentcentre-grid-attendance-progress'
         ,url: StudentCentre.config.connectorUrl
-        ,baseParams: { action: 'mgr/attendance/scClassProgressGetList' }
+        ,baseParams: {
+        	action: 'mgr/attendance/scClassProgressGetList'
+        	,sortByOrder: 1
+        }
         ,fields: ['id', 'class_level_category_id', 'level_id', 'student_id', 'student_name', 'class_level_category_name', 'level_name', 'hours_since_leveling', 'total_hours', 'test_ready', 'last_modified']
         ,paging: true
         ,remoteSort: true
@@ -35,7 +38,19 @@ StudentCentre.grid.AttendanceProgress = function(config) {
             header: _('studentcentre.att_level')
             ,dataIndex: 'level_name'
             ,name: 'level_name'
-            ,sortable: false
+            //,hiddenName: 'level_id'
+            ,sortable: true
+/*
+            ,editor: {
+            	xtype: 'attendance-class-level-combo'
+            	,renderer: true
+            	,mode: 'remote'
+            	,pageSize: 500
+            	,baseParams: {
+	            	limit: 500
+            	}
+            }
+*/
         },{
             header: _('studentcentre.att_hours_since_leveling')
             ,dataIndex: 'hours_since_leveling'
