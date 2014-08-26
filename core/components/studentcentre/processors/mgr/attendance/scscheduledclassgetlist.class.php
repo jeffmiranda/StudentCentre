@@ -59,6 +59,8 @@ class scScheduledClassGetList extends modObjectGetListProcessor {
 			,CONCAT(Class.name, IF(scScheduledClass.description = "", "", CONCAT(" (", scScheduledClass.description, ")"))) AS `class_name_description`
 		'));
 		
+		$c->sortby('class_name','ASC');
+		
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
 	    return $c;
