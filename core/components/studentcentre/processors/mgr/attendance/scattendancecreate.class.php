@@ -25,8 +25,6 @@ class scAttendanceCreateProcessor extends modObjectCreateProcessor {
 	        $today = date('Y-m-d');
 	        if ($attDate > $today) {
 	        	$this->addFieldError('date',$this->modx->lexicon('studentcentre.att_err_future_date'));
-	        } else {
-		        $this->addFieldError('date','The date is good!');
 	        }
         }
         if (empty($schedClassId)) {
