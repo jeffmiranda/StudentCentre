@@ -20,7 +20,7 @@ StudentCentre.grid.AttendanceScheduledClasses = function(config) {
         ,autosave: true
         ,columns: [{
             header: 'id'
-            ,hidden: false
+            ,hidden: true
             ,dataIndex: 'id'
             ,sortable: true
             ,name: 'id'
