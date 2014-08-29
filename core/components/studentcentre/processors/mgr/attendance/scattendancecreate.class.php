@@ -9,6 +9,14 @@ class scAttendanceCreateProcessor extends modObjectCreateProcessor {
 		// create and set date_created value
 		$date = date('Y-m-d');
 		$this->setProperty('date_created',$date);
+		
+		// if exists, properly format attendance date value
+		$attDate = $this->getProperty('date');
+        if (!empty($attDate)) {
+	        $goodDate = date('Y-m-d', strtotime(str_replace('/','-',$attDate)));
+	        $this->setProperty('date',$goodDate);
+        }
+
 		return parent::beforeSet();
 		
     }
@@ -16,13 +24,12 @@ class scAttendanceCreateProcessor extends modObjectCreateProcessor {
     public function beforeSave() {
         $schedClassId = $this->getProperty('scheduled_class_id');
         $studentId = $this->getProperty('student_id');
-        $date = $this->getProperty('date');
-        if (empty($date)) {
+        $attDate = $this->getProperty('date');
+        if (empty($attDate)) {
             $this->addFieldError('date',$this->modx->lexicon('studentcentre.att_err_ns_date'));
         } else {
-	        // get the class date in the right format
-	        $attDate = date('Y-m-d', strtotime(str_replace('/','-',$date)));
 	        $today = date('Y-m-d');
+	        // ensure attendance date isn't in the future
 	        if ($attDate > $today) {
 	        	$this->addFieldError('date',$this->modx->lexicon('studentcentre.att_err_future_date'));
 	        }
