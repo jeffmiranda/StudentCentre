@@ -103,6 +103,30 @@ StudentCentre.panel.AttendanceCreate = function(config) {
 			,collapsible: true
 			,autoHeight: true
 			,labelWidth: 150
+			,items: [{
+	            xtype: 'toolbar'
+	            ,id: 'student-attendance-toolbar'
+	            ,anchor: '100%'
+	            ,style: {
+		            background: 'none'
+		            ,border: 0
+	            }
+	            ,items: [{
+	                xtype: 'button'
+	                ,id: 'btn-student-attendance-select-all-toggle'
+	                ,text: 'Deselect all'
+	                ,disabled: true
+	                ,listeners: {
+			            click: { fn: this.toggleSelectAll, scope: this }
+			        }
+	            }]
+	        },{
+		        xtype: 'panel' // tried using modx-formpanel but can't use that inside of another modx-formpanel
+		        ,id: 'attendance-panel-students-create-attendance'
+		        ,border: false
+		        ,layout: 'form'
+		        ,cls: 'container'
+	        }]
         },{
 	        xtype: 'fieldset'
 	        ,id: 'attendance-fieldset-visitors-create-attendance'
@@ -187,6 +211,18 @@ Ext.extend(StudentCentre.panel.AttendanceCreate, MODx.FormPanel, {
 			fieldsetVisitors.doLayout();
         }
     }
+    ,toggleSelectAll: function(button, e) {
+	    var students = Ext.getCmp('attendance-panel-students-create-attendance').items.items;
+	    var btnToggle = Ext.getCmp('btn-student-attendance-select-all-toggle');
+	    var btnToggleText = btnToggle.getText();
+	    var chkValue = btnToggleText == 'Deselect all' ? false : true;
+	    Ext.each(students, function(student, index, allItems) {
+	    	var chkPresent = student.items.items[1];
+	    	chkPresent.setValue(chkValue);
+	    });
+	    var newText = chkValue == false ? 'Select all' : 'Deselect all';
+	    btnToggle.setText(newText);
+    }
     ,resetForm: function(button, e) {
 		resetAttendanceForm();
     }
@@ -228,10 +264,11 @@ var resetAttendanceForm = function(){
 	cbSchedClass.setDisabled(true); // disable the combobox
 	var cbLocation = Ext.getCmp('attendance-combo-location');
 	cbLocation.clearValue(); // clear value of location combobox
-	var fieldsetStudentAttendance = Ext.getCmp('attendance-fieldset-students-create-attendance'); // get the student fieldset
-	fieldsetStudentAttendance.removeAll(); // remove all students
+	var pnlStudentAttendance = Ext.getCmp('attendance-panel-students-create-attendance'); // get the student panel
+	pnlStudentAttendance.removeAll(); // remove all students
 	var pnlVisitorAttendance = Ext.getCmp('attendance-panel-visitors-create-attendance'); // get the visitor panel
 	pnlVisitorAttendance.removeAll();
+	Ext.getCmp('btn-student-attendance-select-all-toggle').setDisabled(true);
 	Ext.getCmp('btn_reset').setDisabled(true);
 	Ext.getCmp('btn_save').setDisabled(true);
 }

@@ -213,8 +213,8 @@ Ext.extend(StudentCentre.panel.AttendanceHome,MODx.Panel, {
 	getScheduledClasses: function(combo, value) {
 		// Get the Sched Class combobox
 		var cbScheduledClass = Ext.getCmp('attendance-combo-scheduled-class');
-		// Get the students fieldset (where the enrolled students will appear)
-		var fieldsetStudentAttendance = Ext.getCmp('attendance-fieldset-students-create-attendance');
+		// Get the students panel (where the enrolled students will appear)
+		var pnlStudentAttendance = Ext.getCmp('attendance-panel-students-create-attendance');
         if (cbScheduledClass) { // if the combobox was retrieved
         	cbScheduledClass.setDisabled(false); // enable the combobox
             var s = cbScheduledClass.store; // get the store
@@ -224,14 +224,14 @@ Ext.extend(StudentCentre.panel.AttendanceHome,MODx.Panel, {
             s.load(); // load the store with data
             cbScheduledClass.clearValue(); // clear the text value
         }
-        if (fieldsetStudentAttendance) {
-        	fieldsetStudentAttendance.removeAll(); // remove all components from the fieldset
-        	fieldsetStudentAttendance.update(''); // Ensures that any previous error message is also removed.
+        if (pnlStudentAttendance) {
+        	pnlStudentAttendance.removeAll(); // remove all components from the panel
+        	pnlStudentAttendance.update(''); // Ensures that any previous error message is also removed.
         }
     }
     ,updateAttendanceForm: function(combo, value) {
     	var schedClassId = value.id; // get the id from the selected sched class
-    	var fieldsetStudentAttendance = Ext.getCmp('attendance-fieldset-students-create-attendance'); // get the student fieldset
+    	var pnlStudentAttendance = Ext.getCmp('attendance-panel-students-create-attendance'); // get the student panel
     	// start the AJAX request and pass the sched class id to the processor
     	Ext.Ajax.request({
 		   url: StudentCentre.config.connectorUrl
@@ -244,8 +244,8 @@ Ext.extend(StudentCentre.panel.AttendanceHome,MODx.Panel, {
 		    }
 		   ,success: function(response, opts) { // upon success
 		      	var responseObj = Ext.decode(response.responseText); // decode the JSON response text into an object
-		      	if (fieldsetStudentAttendance) {
-					fieldsetStudentAttendance.removeAll(); // remove all components from the student fieldset
+		      	if (pnlStudentAttendance) {
+					pnlStudentAttendance.removeAll(); // remove all components from the student panel
 					if (responseObj.total > 0) { // if there are students returned
 						var students = responseObj.results; // get the array from the response object
 						var schedClassId = students[0].scheduled_class_id; // get the scheduled class ID (they should be the same for each student)
@@ -313,19 +313,20 @@ Ext.extend(StudentCentre.panel.AttendanceHome,MODx.Panel, {
 									,value: 1
 								}]
 							};
-							fieldsetStudentAttendance.add(row);
+							pnlStudentAttendance.add(row);
 						});
 						// redraw the layout to make the new components appear
-						fieldsetStudentAttendance.doLayout();
+						pnlStudentAttendance.doLayout();
 						// enable buttons
+						Ext.getCmp('btn-student-attendance-select-all-toggle').setDisabled(false);
 						Ext.getCmp('btn_reset').setDisabled(false);
 						Ext.getCmp('btn_save').setDisabled(false);
 					} else {
 						// if there aren't any students returned then display this message
-						fieldsetStudentAttendance.update('<div class="sc-message">'+_('studentcentre.att_msg_no_stu_in_class')+'</div>');
+						pnlStudentAttendance.update('<div class="sc-message">'+_('studentcentre.att_msg_no_stu_in_class')+'</div>');
 					}
 				} else {
-					console.error('fieldsetStudentAttendance does not exist!');
+					console.error('pnlStudentAttendance does not exist!');
 				}
 		   }
 		   ,failure: function(response, opts) {
