@@ -123,4 +123,32 @@ class scClassProgress extends xPDOSimpleObject {
 		
 	}
 	
+	/**
+	 *
+	 */
+	public function getNextLevel() {
+		
+		$level = null;
+		
+		// Get the current level
+		$currLevel = $this->getOne('ClassLevel');
+		$currLevelOrder = $currLevel->get('order');
+
+		// Get the next level
+		$q = $this->xpdo->newQuery('scClassLevel');
+		$q->where(array(
+			'class_level_category_id' => $currLevel->get('class_level_category_id')
+			,'`order`:>' => $currLevelOrder
+			,'active' => 1
+		));
+		$q->sortby('`order`', 'ASC');
+		$q->limit(1);
+		$nextLevel = $this->xpdo->getObject('scClassLevel', $q);
+		if ($nextLevel) {
+			$level = $nextLevel;
+		}
+		
+		return $level;
+	}
+	
 }
