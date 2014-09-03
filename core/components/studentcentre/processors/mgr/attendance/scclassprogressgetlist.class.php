@@ -50,6 +50,7 @@ class scClassProgressGetListProcessor extends modObjectGetListProcessor {
 			,ClassLevel.id AS `level_id`
 			,ClassLevel.name AS `level_name`
 		'));
+		
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
 	    return $c;
@@ -63,6 +64,15 @@ class scClassProgressGetListProcessor extends modObjectGetListProcessor {
         $timePosted = strtotime($ta['last_modified']);
         $displayTime = date("M d, Y - g:i a", $timePosted);
         $ta['last_modified'] = $displayTime; //($ta['last_modified'] > 0) ? date('Y-m-d',$ta['last_modified']) : '';
+        
+        $testReadyOnly = $this->getProperty('testReadyOnly');
+		if (!empty($testReadyOnly)) {
+        	$nextLevel = $object->getNextLevel();
+        	if ($nextLevel) {
+	        	$ta['next_level_id'] = $nextLevel->get('id');
+	        	$ta['next_level_name'] = $nextLevel->get('name');
+        	}
+        }
         return $ta;
         
     }  

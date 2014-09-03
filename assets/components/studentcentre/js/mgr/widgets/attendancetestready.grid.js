@@ -8,7 +8,7 @@ StudentCentre.grid.TestReady = function(config) {
 			action: 'mgr/attendance/scClassProgressGetList'
         	,testReadyOnly: 1
         }
-        ,fields: ['id','student_id','class_level_category_id','level_id','student_name','class_level_category_name','level_name','hours_since_leveling','total_hours','last_modified']
+        ,fields: ['id','student_id','class_level_category_id','level_id','next_level_id','student_name','class_level_category_name','level_name','next_level_name','hours_since_leveling','total_hours']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
@@ -32,6 +32,11 @@ StudentCentre.grid.TestReady = function(config) {
             ,dataIndex: 'level_id'
             ,name: 'level_id'
         },{
+            header: _('studentcentre.next_level_id')
+            ,hidden: true
+            ,dataIndex: 'next_level_id'
+            ,name: 'next_level_id'
+        },{
             header: _('studentcentre.att_student_name')
             ,dataIndex: 'student_name'
             ,sortable: true
@@ -47,6 +52,11 @@ StudentCentre.grid.TestReady = function(config) {
             ,sortable: true
             ,width: 50
         },{
+            header: _('studentcentre.next_level')
+            ,dataIndex: 'next_level_name'
+            ,sortable: true
+            ,width: 50
+        },{
             header: _('studentcentre.att_hours_since_leveling')
             ,dataIndex: 'hours_since_leveling'
             ,sortable: true
@@ -54,11 +64,6 @@ StudentCentre.grid.TestReady = function(config) {
         },{
             header: _('studentcentre.att_total_hours')
             ,dataIndex: 'total_hours'
-            ,sortable: true
-            ,width: 50
-        },{
-            header: _('studentcentre.last_modified')
-            ,dataIndex: 'last_modified'
             ,sortable: true
             ,width: 50
         }]

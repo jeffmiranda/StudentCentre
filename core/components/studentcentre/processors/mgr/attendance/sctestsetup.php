@@ -19,12 +19,14 @@
 if (!$modx->hasPermission('save_document')) return $modx->error->failure($modx->lexicon('access_denied'));
 
 $levelId = $modx->getOption('level_id',$scriptProperties,0);
+$nextLevelId = $modx->getOption('next_level_id',$scriptProperties,0);
+error_log(print_r($scriptProperties, true));
 $studentId = $modx->getOption('student_id',$scriptProperties,0);
 $test = array();
 
 // Get all the techniques for the level
-if ($levelId == 0) {
-	$modx->log(modX::LOG_LEVEL_ERROR, 'The Level ID was not submitted!');
+if ($nextLevelId == 0) {
+	$modx->log(modX::LOG_LEVEL_ERROR, 'The Next Level ID was not submitted!');
 	return $modx->error->failure($modx->lexicon('studentcentre.att_err_test_load'));
 }
 
@@ -33,7 +35,7 @@ $c->innerJoin('scTechnique', 'Technique', array(
 	'scLevelTechnique.technique_id = Technique.id'
 ));
 $c->where(array(
-	'scLevelTechnique.level_id' => $levelId
+	'scLevelTechnique.level_id' => $nextLevelId
 	,'Technique.active' => 1
 ));
 $c->select(array('
@@ -48,7 +50,7 @@ $c->sortby('scLevelTechnique.order','ASC');
 $techniques = $modx->getCollection('scLevelTechnique', $c);
 if (!$techniques) {
 	$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get a collection of techniques!');
-	return $modx->error->failure($modx->lexicon('studentcentre.att_err_test_load'));
+	return $modx->error->failure($modx->lexicon('studentcentre.att_err_test_no_techniques'));
 }
 
 $test['techniques'] = $techniques;
@@ -65,7 +67,7 @@ $graph = '{ "StudentTestTechnique":{} }';
 $q = $modx->newQuery('scStudentTest');
 $q->where(array(
 	'scStudentTest.student_id' => $studentId
-	,'scStudentTest.level_id' => $levelId
+	,'scStudentTest.level_id' => $nextLevelId
 ));
 $q->sortby('scStudentTest.date_created', 'ASC');
 $q->limit(0,1);

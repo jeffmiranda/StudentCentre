@@ -90,13 +90,14 @@ StudentCentre.panel.AttendanceTest = function(config) {
 	var todayMonth = today.getMonth();
 	todayMonth++;
 	var todayYear = today.getFullYear();
+	//console.log(config.testData);
     Ext.apply(config,{
         border: false
         ,url: StudentCentre.config.connectorUrl
         ,baseCls: 'modx-formpanel'
         ,cls: 'container'
         ,items: [{
-            html: '<h2>'+config.testData.class_name+': '+config.testData.level_name+' Test for '+config.testData.student_name+'</h2>'
+            html: '<h2>'+config.testData.class_level_category_name+': '+config.testData.next_level_name+' Test for '+config.testData.student_name+'</h2>'
             ,border: false
             ,cls: 'modx-page-header'
         },{
@@ -161,6 +162,10 @@ StudentCentre.panel.AttendanceTest = function(config) {
 		                ,value: config.testData.level_id
 	                },{
 		                xtype: 'hidden'
+		                ,name: 'next_level_id'
+		                ,value: config.testData.next_level_id
+	                },{
+		                xtype: 'hidden'
 		                ,name: 'student_id'
 		                ,value: config.testData.student_id
 	                },{
@@ -169,11 +174,11 @@ StudentCentre.panel.AttendanceTest = function(config) {
 		                ,value: config.testData.student_name
 	                },{
 		                xtype: 'displayfield'
-		                ,fieldLabel: _('studentcentre.att_class')
-		                ,value: config.testData.class_name
+		                ,fieldLabel: _('studentcentre.att_level_category')
+		                ,value: config.testData.class_level_category_name
 	                },{
 		                xtype: 'displayfield'
-		                ,fieldLabel: _('studentcentre.att_level')
+		                ,fieldLabel: _('studentcentre.current_level')
 		                ,value: config.testData.level_name
 	                },{
 		                xtype: 'displayfield'
@@ -241,17 +246,19 @@ StudentCentre.panel.AttendanceTest = function(config) {
 Ext.extend(StudentCentre.panel.AttendanceTest,MODx.FormPanel,{
 	setup: function() {
         if (!this.config.testData) return;
+        //console.log(this.config.testData);
         MODx.Ajax.request({
             url: this.config.url
             ,params: {
                 action: 'mgr/attendance/scTestSetup'
                 ,level_id: this.config.testData.level_id
+                ,next_level_id: this.config.testData.next_level_id
                 ,student_id: this.config.testData.student_id
             }
 			,listeners: {
                 'success': {fn: function(response) {
                     var testSetup = response.object;
-                    console.log(testSetup);
+                    //console.log(testSetup);
                     var lastTest = testSetup.last_test;
                     var techniques = testSetup.techniques;
                     if (lastTest) { 
