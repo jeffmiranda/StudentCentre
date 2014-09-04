@@ -19,11 +19,12 @@ class scAttendanceUpdateProcessor extends modObjectUpdateProcessor {
 		// if there was a change in hours do do something...
 		if ($this->prevAtt['hours'] != $this->object->get('hours')) {
 			
-			// Get the ClassProgress object, but we need the ScheduledClass object first
+			// Get the ClassProgress object, but we need the ScheduledClass and class objects first
 			$schedClass = $this->object->getOne('ScheduledClass');
+			$class = $schedClass->getOne('Class');
 			$progress = $this->modx->getObject('scClassProgress', array(
-				'class_id' => $schedClass->get('class_id'),
-				'student_id' => $this->object->get('student_id')
+				'class_level_category_id' => $class->get('class_level_category_id')
+				,'student_id' => $this->object->get('student_id')
 			));
 			if (!$progress) {
 				$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the associated ClassProgress of the Attendance object!');

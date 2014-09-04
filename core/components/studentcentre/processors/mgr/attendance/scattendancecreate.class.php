@@ -42,6 +42,57 @@ class scAttendanceCreateProcessor extends modObjectCreateProcessor {
         }
         return parent::beforeSave();
     }
+
+    public function afterSave() {
+    	
+    	// Get the sched class, class, and class level category
+    	$schedClass = $this->object->getOne('ScheduledClass');
+    	$class = $schedClass->getOne('Class');
+    	$classLevelCategory = $class->getOne('ClassLevelCategory');
+
+		// if class progress object exists grab it
+		$classProgress = $this->modx->getObject('scClassProgress', array(
+			'class_level_category_id' => $classLevelCategory->get('id'),
+			'student_id' => $this->object->get('student_id')
+		));
+
+		// else create a new one and assign the first level to it
+		if (!$classProgress) {
+			// get the first level of the class
+			$firstLevel = $classLevelCategory->getFirstLevel();
+			if (!$firstLevel) {
+				$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the first level of the class!');
+				return $this->modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
+			}
+			$classProgress = $this->modx->newObject('scClassProgress', array(
+				'class_level_category_id' => $classLevelCategory->get('id')
+				,'student_id' => $this->object->get('student_id')
+				,'level_id' => $firstLevel->get('id')
+				,'hours_since_leveling' => 0
+				,'total_hours' => 0
+				,'test_ready' => 0
+				,'date_created' => date('Y-m-d')
+			));
+		}
+			
+		// increment hours of class progress object
+		$classProgress->addHours($this->object->get('hours'));
+		
+		// !Threshold Test
+		if ($classProgress->isTestReady() || ($this->object->get('test') == 1)) {
+			$classProgress->set('test_ready', 1);
+		} else {
+			$classProgress->set('test_ready', 0);
+		}
+		
+		// save class progress object to db
+		if (!$classProgress->save()) {
+			$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the class progress object!');
+			return $this->modx->error->failure($modx->lexicon('studentcentre.att_err_saving_att'));
+		}	
+
+	    return parent::afterSave();
+    }
  
 }
 return 'scAttendanceCreateProcessor';
