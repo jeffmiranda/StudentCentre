@@ -97,7 +97,7 @@ StudentCentre.panel.AttendanceTest = function(config) {
         ,baseCls: 'modx-formpanel'
         ,cls: 'container'
         ,items: [{
-            html: '<h2>'+config.testData.class_level_category_name+': '+config.testData.next_level_name+' Test for '+config.testData.student_name+'</h2>'
+            html: '<h2>'+config.testData.class_level_category_name+': '+config.testData.next_level_name+' Test for '+config.testData.username+'</h2>'
             ,border: false
             ,cls: 'modx-page-header'
         },{
@@ -127,7 +127,7 @@ StudentCentre.panel.AttendanceTest = function(config) {
 					},{
 						xtype: 'displayfield'
 						,fieldLabel: _('studentcentre.date')
-						,value: monthNames[todayMonth] + ' ' + todayDate + ', ' + todayYear
+						,value: todayDate + '/' + todayMonth + '/' + todayYear
 					},{
 						xtype: 'compositefield'
 						,fieldLabel: _('studentcentre.type')
@@ -170,8 +170,8 @@ StudentCentre.panel.AttendanceTest = function(config) {
 		                ,value: config.testData.student_id
 	                },{
 		                xtype: 'displayfield'
-		                ,fieldLabel: _('studentcentre.att_student_name')
-		                ,value: config.testData.student_name
+		                ,fieldLabel: _('studentcentre.username')
+		                ,value: config.testData.username
 	                },{
 		                xtype: 'displayfield'
 		                ,fieldLabel: _('studentcentre.att_level_category')
@@ -272,7 +272,7 @@ Ext.extend(StudentCentre.panel.AttendanceTest,MODx.FormPanel,{
                     	var ltDateCreated = {
 			                xtype: 'displayfield'
 			                ,fieldLabel: _('studentcentre.date')
-			                ,value: monthNames[ltMonth] + ' ' + ltDate + ', ' + ltYear
+			                ,value: ltDate + '/' + ltMonth + '/' + ltYear
 		                };
 		                // create the xtype component to hold the pass status of the previous test
 		                var ltType = {
