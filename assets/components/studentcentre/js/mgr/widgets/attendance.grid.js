@@ -319,7 +319,7 @@ Ext.extend(StudentCentre.window.CreateAttendance,MODx.Window,{
 		    }
 		   ,success: function(response, opts) { // upon success
 		      	var responseObj = Ext.decode(response.responseText); // decode the JSON response text into an object
-				if (responseObj.total > 0) { // if there was a class returned
+				if (0 < responseObj.results.length) { // if there was a class returned
 					var schedClass = responseObj.results; // get the array from the response object
 					var hours = Ext.getCmp('create-att-win-hours'); // get the hours field
 					hours.setValue(schedClass[0].duration); // set the duration
