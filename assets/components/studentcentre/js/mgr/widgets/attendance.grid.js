@@ -5,11 +5,11 @@ StudentCentre.grid.StudentAttendance = function(config) {
         id: 'studentcentre-grid-attendance'
         ,url: StudentCentre.config.connectorUrl
         ,baseParams: { action: 'mgr/attendance/scAttendanceGetList' }
-        ,fields: ['id','location_id','location_name','student_id','student_name','scheduled_class_id','class_name','hours','test','date']
+        ,fields: ['id','location_id','location_name','student_id','username','scheduled_class_id','class_name','hours','test','date']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
-        ,autoExpandColumn: 'student_name'
+        ,autoExpandColumn: 'username'
         ,save_action: 'mgr/attendance/scAttendanceUpdateFromGrid'
         ,autosave: true
         ,columns: [{
@@ -40,8 +40,8 @@ StudentCentre.grid.StudentAttendance = function(config) {
             ,width: 50
             ,name: 'date'
         },{
-            header: _('studentcentre.att_student_name')
-            ,dataIndex: 'student_name'
+            header: _('studentcentre.username')
+            ,dataIndex: 'username'
             ,sortable: true
             ,width: 50
         },{
@@ -369,8 +369,8 @@ StudentCentre.window.UpdateAttendance = function(config) {
         },{
 			xtype: 'displayfield'
 			,id: 'update-att-win-student-name'
-			,fieldLabel: _('studentcentre.att_student_name')
-			,name: 'student_name'
+			,fieldLabel: _('studentcentre.username')
+			,name: 'username'
 		},{
 			xtype: 'numberfield'
 			,id: 'update-att-win-hours'
@@ -386,75 +386,5 @@ StudentCentre.window.UpdateAttendance = function(config) {
     });
     StudentCentre.window.UpdateAttendance.superclass.constructor.call(this,config);
 };
-Ext.extend(StudentCentre.window.UpdateAttendance,MODx.Window/*, 
-{
-	// Load the Sched Class combobox with classes at a specific location
-	getScheduledClasses: function(combo, value) {
-		// Get the students combobox
-		var cbStudents = Ext.getCmp('update-att-win-student-name');
-		if (cbStudents) { // if the combobox was retrieved
-        	cbStudents.setDisabled(true); // disable the combobox
-            var d = cbStudents.store; // get the store
-            d.removeAll(); // removes any existing records from the store
-            d.load(); // load the store with data
-            cbStudents.clearValue(); // clear the text value
-        }
-		// Get the Sched Class combobox
-		var cbScheduledClass = Ext.getCmp('update-att-win-scheduled-class');
-		if (cbScheduledClass) { // if the combobox was retrieved
-        	cbScheduledClass.setDisabled(false); // enable the combobox
-            var s = cbScheduledClass.store; // get the store
-            s.baseParams['location_id'] = value.id; // set the location_id param
-            s.removeAll(); // removes any existing records from the store
-            s.load(); // load the store with data
-            cbScheduledClass.clearValue(); // clear the text value
-        }
-    }
-    // Load the Sched Class combobox with classes at a specific location
-	,getEnrolledStudents: function(combo, value) {
-		// Get the Students combobox
-		var cbStudents = Ext.getCmp('update-att-win-student-name');
-		if (cbStudents) { // if the combobox was retrieved
-        	cbStudents.setDisabled(false); // enable the combobox
-            var s = cbStudents.store; // get the store
-            s.baseParams['scheduled_class_id'] = value.id; // set the scheduled_class_id param
-            s.removeAll(); // removes any existing records from the store
-            s.load(); // load the store with data
-            cbStudents.clearValue(); // clear the text value
-        }
-        this._setHours(value);
-    }
-    ,_setHours: function(value) {
-    	var schedClassId = value.id; // get the id from the selected sched class
-    	// start the AJAX request and pass the sched class id to the processor
-    	Ext.Ajax.request({
-		   url: StudentCentre.config.connectorUrl
-		   ,params: {
-		        action: 'mgr/attendance/scScheduledClassGetList'
-		        ,scheduled_class_id: schedClassId
-		        ,activeOnly: 1
-		    }
-		   ,success: function(response, opts) { // upon success
-		      	var responseObj = Ext.decode(response.responseText); // decode the JSON response text into an object
-				if (responseObj.total > 0) { // if there was a class returned
-					var schedClass = responseObj.results; // get the array from the response object
-					var hours = Ext.getCmp('update-att-win-hours'); // get the hours field
-					if (hours) {
-						hours.setValue(schedClass[0].class_duration); // set the duration
-					} else {
-						// if the hours component doesn't exist
-						console.log('Could not get the hours component!');
-					}
-				} else {
-					// if there wasn't a scheduled class returned
-					console.log('Could not retrieve a scheduled class ID!');
-				}
-		   }
-		   ,failure: function(response, opts) {
-		      console.log('server-side failure with status code ' + response.status);
-		   }
-		});
-    }
-}
-*/);
+Ext.extend(StudentCentre.window.UpdateAttendance,MODx.Window);
 Ext.reg('sc-window-attendance-update',StudentCentre.window.UpdateAttendance);

@@ -12,9 +12,6 @@ class scAttendanceGetListProcessor extends modObjectGetListProcessor {
 	    $c->innerJoin('scModUser', 'Student', array (
 			'scAttendance.student_id = Student.id'
 		));
-		$c->innerJoin('scStudentProfile', 'StudentProfile', array (
-			'Student.id = StudentProfile.internalKey'
-		));
 		$c->innerJoin('scScheduledClass', 'ScheduledClass', array (
 			'scAttendance.scheduled_class_id = ScheduledClass.id'
 		));
@@ -29,8 +26,7 @@ class scAttendanceGetListProcessor extends modObjectGetListProcessor {
 	    if (!empty($query)) {
 	        $c->where(array(
 	        	'scAttendance.date:LIKE' => '%'.$query.'%'
-	            ,'OR:StudentProfile.firstname:LIKE' => '%'.$query.'%'
-	            ,'OR:StudentProfile.lastname:LIKE' => '%'.$query.'%'
+	            ,'OR:Student.username:LIKE' => '%'.$query.'%'
 	            ,'OR:Location.name:LIKE' => '%'.$query.'%'
 	            ,'OR:Class.name:LIKE' => '%'.$query.'%'
 	        ));
@@ -39,7 +35,7 @@ class scAttendanceGetListProcessor extends modObjectGetListProcessor {
 		$c->select(array('
 			scAttendance.*
 			,Student.id AS `student_id`
-			,CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`
+			,Student.username AS `username`
 			,Location.id AS `location_id`
 			,Location.name AS `location_name`
 			,Class.name AS `class_name`

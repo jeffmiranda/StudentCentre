@@ -8,8 +8,9 @@ StudentCentre.grid.TestReady = function(config) {
 			action: 'mgr/attendance/scClassProgressGetList'
         	,testReadyOnly: 1
         }
-        ,fields: ['id','student_id','class_level_category_id','level_id','next_level_id','student_name','class_level_category_name','level_name','next_level_name','hours_since_leveling','total_hours']
+        ,fields: ['id','student_id','class_level_category_id','level_id','next_level_id','username','class_level_category_name','level_name','next_level_name','hours_since_leveling','total_hours']
         ,paging: true
+        ,pageSize: 20
         ,remoteSort: true
         ,anchor: '97%'
         ,columns: [{
@@ -37,8 +38,8 @@ StudentCentre.grid.TestReady = function(config) {
             ,dataIndex: 'next_level_id'
             ,name: 'next_level_id'
         },{
-            header: _('studentcentre.att_student_name')
-            ,dataIndex: 'student_name'
+            header: _('studentcentre.username')
+            ,dataIndex: 'username'
             ,sortable: true
             ,width: 50
         },{

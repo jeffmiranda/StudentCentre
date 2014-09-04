@@ -8,13 +8,13 @@ StudentCentre.grid.AttendanceProgress = function(config) {
         	action: 'mgr/attendance/scClassProgressGetList'
         	,sortByOrder: 1
         }
-        ,fields: ['id', 'class_level_category_id', 'level_id', 'student_id', 'student_name', 'class_level_category_name', 'level_name', 'hours_since_leveling', 'total_hours', 'test_ready', 'last_modified']
+        ,fields: ['id', 'class_level_category_id', 'level_id', 'student_id', 'username', 'class_level_category_name', 'level_name', 'hours_since_leveling', 'total_hours', 'test_ready', 'last_modified']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
-        ,autoExpandColumn: 'student_name'
+        ,autoExpandColumn: 'username'
         ,grouping: false
-        ,groupBy: 'student_name'
+        ,groupBy: 'username'
         ,pluralText: 'Class level categories'
         ,singleText: 'Class level category'
         ,save_action: 'mgr/attendance/scClassProgressUpdateFromGrid'
@@ -25,9 +25,9 @@ StudentCentre.grid.AttendanceProgress = function(config) {
             ,dataIndex: 'id'
             ,name: 'id'
         },{
-            header: _('studentcentre.student_name')
-            ,dataIndex: 'student_name'
-            ,name: 'student_name'
+            header: _('studentcentre.username')
+            ,dataIndex: 'username'
+            ,name: 'username'
             ,sortable: true
         },{
             header: _('studentcentre.att_level_category')
@@ -172,8 +172,8 @@ StudentCentre.window.UpdateProgress = function(config) {
             ,name: 'id'
         },{
             xtype: 'displayfield'
-            ,fieldLabel: _('studentcentre.student_name')
-            ,name: 'student_name'
+            ,fieldLabel: _('studentcentre.username')
+            ,name: 'username'
             ,anchor: '100%'
         },{
             xtype: 'displayfield'

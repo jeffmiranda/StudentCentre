@@ -47,16 +47,16 @@ StudentCentre.combo.StudentName = function(config) {
     Ext.applyIf(config, {
     	id: 'attendance-combo-student-name'
 	    ,fieldLabel: _('studentcentre.ass_student')
-	    ,name: 'student_name'
+	    ,name: 'username'
 	    ,width: 300
-	    ,hiddenName: 'student_id' //'student_id'
+	    ,hiddenName: 'username' //'student_id'
 	    ,hiddenValue: ''
 	    ,emptyText: _('studentcentre.att_select_stu')
 	    ,typeAhead: true
 	    ,valueField: 'student_id'
-	    ,displayField: 'student_name'
+	    ,displayField: 'username'
 	    ,pageSize: 20
-	    ,fields: ['student_id', 'student_name']
+	    ,fields: ['student_id', 'username']
 	    ,url: StudentCentre.config.connectorUrl
 	    ,baseParams: {
 	        action: 'mgr/attendance/scModUserGetList'

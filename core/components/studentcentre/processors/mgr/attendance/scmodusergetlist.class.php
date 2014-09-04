@@ -3,7 +3,7 @@ class scModUserGetList extends modObjectGetListProcessor {
     
     public $classKey = 'scModUser';
     public $languageTopics = array('studentcentre:default');
-    public $defaultSortField = 'student_name';
+    public $defaultSortField = 'username';
     public $defaultSortDirection = 'ASC';
     public $objectType = 'studentcentre.ass';
     
@@ -36,7 +36,6 @@ class scModUserGetList extends modObjectGetListProcessor {
 		$c->select(array('
 			scModUser.*
 			,scModUser.id AS `student_id`
-			,CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`
 		'));
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
