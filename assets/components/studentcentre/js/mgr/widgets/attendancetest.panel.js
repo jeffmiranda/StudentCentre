@@ -246,7 +246,6 @@ StudentCentre.panel.AttendanceTest = function(config) {
 Ext.extend(StudentCentre.panel.AttendanceTest,MODx.FormPanel,{
 	setup: function() {
         if (!this.config.testData) return;
-        //console.log(this.config.testData);
         MODx.Ajax.request({
             url: this.config.url
             ,params: {
@@ -261,6 +260,15 @@ Ext.extend(StudentCentre.panel.AttendanceTest,MODx.FormPanel,{
                     //console.log(testSetup);
                     var lastTest = testSetup.last_test;
                     var techniques = testSetup.techniques;
+                    // loop through object and add to extjs mixed collection
+                    var mcTechniques = new Ext.util.MixedCollection();
+                    Ext.iterate(techniques, function(key, value, obj) {
+	                	mcTechniques.add(value);
+                    });
+                    // sort the mixed collection by order
+                    mcTechniques.sort('ASC', function(a,b) {
+	                    return a.order - b.order;
+                    });
                     if (lastTest) { 
                     	var ltInfo = lastTest.info;
 						var fieldsetPrevTest = Ext.getCmp('fldLastTest'); // get the Previous Test fieldset
@@ -302,85 +310,86 @@ Ext.extend(StudentCentre.panel.AttendanceTest,MODx.FormPanel,{
 		                fieldsetPrevTest.show();
                     }
                     var fieldsetTechniques = Ext.getCmp('attendance-fieldset-test-techniques'); // get the Techniques fieldset
-					for (var prop in techniques) {
-						// important check that this is objects own property 
-						// not from prototype prop inherited
-						if (techniques.hasOwnProperty(prop)) {
-							var comment = '';
-							var techPass = false;
-							// also check to ensure lastTest exists and isn't FALSE
-							if (lastTest && lastTest.techniques.hasOwnProperty(techniques[prop].technique_id)) {
-								comment = '<em>Previous test comment: ' + lastTest.techniques[techniques[prop].technique_id].comment + '</em>'
-								techPass = (lastTest.techniques[techniques[prop].technique_id].pass == 1) ? true : false;
-							}
-							var technique = {
-								xtype: 'compositefield'
-								,fieldLabel: techniques[prop].name
-								,labelWidth: 0
-								,flex: 1
-								,hideLabel: true
-								,style: {
-						            marginTop: '20px'
-						            ,marginLeft: '10px'
-						        }
-								,items: [{
-									xtype: 'displayfield'
-									,value: techniques[prop].order + '.'
-								},{
-									xtype: 'spacer'
-									,width: 10
-								},{
-									xtype: 'xcheckbox'
-									,id: 'technique_id_' + techniques[prop].technique_id
-									,name: 'techniques[' + techniques[prop].technique_id + '][pass]'
-									,value: 1
-									,checked: techPass
-								},{
-									xtype: 'displayfield'
-									,value: techniques[prop].name
-								}]
-							};
-							var prevComment = {
-								xtype: 'displayfield'
-								,hideLabel: true
-								,value: comment
-								,style: { marginLeft: '40px' }
-							};
-							var commentField = {
-								xtype: 'compositefield'
-								,hideLabel: true
-								,style: {
-						            marginLeft: '40px'
-						            ,marginBottom: '20px'
-						        }
-								,items: [{
-									xtype: 'displayfield'
-									,value: _('studentcentre.comment')
-								},{
-									xtype: 'textfield'
-									,name: 'techniques[' + techniques[prop].technique_id + '][comment]'
-									,width: 200
-								},{
-									xtype : 'container'
-					                ,layout : 'form'
-					                ,items  : {
-					                    xtype      : 'button'
-					                    ,text: _('studentcentre.att_view_all_comments')
-					                    ,student_id: this.config.testData.student_id
-					                    ,level_id: techniques[prop].level_id
-					                    ,technique_id: techniques[prop].technique_id
-					                    ,technique_name: techniques[prop].name
-					                    ,listeners: {
-											'click': {fn: this.showComments, scope: this}
-										}
-					                }
-								}]
-							};
-							fieldsetTechniques.add(technique);
-							fieldsetTechniques.add(prevComment);
-							fieldsetTechniques.add(commentField);
+                    // Redefine testData and showComments to access within the following each function
+                    var tstData = this.config.testData;
+                    var fncShowComments = this.showComments;
+                    // Loop through each technique and build the techniques for the test
+					mcTechniques.each(function(item, index, length) {
+						var comment = '';
+						var techPass = false;
+						// also check to ensure lastTest exists and isn't FALSE
+						if (lastTest && lastTest.techniques.hasOwnProperty(item.technique_id)) {
+							comment = '<em>Previous test comment: ' + lastTest.techniques[item.technique_id].comment + '</em>'
+							techPass = (lastTest.techniques[item.technique_id].pass == 1) ? true : false;
 						}
-					}
+						var technique = {
+							xtype: 'compositefield'
+							,fieldLabel: item.name
+							,labelWidth: 0
+							,flex: 1
+							,hideLabel: true
+							,style: {
+					            marginTop: '20px'
+					            ,marginLeft: '10px'
+					        }
+							,items: [{
+								xtype: 'displayfield'
+								,value: index+1 + '.'
+							},{
+								xtype: 'spacer'
+								,width: 10
+							},{
+								xtype: 'xcheckbox'
+								,id: 'technique_id_' + item.technique_id
+								,name: 'techniques[' + item.technique_id + '][pass]'
+								,value: 1
+								,checked: techPass
+							},{
+								xtype: 'displayfield'
+								,value: item.name
+							}]
+						};
+						var prevComment = {
+							xtype: 'displayfield'
+							,hideLabel: true
+							,value: comment
+							,style: { marginLeft: '40px' }
+						};
+						var commentField = {
+							xtype: 'compositefield'
+							,hideLabel: true
+							,style: {
+					            marginLeft: '40px'
+					            ,marginBottom: '20px'
+					        }
+							,items: [{
+								xtype: 'displayfield'
+								,value: _('studentcentre.comment')
+							},{
+								xtype: 'textfield'
+								,name: 'techniques[' + item.technique_id + '][comment]'
+								,width: 200
+							},{
+								xtype : 'container'
+				                ,layout : 'form'
+				                ,items  : {
+				                    xtype      : 'button'
+				                    ,text: _('studentcentre.att_view_all_comments')
+				                    ,student_id: tstData.student_id
+				                    ,level_id: item.level_id
+				                    ,technique_id: item.technique_id
+				                    ,technique_name: item.name
+				                    ,listeners: {
+										'click': {fn: fncShowComments}
+									}
+				                }
+							}]
+						};
+						fieldsetTechniques.add(technique);
+						fieldsetTechniques.add(prevComment);
+						fieldsetTechniques.add(commentField);
+					});
+					
 					// redraw the layout to make the new components appear
 					fieldsetTechniques.doLayout();
                     

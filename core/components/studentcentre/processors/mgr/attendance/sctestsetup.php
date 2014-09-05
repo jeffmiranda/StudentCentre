@@ -43,9 +43,9 @@ $c->select(array('
 	Technique.name AS `name`,
 	Technique.description AS `description`
 '));
-$c->sortby('scLevelTechnique.order','ASC');
-//$c->prepare();
-//$modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
+$c->sortby('`order`','ASC');
+$c->prepare();
+$modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
 
 $techniques = $modx->getCollection('scLevelTechnique', $c);
 if (!$techniques) {
