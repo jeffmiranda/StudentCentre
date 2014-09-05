@@ -7,19 +7,6 @@ class scClassLevelGetList extends modObjectGetListProcessor {
     public $defaultSortDirection = 'ASC';
     public $objectType = 'studentcentre.att';
     
-/*
-    public function beforeQuery() {
-	    
-	    $limit = $this->getProperty('limit');
-	    if (!empty($limit)) {
-		    $this->setProperty('limit', $limit);
-		}
-		//$this->modx->log(1,print_r('Limit: ' . $limit,true));
-	    return parent::beforeQuery();
-	    
-    }
-*/
-
     public function prepareQueryBeforeCount(xPDOQuery $c) {
 	    	    
 	    $c->innerJoin('scClassLevelCategory', 'ClassLevelCategory', array (
@@ -62,7 +49,7 @@ class scClassLevelGetList extends modObjectGetListProcessor {
 		// then sort the levels by category and then by order
 		$sortByOrder = $this->getProperty('sortByOrder');
 		if (!empty($sortByOrder)) {
-			$c->sortby('category_name','ASC');
+			$c->sortby('class_level_category_id','ASC');
 			$c->sortby('`order`','ASC');
 		}
 			    

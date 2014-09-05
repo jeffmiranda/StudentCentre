@@ -3,7 +3,7 @@ class scLevelTechniqueGetList extends modObjectGetListProcessor {
     
     public $classKey = 'scLevelTechnique';
     public $languageTopics = array('studentcentre:default');
-    public $defaultSortField = 'level_id';
+    public $defaultSortField = 'id';
     public $defaultSortDirection = 'ASC';
     public $objectType = 'studentcentre.att';
     
@@ -30,8 +30,13 @@ class scLevelTechniqueGetList extends modObjectGetListProcessor {
 			,Technique.name AS `technique_name`
 		'));
 		
-		$c->sortby('level_id','ASC');
-		$c->sortby('`order`','ASC');
+		// if sortByOrder parameter exists,
+		// then sort the levelTechniques by level_id and then by order
+		$sortByOrder = $this->getProperty('sortByOrder');
+		if (!empty($sortByOrder)) {
+			$c->sortby('scLevelTechnique.level_id','ASC');
+			$c->sortby('scLevelTechnique.`order`','ASC');
+		}
 		
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));

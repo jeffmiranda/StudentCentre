@@ -6,11 +6,10 @@ StudentCentre.grid.AttendanceLevels = function(config) {
         ,url: StudentCentre.config.connectorUrl
         ,baseParams: {
         	action: 'mgr/attendance/scClassLevelGetList'
-        	,limit: 0
+        	,sortByOrder: 1
         }
         ,fields: ['id', 'class_level_category_id', 'category_name', 'name', 'description', 'hours_required', 'test_threshold', 'order', 'active']
-        ,paging: false
-        //,pageSize: 0
+        ,paging: true
         ,remoteSort: true
         ,sortBy: 'category_name'
         ,anchor: '97%'

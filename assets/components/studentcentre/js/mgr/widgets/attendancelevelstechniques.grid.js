@@ -4,7 +4,10 @@ StudentCentre.grid.AttendanceLevelsTechniques = function(config) {
     Ext.applyIf(config,{
         id: 'studentcentre-grid-attendance-levels-techniques'
         ,url: StudentCentre.config.connectorUrl
-        ,baseParams: { action: 'mgr/attendance/scLevelTechniqueGetList' }
+        ,baseParams: {
+        	action: 'mgr/attendance/scLevelTechniqueGetList'
+        	,sortByOrder: 1
+        }
         ,fields: ['id', 'level_id', 'technique_id', 'level_name', 'technique_name', 'order']
         ,paging: true
         ,remoteSort: true

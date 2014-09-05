@@ -15,10 +15,9 @@ StudentCentre.grid.AttendanceTechniques = function(config) {
         ,save_callback: this._updateTechniqueComboBoxes
         ,columns: [{
             header: _('studentcentre.id')
-            //,hidden: true
+            ,hidden: true
             ,dataIndex: 'id'
             ,name: 'id'
-            ,sortable: true
         },{
             header: _('studentcentre.name')
             ,dataIndex: 'name'
