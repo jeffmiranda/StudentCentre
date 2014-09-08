@@ -87,10 +87,10 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
 				ClassProgress.level_id
 				,ClassProgress.hours_since_leveling
 				,ClassProgress.total_hours
-				,ClassLevel.order
+				,ClassLevel.`order`
 			'));
 			$c->groupby('scClassEnrollment.student_id');
-			$c->sortby('ClassLevel.order', 'DESC');
+			$c->sortby('ClassLevel.`order`', 'DESC');
 			$c->sortby('ClassProgress.hours_since_leveling', 'DESC');
 			$c->sortby('ClassProgress.total_hours', 'DESC');
 		}
