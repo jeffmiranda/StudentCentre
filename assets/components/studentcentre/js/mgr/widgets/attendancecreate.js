@@ -47,9 +47,9 @@ StudentCentre.combo.StudentName = function(config) {
     Ext.applyIf(config, {
     	id: 'attendance-combo-student-name'
 	    ,fieldLabel: _('studentcentre.ass_student')
-	    ,name: 'username'
+	    ,name: 'student_id'
 	    ,width: 300
-	    ,hiddenName: 'username' //'student_id'
+	    ,hiddenName: 'student_id' //'student_id'
 	    ,hiddenValue: ''
 	    ,emptyText: _('studentcentre.att_select_stu')
 	    ,typeAhead: true
