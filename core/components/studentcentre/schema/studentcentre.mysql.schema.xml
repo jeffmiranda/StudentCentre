@@ -10,6 +10,7 @@
         <composite alias="ClassEnrollment" class="scClassEnrollment" local="id" foreign="student_id" cardinality="many" owner="local" />
         <composite alias="Attendance" class="scAttendance" local="id" foreign="student_id" cardinality="many" owner="local" />
         <composite alias="StudentProfile" class="scStudentProfile" local="id" foreign="internalKey" cardinality="one" owner="local" />
+        <composite alias="Certificate" class="scCertificate" local="id" foreign="student_id" cardinality="many" owner="local" />
     </object>    
 	<!-- !scModUserProfile -->
 	<object class="scStudentProfile" table="student_profiles" extends="xPDOSimpleObject">
@@ -205,6 +206,7 @@
 		<composite alias="LevelTechnique" class="scLevelTechnique" local="id" foreign="level_id" cardinality="many" owner="local" />
 		<composite alias="StudentTest" class="scStudentTest" local="id" foreign="level_id" cardinality="many" owner="local" />
 		<composite alias="ClassProgress" class="scClassProgress" local="id" foreign="level_id" cardinality="many" owner="local" />
+		<composite alias="CertificateTpl" class="scCertificateTpl" local="id" foreign="level_id" cardinality="one" owner="local" />
 	</object>
 	<!-- !scTechnique -->
 	<object class="scTechnique" table="techniques" extends="xPDOSimpleObject">
@@ -294,7 +296,6 @@
 		<field key="duration" dbtype="float" attributes="unsigned" phptype="float" null="false" default="1" />
 		<field key="start_date" dbtype="date" phptype="date" null="false" />
 		<field key="end_date" dbtype="date" phptype="date" null="false" />
-		<field key="description" dbtype="varchar" precision="20" phptype="string" null="false" />
 		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
 		<field key="date_created" dbtype="date" phptype="date" null="false" />
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
@@ -327,5 +328,32 @@
 		
 		<aggregate alias="Student" class="scModUser" local="student_id" foreign="id" cardinality="one" owner="foreign" />
 		<aggregate alias="ScheduledClass" class="scScheduledClass" local="scheduled_class_id" foreign="id" cardinality="one" owner="foreign" />
+	</object>
+	
+    <!-- !=== Certificate Module === -->
+    <!-- !scCertificateTpl -->
+    <object class="scCertificateTpl" table="certificate_templates" extends="xPDOSimpleObject">
+		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="type" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="description" dbtype="text" phptype="string" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="ClassLevel" class="scClassLevel" local="level_id" foreign="id" cardinality="one" owner="foreign" />
+		<composite alias="Certificate" class="scCertificate" local="id" foreign="cert_tpl_id" cardinality="many" owner="local" />
+	</object>
+	<!-- !scCertificate -->
+    <object class="scCertificate" table="certificates" extends="xPDOSimpleObject">
+		<field key="student_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="certificate_tpl_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="hours" dbtype="float" attributes="unsigned" phptype="float" null="true" />
+		<field key="anniversary" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="true" />
+		<field key="flag" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<aggregate alias="Student" class="scModUser" local="student_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="CertificateTpl" class="scCertificateTpl" local="certificate_tpl_id" foreign="id" cardinality="one" owner="foreign" />
 	</object>
 </model>

@@ -75,5 +75,13 @@ $xpdo_meta_map['scModUser']= array (
       'cardinality' => 'one',
       'owner' => 'local',
     ),
+    'Certificate' => 
+    array (
+      'class' => 'scCertificate',
+      'local' => 'id',
+      'foreign' => 'student_id',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
   ),
 );

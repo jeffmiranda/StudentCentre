@@ -112,6 +112,14 @@ $xpdo_meta_map['scClassLevel']= array (
       'cardinality' => 'many',
       'owner' => 'local',
     ),
+    'CertificateTpl' => 
+    array (
+      'class' => 'scCertificateTpl',
+      'local' => 'id',
+      'foreign' => 'level_id',
+      'cardinality' => 'one',
+      'owner' => 'local',
+    ),
   ),
   'aggregates' => 
   array (
