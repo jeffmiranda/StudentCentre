@@ -86,6 +86,17 @@ if (!empty($attendees)) {
 		// else create a new one and assign the first level to it
 		if (!$classProgress) {
 			// get the first level of the class
+			$classLevelCategory = $modx->getObject('scClassLevelCategory', $class->get('class_level_category_id'));
+			if (!$classLevelCategory) {
+				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the class level category object!');
+				return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
+			}
+			$firstLevel = $classLevelCategory->getFirstLevel();
+			if (!$firstLevel) {
+				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the first level of the class!');
+				return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
+			}
+/*
 			$q = $modx->newQuery('scClassLevel');
 			$q->where(array(
 				'class_level_category_id' => $class->get('class_level_category_id')
@@ -100,15 +111,56 @@ if (!empty($attendees)) {
 				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the first level of the class!');
 				return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
 			}
+*/
 			$classProgress = $modx->newObject('scClassProgress', array(
 				'class_level_category_id' => $class->get('class_level_category_id'),
 				'student_id' => $attendee->get('student_id'),
-				'level_id' => $classLevel->get('id'),
+				'level_id' => $firstLevel->get('id'),
 				'hours_since_leveling' => 0,
 				'total_hours' => 0,
 				'test_ready' => 0,
 				'date_created' => date('Y-m-d')
 			));
+		}
+		
+		// get student object and begin determining hourly milestone
+		$student = $modx->getObject('scModUser', $attendee->get('student_id'));
+		if (!$student) {
+			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the student object!');
+			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
+		}
+		$gtHours = $student->getGrandTotalHours();
+		$hourlyMilestones = $modx->getOption('studentcentre.hourly_milestones', $scriptProperties, '');
+		if (empty($hourlyMilestones)) {
+			$modx->log(modX::LOG_LEVEL_ERROR, 'Hourly milestones are empty! Please set them in System Settings.');
+			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
+		}
+		// get the certificate tpl for hourly milestones
+		$hourlyCertTpl = $modx->getObject('scCertificateTpl', array(
+			'type' => 'HOUR'
+			,'active' => 1
+		));
+		if (!$hourlyCertTpl) {
+			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the hourly milestone certificate object.');
+			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
+		}
+		// get the hourly milestones from the system settings
+		$arrHourlyMilestones = explode(',', str_replace(' ', '', $hourlyMilestones));
+		foreach ($arrHourlyMilestones as $milestone) {
+			if ($gtHours < $milestone && $milestone <= ($gtHours + $attendee->get('hours'))) {
+				// create the certificate
+				$newCertificate = $modx->newObject('scCertificate', array(
+					'student_id' => $attendee->get('student_id')
+					,'certificate_tpl_id' => $hourlyCertTpl->get('id')
+					,'hours' => $milestone
+					,'flag' => 1
+					,'date_created' => date('Y-m-d')
+				));
+				if (!$newCertificate->save()) {
+				   $modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the newly created hourly certificate for studentId: ' . $attendee->get('student_id'));
+				   return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
+				}
+			}
 		}
 			
 		// increment hours of class progress object
@@ -120,23 +172,6 @@ if (!empty($attendees)) {
 		} else {
 			$classProgress->set('test_ready', 0);
 		}
-	/*
-		// get the level object
-		if (!isset($classLevel)) {
-			$classLevel = $classProgress->getOne('ClassLevel');
-			if (!$classLevel) {
-				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the associated class level of the scClassProgress object!');
-				return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
-			}
-		}
-		// if hours since leveling / hours required is greater than test threshold
-		// OR if testing checkbox has been checked
-		$progressRatio = $classProgress->get('hours_since_leveling') / $classLevel->get('hours_required');
-		if (($progressRatio >= $classLevel->get('test_threshold')) || ($attendee->get('test') == 1)) {
-			// mark class progress object as test ready!
-			$classProgress->set('test_ready', 1);
-		}
-	*/
 		
 		// save attendance object to db
 		if ($attendee->save()) {
