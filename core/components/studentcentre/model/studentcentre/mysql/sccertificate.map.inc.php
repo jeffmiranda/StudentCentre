@@ -1,23 +1,30 @@
 <?php
-$xpdo_meta_map['scScheduledClass']= array (
+$xpdo_meta_map['scCertificate']= array (
   'package' => 'studentcentre',
   'version' => '1.1',
-  'table' => 'scheduled_classes',
+  'table' => 'certificates',
   'extends' => 'xPDOSimpleObject',
   'fields' => 
   array (
-    'class_id' => NULL,
-    'location_id' => NULL,
-    'duration' => 1,
-    'start_date' => NULL,
-    'end_date' => NULL,
-    'active' => 1,
+    'student_id' => NULL,
+    'certificate_tpl_id' => NULL,
+    'hours' => NULL,
+    'anniversary' => NULL,
+    'flag' => 1,
     'date_created' => NULL,
     'last_modified' => 'CURRENT_TIMESTAMP',
   ),
   'fieldMeta' => 
   array (
-    'class_id' => 
+    'student_id' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => false,
+    ),
+    'certificate_tpl_id' => 
     array (
       'dbtype' => 'tinyint',
       'precision' => '3',
@@ -25,35 +32,22 @@ $xpdo_meta_map['scScheduledClass']= array (
       'phptype' => 'integer',
       'null' => false,
     ),
-    'location_id' => 
-    array (
-      'dbtype' => 'tinyint',
-      'precision' => '3',
-      'attributes' => 'unsigned',
-      'phptype' => 'integer',
-      'null' => false,
-    ),
-    'duration' => 
+    'hours' => 
     array (
       'dbtype' => 'float',
       'attributes' => 'unsigned',
       'phptype' => 'float',
-      'null' => false,
-      'default' => 1,
+      'null' => true,
     ),
-    'start_date' => 
+    'anniversary' => 
     array (
-      'dbtype' => 'date',
-      'phptype' => 'date',
-      'null' => false,
+      'dbtype' => 'tinyint',
+      'precision' => '3',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => true,
     ),
-    'end_date' => 
-    array (
-      'dbtype' => 'date',
-      'phptype' => 'date',
-      'null' => false,
-    ),
-    'active' => 
+    'flag' => 
     array (
       'dbtype' => 'tinyint',
       'precision' => '1',
@@ -77,39 +71,20 @@ $xpdo_meta_map['scScheduledClass']= array (
       'extra' => 'on update current_timestamp',
     ),
   ),
-  'composites' => 
-  array (
-    'ClassEnrollment' => 
-    array (
-      'class' => 'scClassEnrollment',
-      'local' => 'id',
-      'foreign' => 'scheduled_class_id',
-      'cardinality' => 'many',
-      'owner' => 'local',
-    ),
-    'Attendance' => 
-    array (
-      'class' => 'scAttendance',
-      'local' => 'id',
-      'foreign' => 'scheduled_class_id',
-      'cardinality' => 'many',
-      'owner' => 'local',
-    ),
-  ),
   'aggregates' => 
   array (
-    'Class' => 
+    'Student' => 
     array (
-      'class' => 'scClass',
-      'local' => 'class_id',
+      'class' => 'scModUser',
+      'local' => 'student_id',
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',
     ),
-    'Location' => 
+    'CertificateTpl' => 
     array (
-      'class' => 'scLocation',
-      'local' => 'location_id',
+      'class' => 'scCertificateTpl',
+      'local' => 'certificate_tpl_id',
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',

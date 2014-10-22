@@ -1,0 +1,1 @@
+<div id="sc-certificates-panel-home-div"></div>

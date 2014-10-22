@@ -1,23 +1,21 @@
 <?php
-$xpdo_meta_map['scScheduledClass']= array (
+$xpdo_meta_map['scCertificateTpl']= array (
   'package' => 'studentcentre',
   'version' => '1.1',
-  'table' => 'scheduled_classes',
+  'table' => 'certificate_templates',
   'extends' => 'xPDOSimpleObject',
   'fields' => 
   array (
-    'class_id' => NULL,
-    'location_id' => NULL,
-    'duration' => 1,
-    'start_date' => NULL,
-    'end_date' => NULL,
+    'level_id' => NULL,
+    'type' => NULL,
+    'description' => NULL,
     'active' => 1,
     'date_created' => NULL,
     'last_modified' => 'CURRENT_TIMESTAMP',
   ),
   'fieldMeta' => 
   array (
-    'class_id' => 
+    'level_id' => 
     array (
       'dbtype' => 'tinyint',
       'precision' => '3',
@@ -25,32 +23,17 @@ $xpdo_meta_map['scScheduledClass']= array (
       'phptype' => 'integer',
       'null' => false,
     ),
-    'location_id' => 
+    'type' => 
     array (
-      'dbtype' => 'tinyint',
-      'precision' => '3',
-      'attributes' => 'unsigned',
-      'phptype' => 'integer',
+      'dbtype' => 'varchar',
+      'precision' => '100',
+      'phptype' => 'string',
       'null' => false,
     ),
-    'duration' => 
+    'description' => 
     array (
-      'dbtype' => 'float',
-      'attributes' => 'unsigned',
-      'phptype' => 'float',
-      'null' => false,
-      'default' => 1,
-    ),
-    'start_date' => 
-    array (
-      'dbtype' => 'date',
-      'phptype' => 'date',
-      'null' => false,
-    ),
-    'end_date' => 
-    array (
-      'dbtype' => 'date',
-      'phptype' => 'date',
+      'dbtype' => 'text',
+      'phptype' => 'string',
       'null' => false,
     ),
     'active' => 
@@ -79,37 +62,21 @@ $xpdo_meta_map['scScheduledClass']= array (
   ),
   'composites' => 
   array (
-    'ClassEnrollment' => 
+    'Certificate' => 
     array (
-      'class' => 'scClassEnrollment',
+      'class' => 'scCertificate',
       'local' => 'id',
-      'foreign' => 'scheduled_class_id',
-      'cardinality' => 'many',
-      'owner' => 'local',
-    ),
-    'Attendance' => 
-    array (
-      'class' => 'scAttendance',
-      'local' => 'id',
-      'foreign' => 'scheduled_class_id',
+      'foreign' => 'cert_tpl_id',
       'cardinality' => 'many',
       'owner' => 'local',
     ),
   ),
   'aggregates' => 
   array (
-    'Class' => 
+    'ClassLevel' => 
     array (
-      'class' => 'scClass',
-      'local' => 'class_id',
-      'foreign' => 'id',
-      'cardinality' => 'one',
-      'owner' => 'foreign',
-    ),
-    'Location' => 
-    array (
-      'class' => 'scLocation',
-      'local' => 'location_id',
+      'class' => 'scClassLevel',
+      'local' => 'level_id',
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',
