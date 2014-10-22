@@ -321,6 +321,7 @@ $_lang['studentcentre.att_err_ns_hours'] = 'Please specify hours';
 $_lang['studentcentre.att_err_upd_attendance'] = 'Could not update the attendance';
 $_lang['studentcentre.att_err_test_load'] = 'Could not load the test!';
 $_lang['studentcentre.att_err_test_no_techniques'] = 'Could not load the test because there are no techniques for this level!';
+$_lang['studentcentre.att_err_getting_students'] = 'Could not retrieve the sorted list of students';
 $_lang['studentcentre.stu'] = 'Student Centre - Student Manager';
 $_lang['studentcentre.stu_desc'] = 'Manage your students and profiles.';
 $_lang['user_created_password_message'] = 'Student successfully created!';

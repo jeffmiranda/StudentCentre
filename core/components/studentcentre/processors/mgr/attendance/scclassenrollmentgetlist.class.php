@@ -31,17 +31,38 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
 		$c->innerJoin('scClass', 'Class', array (
 			'ScheduledClass.class_id = Class.id'
 		));
+		$c->innerJoin('scClassLevelCategory', 'ClassLevelCategory', array (
+			'Class.class_level_category_id = ClassLevelCategory.id'
+		));
 		$c->innerJoin('scLocation', 'Location', array (
 			'ScheduledClass.location_id = Location.id'
 		));
 		
+		// To sort students by level, hours since leveling, and total hours
+		// the scheduled_class_id must be present
 		$sortStudents = $this->getProperty('sortStudents');
-	    if (!empty($sortStudents)) {
+		$scheduledClassId = $this->getProperty('scheduled_class_id');
+	    if (!empty($sortStudents) && !empty($scheduledClassId)) {
 	    	$c->leftJoin('scClassProgress', 'ClassProgress', array (
 				'Student.id = ClassProgress.student_id'
 			));
 			$c->leftJoin('scClassLevel', 'ClassLevel', array (
 				'ClassProgress.level_id = ClassLevel.id'
+			));
+			
+			// get the class_level_category_id
+			$schedClassObj = $this->modx->getObject('scScheduledClass', $scheduledClassId);
+			if (!$schedClassObj) {
+				$this->modx->log(1,print_r('Could not get the scScheduledClass object with ID: ' . $scheduledClassId,true));
+				return $this->failure($this->modx->lexicon('studentcentre.att_err_getting_students'));
+			}
+			$classObj = $schedClassObj->getOne('Class');
+			if (!$classObj) {
+				$this->modx->log(1,print_r('Could not get the scClass object with ID: ' . $schedClassObj->get('class_id'),true));
+				return $this->failure($this->modx->lexicon('studentcentre.att_err_getting_students'));
+			}
+			$c->where(array(
+				'ClassProgress.class_level_category_id' => $classObj->get('class_level_category_id')
 			));
 	    }
 	    
@@ -57,7 +78,6 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
 	    
 	    // if scheduled_class_id exists,
 	    // then only get the enrollments with that ID
-	    $scheduledClassId = $this->getProperty('scheduled_class_id');
 	    if (!empty($scheduledClassId)) {
 	    	$c->where(array(
 	            'scClassEnrollment.scheduled_class_id' => $scheduledClassId
