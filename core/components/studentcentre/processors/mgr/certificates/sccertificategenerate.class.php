@@ -24,7 +24,7 @@ class Certificate extends PDF_Japanese {
 	// Set template image
 	function setTpl(string $path) {
 		if (file_exists($path)) {
-			$this->Image($path, 0, 0, 792);
+			$this->Image($path, 0, 0, 1224);
 			return true;
 		} else {
 			return false;
@@ -33,8 +33,8 @@ class Certificate extends PDF_Japanese {
 	
 	// Set name
 	function setName(string $name) {
-		$this->SetXY(346,220);
-		$this->SetFont('Helvetica', '', 48);
+		$this->SetXY(562, 310);
+		$this->SetFont('Helvetica', '', 72);
 		$this->Cell(100, 50, $name, 0, 0, 'C');
 	}
 	
@@ -48,8 +48,8 @@ class Certificate extends PDF_Japanese {
 	// Set hours
 	function setHours(float $hours) {
 		
-		$this->SetXY(346, 395);
-		$this->SetFont('Helvetica', 'B', 48);
+		$this->SetXY(562, 520);
+		$this->SetFont('Helvetica', 'B', 72);
 		$this->Cell(100, 50, $hours, 0, 0, 'C');
 
 	}
@@ -57,8 +57,8 @@ class Certificate extends PDF_Japanese {
 	// Set date
 	function setDate(string $date) {
 		
-		$this->SetXY(638, 505);
-		$this->SetFont('Helvetica', '', 14);
+		$this->SetXY(1041, 685);
+		$this->SetFont('Helvetica', '', 22);
 		$this->Cell(100, 50, $date, 0, 0, 'R');
 
 	}
@@ -98,11 +98,6 @@ class scCertificateGenerateProcessor extends modProcessor {
 	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate object!');
 	    	return false;
     	}
-    	$tplObj = $certObj->getOne('CertificateTpl');
-    	if (!$tplObj) {
-	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate template object!');
-	    	return false;
-    	}
     	$student = $certObj->getOne('Student');
     	if (!$student) {
 	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the student object!');
@@ -113,17 +108,55 @@ class scCertificateGenerateProcessor extends modProcessor {
 	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the student profile object!');
 	    	return false;
     	}
+    	$certType = $certObj->getOne('CertificateType');
+    	if (!$certType) {
+	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate type object!');
+	    	return false;
+    	}
+    	
+    	// get the certificate template
+    	$typeName = $certType->get('name');
+    	switch ($typeName) {
+			case 'Anniversary':
+				$certTpl = $this->modx->getObject('scCertificateTpl', array('certificate_type_id' => $certType->get('id')));
+				if (!$certTpl) {
+			    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the anniversary template object!');
+			    	return false;
+				}
+				break;
+			case 'Hour':
+				$certTpl = $this->modx->getObject('scCertificateTpl', array('certificate_type_id' => $certType->get('id')));
+				if (!$certTpl) {
+			    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the hour template object!');
+			    	return false;
+				}
+				break;
+			case 'Level':
+				$certTpl = $this->modx->getObject('scCertificateTpl', array(
+					'certificate_type_id' => $certType->get('id')
+					,'level_id' => $certObj->get('level_id')
+				));
+				if (!$certTpl) {
+			    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the level template object!');
+			    	return false;
+				}
+				break;
+			default:
+				$this->modx->log(modX::LOG_LEVEL_ERROR, 'Sorry, unknown certificate type!');
+				return false;
+		}
+
     	
     	// Create certificate
-    	$certificate = new Certificate('L', 'pt', 'Letter');
+    	$certificate = new Certificate('L', 'pt', array(1224, 792));
 		$certificate->AliasNbPages();
-		$certificate->AddPage('L', 'Letter');
+		$certificate->AddPage('L', array(1224, 792));
 		$certificate->SetMargins(0, 0);
 		$certificate->SetFont('Helvetica','',15);
 		
 		// set template
 		$tplDir = $this->modx->getOption('studentcentre.assets_path', null, $this->modx->getOption('assets_path').'components/studentcentre/') . 'certificatetpl/';
-		$fullPath = $tplDir . $tplObj->get('id') . '.jpg';
+		$fullPath = $tplDir . $certTpl->get('id') . '.jpg';
 		if (!$certificate->setTpl($fullPath)) {
 			$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not find the template file!');
 	    	return false;
@@ -133,15 +166,14 @@ class scCertificateGenerateProcessor extends modProcessor {
 		$certificate->setName($studentProfile->get('firstname') . ' ' . $studentProfile->get('lastname'));
 		
 		// set value depending on type
-		$type = $tplObj->get('type');
-		switch ($type) {
-			case 'ANNIVERSARY':
+		switch ($typeName) {
+			case 'Anniversary':
 				$certificate->setAnniversary($certObj->get('anniversary'));
 				break;
-			case 'HOUR':
+			case 'Hour':
 				$certificate->setHours($certObj->get('hours'));
 				break;
-			case 'LEVEL':
+			case 'Level':
 				// do something?
 				break;
 		}

@@ -135,13 +135,12 @@ if (!empty($attendees)) {
 			$modx->log(modX::LOG_LEVEL_ERROR, 'Hourly milestones are empty! Please set them in System Settings.');
 			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
 		}
-		// get the certificate tpl for hourly milestones
-		$hourlyCertTpl = $modx->getObject('scCertificateTpl', array(
-			'type' => 'HOUR'
-			,'active' => 1
+		// get the certificate tpl type for hourly milestones
+		$certType = $modx->getObject('scCertificateType', array(
+			'name' => 'Hour'
 		));
-		if (!$hourlyCertTpl) {
-			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the hourly milestone certificate object.');
+		if (!$certType) {
+			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate type object.');
 			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
 		}
 		// get the hourly milestones from the system settings
@@ -151,7 +150,7 @@ if (!empty($attendees)) {
 				// create the certificate
 				$newCertificate = $modx->newObject('scCertificate', array(
 					'student_id' => $attendee->get('student_id')
-					,'certificate_tpl_id' => $hourlyCertTpl->get('id')
+					,'certificate_type_id' => $certType->get('id')
 					,'hours' => $milestone
 					,'flag' => 1
 					,'date_created' => date('Y-m-d')

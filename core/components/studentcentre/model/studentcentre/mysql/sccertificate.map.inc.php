@@ -7,7 +7,8 @@ $xpdo_meta_map['scCertificate']= array (
   'fields' => 
   array (
     'student_id' => NULL,
-    'certificate_tpl_id' => NULL,
+    'level_id' => NULL,
+    'certificate_type_id' => NULL,
     'hours' => NULL,
     'anniversary' => NULL,
     'flag' => 1,
@@ -24,7 +25,15 @@ $xpdo_meta_map['scCertificate']= array (
       'phptype' => 'integer',
       'null' => false,
     ),
-    'certificate_tpl_id' => 
+    'level_id' => 
+    array (
+      'dbtype' => 'tinyint',
+      'precision' => '3',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => true,
+    ),
+    'certificate_type_id' => 
     array (
       'dbtype' => 'tinyint',
       'precision' => '3',
@@ -81,10 +90,18 @@ $xpdo_meta_map['scCertificate']= array (
       'cardinality' => 'one',
       'owner' => 'foreign',
     ),
-    'CertificateTpl' => 
+    'CertificateType' => 
     array (
-      'class' => 'scCertificateTpl',
-      'local' => 'certificate_tpl_id',
+      'class' => 'scCertificateType',
+      'local' => 'certificate_type_id',
+      'foreign' => 'id',
+      'cardinality' => 'one',
+      'owner' => 'foreign',
+    ),
+    'ClassLevel' => 
+    array (
+      'class' => 'scClassLevel',
+      'local' => 'level_id',
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',

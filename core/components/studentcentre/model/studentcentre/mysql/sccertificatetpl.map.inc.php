@@ -7,7 +7,7 @@ $xpdo_meta_map['scCertificateTpl']= array (
   'fields' => 
   array (
     'level_id' => NULL,
-    'type' => NULL,
+    'certificate_type_id' => NULL,
     'description' => NULL,
     'active' => 1,
     'date_created' => NULL,
@@ -23,11 +23,12 @@ $xpdo_meta_map['scCertificateTpl']= array (
       'phptype' => 'integer',
       'null' => false,
     ),
-    'type' => 
+    'certificate_type_id' => 
     array (
-      'dbtype' => 'varchar',
-      'precision' => '100',
-      'phptype' => 'string',
+      'dbtype' => 'tinyint',
+      'precision' => '3',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
       'null' => false,
     ),
     'description' => 
@@ -60,19 +61,16 @@ $xpdo_meta_map['scCertificateTpl']= array (
       'extra' => 'on update current_timestamp',
     ),
   ),
-  'composites' => 
-  array (
-    'Certificate' => 
-    array (
-      'class' => 'scCertificate',
-      'local' => 'id',
-      'foreign' => 'cert_tpl_id',
-      'cardinality' => 'many',
-      'owner' => 'local',
-    ),
-  ),
   'aggregates' => 
   array (
+    'CertificateType' => 
+    array (
+      'class' => 'scCertificateType',
+      'local' => 'certificate_type_id',
+      'foreign' => 'id',
+      'cardinality' => 'one',
+      'owner' => 'foreign',
+    ),
     'ClassLevel' => 
     array (
       'class' => 'scClassLevel',

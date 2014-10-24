@@ -36,7 +36,7 @@ class scCertificateTplUpdateProcessor extends modObjectUpdateProcessor {
 		    // Get destination directory and check if it exists. If not create it.
 		    $filePath = $this->modx->getOption('studentcentre.assets_path', null, $this->modx->getOption('assets_path').'components/studentcentre/') . 'certificatetpl/' . $this->object->get('id') . '.' . $this->getProperty('ext');
 		    if (!file_exists($filePath)) {
-			    $this->modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not find the file the following file to update: ' . $filePath . $this->object->get('id') . '.' . $this->getProperty('ext'));
+			    $this->modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not find the file the following file to update: ' . $filePath);
 			    return $this->failure($this->modx->lexicon('studentcentre.cert_err_upating_tpl'));
 			}
 			

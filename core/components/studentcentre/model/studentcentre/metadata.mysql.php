@@ -28,6 +28,7 @@ $xpdo_meta_map = array (
     18 => 'scAttendance',
     19 => 'scCertificateTpl',
     20 => 'scCertificate',
+    21 => 'scCertificateType',
   ),
   'xPDOObject' => 
   array (

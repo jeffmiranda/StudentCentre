@@ -2,17 +2,21 @@
 StudentCentre.combo.CertificateType = function(config) {
     config = config || {};
     Ext.applyIf(config, {
-        store: new Ext.data.ArrayStore({
-            fields: ['value','display']
-            ,data: [
-                ['ANNIVERSARY','Anniversary']
-                ,['HOUR','Hour Milestone']
-                ,['LEVEL','Level Completion']
-            ]
-        })
-        ,mode: 'local'
-        ,displayField: 'display'
-        ,valueField: 'value'
+    	fieldLabel: _('studentcentre.type')
+	    ,width: 300
+	    ,hiddenName: 'certificate_type_id'
+	    ,hiddenValue: ''
+	    ,emptyText: 'Select type...'
+	    ,typeAhead: true
+	    ,valueField: 'id'
+	    ,displayField: 'name'
+	    ,fields: ['id', 'name']
+	    ,pageSize: 20
+	    ,url: StudentCentre.config.connectorUrl
+	    ,baseParams: {
+	        action: 'mgr/certificates/scCertificateTypeGetList'
+	        ,activeOnly: 1
+	    }
     });
     
     StudentCentre.combo.CertificateType.superclass.constructor.call(this, config);
@@ -57,31 +61,35 @@ StudentCentre.grid.CertificateTpl = function(config) {
         ,baseParams: {
         	action: 'mgr/certificates/scCertificateTplGetList'
         }
-        ,fields: ['id','level_id','level_name','type','description','active']
+        ,fields: ['id','certificate_type_id','level_id','certificate_type','level_name','description','active']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
-        ,autoExpandColumn: 'type'
+        ,autoExpandColumn: 'certificate_type'
         ,save_action: 'mgr/certificates/scCertificateTplUpdateFromGrid'
         ,autosave: true
         ,columns: [{
+            header: 'id'
+            ,hidden: true
+            ,dataIndex: 'id'
+            ,name: 'id'
+        },{
+            header: 'certificate_type_id'
+            ,hidden: true
+            ,dataIndex: 'certificate_type_id'
+            ,name: 'certificate_type_id'
+        },{
             header: 'level_id'
             ,hidden: true
             ,dataIndex: 'level_id'
             ,name: 'level_id'
         },{
-            header: _('studentcentre.id')
-            ,dataIndex: 'id'
-            ,name: 'id'
-            ,sortable: true
-            ,width: 30
-        },{
             header: _('studentcentre.type')
-            ,dataIndex: 'type'
-            ,name: 'type'
+            ,dataIndex: 'certificate_type'
+            ,name: 'certificate_type'
             ,sortable: true
             ,width: 40
-            ,editor: { xtype: 'combo-certificate-type', renderer: true }
+            //,editor: { xtype: 'combo-certificate-type', renderer: true }
         },{
             header: _('studentcentre.level')
             ,dataIndex: 'level_name'
@@ -95,14 +103,16 @@ StudentCentre.grid.CertificateTpl = function(config) {
             ,sortable: true
             ,width: 40
             ,editor: { xtype: 'textfield' }
-        },{
+        },
+        /*{
             header: _('studentcentre.active')
             ,dataIndex: 'active'
             ,name: 'active'
             ,sortable: true
             ,width: 30
             ,editor: { xtype: 'combo-active-status', renderer: true}
-        },{
+        },*/
+        {
 	        xtype: 'actioncolumn'
 	        ,header: _('studentcentre.view')
 	        ,width: 50
@@ -137,7 +147,9 @@ StudentCentre.grid.CertificateTpl = function(config) {
             ,listeners: {
                 'click': {fn: this.removeCertificateTpl, scope: this}
             }
-        },{
+        }
+        /*
+        ,{
             xtype: 'button'
             ,id: 'sc-toggle-active-button'
             ,text: _('studentcentre.toggle_active_status')
@@ -145,7 +157,9 @@ StudentCentre.grid.CertificateTpl = function(config) {
                 this.toggleActive(btn,e);
             }
             ,scope: this
-        },'->',{ // This defines the toolbar for the search
+        }
+        */
+        ,'->',{ // This defines the toolbar for the search
 		    xtype: 'textfield' // Here we're defining the search field for the toolbar
 		    ,id: 'certificate-tpl-search-filter'
 		    ,emptyText: _('studentcentre.search...')
@@ -196,10 +210,14 @@ Ext.extend(StudentCentre.grid.CertificateTpl,MODx.grid.Grid,{
 	    },'-',{
 	        text: _('studentcentre.remove')
 	        ,handler: this.removeCertificateTpl
-	    },'-',{
+	    }
+	    /*
+	    ,'-',{
 	        text: _('studentcentre.toggle_active_status')
 	        ,handler: this.toggleActive
-	    }];
+	    }
+	    */
+	    ];
 	}
 	,updateCertificateTpl: function(btn,e) {
 		var selRow = this.getSelectionModel().getSelected();
@@ -283,9 +301,12 @@ StudentCentre.window.UploadCertificateTpl = function(config) {
             xtype: 'combo-certificate-type'
             ,id: 'sc-upload-combo-certificate-type'
             ,fieldLabel: _('studentcentre.type')
-            ,name: 'type'
-            ,hiddenName: 'type'
+            ,name: 'certificate_type_id'
+            ,hiddenName: 'certificate_type_id'
             ,anchor: '100%'
+            ,listeners: {
+	            select: { fn: this.toggleDisabledClassLevelCombo, scope: this }
+	        }
         },{
             xtype: 'sc-class-level-combo'
             ,id: 'sc-upload-class-level-combo'
@@ -293,6 +314,7 @@ StudentCentre.window.UploadCertificateTpl = function(config) {
             ,name: 'level_id'
             ,hiddenName: 'level_id'
             ,anchor: '100%'
+            ,disabled: true
         },{
             xtype: 'textfield'
             ,fieldLabel: _('studentcentre.description')
@@ -302,7 +324,18 @@ StudentCentre.window.UploadCertificateTpl = function(config) {
     });
     StudentCentre.window.UploadCertificateTpl.superclass.constructor.call(this,config);
 };
-Ext.extend(StudentCentre.window.UploadCertificateTpl,MODx.Window);
+Ext.extend(StudentCentre.window.UploadCertificateTpl,MODx.Window, {
+	toggleDisabledClassLevelCombo: function(combo, value) {
+		var cbClassLevel = Ext.getCmp('sc-upload-class-level-combo');
+		// if the type equals level
+		if (combo.value == 3) {
+			cbClassLevel.enable();
+		} else {
+			cbClassLevel.clearValue();
+			cbClassLevel.disable();
+		}
+    }
+});
 Ext.reg('sc-window-certificate-tpl-upload',StudentCentre.window.UploadCertificateTpl);
 
 
@@ -340,12 +373,10 @@ StudentCentre.window.UpdateCertificateTpl = function(config) {
             xtype: 'combo-certificate-type'
             ,id: 'sc-update-combo-certificate-type'
             ,fieldLabel: _('studentcentre.type')
-            ,name: 'type'
-            ,hiddenName: 'type'
+            ,name: 'certificate_type_id'
+            ,hiddenName: 'certificate_type_id'
             ,anchor: '100%'
-            ,listeners: {
-	            select: { fn: this.clearClassLevelCombo, scope: this }
-	        }
+            ,disabled: true
         },{
             xtype: 'sc-class-level-combo'
             ,id: 'sc-update-class-level-combo'
@@ -353,28 +384,23 @@ StudentCentre.window.UpdateCertificateTpl = function(config) {
             ,name: 'level_id'
             ,hiddenName: 'level_id'
             ,anchor: '100%'
+            ,disabled: true
         },{
             xtype: 'textfield'
             ,fieldLabel: _('studentcentre.description')
             ,name: 'description'
             ,anchor: '100%'
-        },{
+        }/*
+,{
             xtype: 'combo-active-status'
             ,fieldLabel: _('studentcentre.active')
             ,name: 'active'
             ,hiddenName: 'active'
             ,anchor: '100%'
-        }]
+        }
+*/]
     });
     StudentCentre.window.UpdateCertificateTpl.superclass.constructor.call(this,config);
 };
-Ext.extend(StudentCentre.window.UpdateCertificateTpl,MODx.Window, {
-	clearClassLevelCombo: function(combo, value) {
-		// if the type doesn't equal level, then clear the level combobox
-		if (combo.value != 'level') {
-			var cbClassLevel = Ext.getCmp('sc-update-class-level-combo');
-			cbClassLevel.clearValue();
-		}
-    }
-});
+Ext.extend(StudentCentre.window.UpdateCertificateTpl,MODx.Window);
 Ext.reg('sc-window-certificate-tpl-update',StudentCentre.window.UpdateCertificateTpl);

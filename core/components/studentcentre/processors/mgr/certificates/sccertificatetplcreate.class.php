@@ -14,15 +14,46 @@ class scCertificateTplCreateProcessor extends modObjectCreateProcessor {
     
     public function beforeSave() {
         
-        $type = $this->getProperty('type');
-        if (empty($type)) {
-            $this->addFieldError('type',$this->modx->lexicon('studentcentre.cert_err_ns_tpl_type'));
-        } elseif ($type == 'level') {
+        $typeId = $this->getProperty('certificate_type_id');
+        if (empty($typeId)) {
+            $this->addFieldError('certificate_type_id',$this->modx->lexicon('studentcentre.cert_err_ns_tpl_type'));
+        }
+        
+        // get the certificate types
+		$certTypeAnn = $modx->getObject('scCertificateType', array('name' => 'Anniversary'));
+		$certTypeHour = $modx->getObject('scCertificateType', array('name' => 'Hour'));
+		$certTypeLevel = $modx->getObject('scCertificateType', array('name' => 'Level'));
+		if (!$certTypeAnn || !$certTypeHour || !$certTypeLevel) {
+			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate type object(s).');
+			return $modx->error->failure($modx->lexicon('studentcentre.cert_err_ns_tpl_type'));
+		}
+		
+	    // if template type is ANNIVERSARY or HOUR
+	    // There can only be one of these types
+        } elseif ($typeId == $certTypeAnn->get('id') || $typeId == $certTypeHour->get('id')) {
+	        $certTplNum = $this->modx->getCount('scCertificateTpl', array(
+	        	'certificate_type_id' => $typeId
+	        ));
+	        if ($certTplNum > 0) {
+	            $this->addFieldError('certificate_type_id',$this->modx->lexicon('studentcentre.cert_err_tpl_type_exists'));
+	        }
+
+        // if template type is LEVEL
+        // There can only be one template per level
+        } elseif ($typeId == $certTypeLevel->get('id')) {
         	$levelId = $this->getProperty('level_id');
 	        if ($levelId == 0 || empty($levelId)) {
 		    	$this->addFieldError('level_id',$this->modx->lexicon('studentcentre.cert_err_ns_level_id'));
+	        } else {
+		        $certTplNum = $this->modx->getCount('scCertificateTpl', array(
+		        	'certificate_type_id' => $typeId
+		        	,'level_id' => $levelId
+		        ));
+		        if ($certTplNum > 0) {
+		            $this->addFieldError('level_id',$this->modx->lexicon('studentcentre.cert_err_tpl_level_id_exists'));
+		        }
 	        }
-        }
+	    }
         
         if (empty($_FILES['tpl']) || empty($_FILES['tpl']['tmp_name']) || empty($_FILES['tpl']['name']) || $_FILES['tpl']['error'] != UPLOAD_ERR_OK) {
 		    $this->addFieldError('tpl',$this->modx->lexicon('studentcentre.cert_err_ns_tpl_file'));

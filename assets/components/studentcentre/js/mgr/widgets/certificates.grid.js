@@ -7,7 +7,7 @@ StudentCentre.grid.Certificates = function(config) {
         ,baseParams: {
         	action: 'mgr/certificates/scCertificateGetList'
         }
-        ,fields: ['id','student_id','certificate_tpl_id','level_id','certificate_tpl_type','username','hours','anniversary','flag','date_created']
+        ,fields: ['id','student_id','certificate_type_id','level_id','certificate_type','username','hours','anniversary','flag','date_created']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
@@ -25,10 +25,10 @@ StudentCentre.grid.Certificates = function(config) {
             ,dataIndex: 'student_id'
             ,name: 'student_id'
         },{
-            header: 'certificate_tpl_id'
+            header: 'certificate_type_id'
             ,hidden: true
-            ,dataIndex: 'certificate_tpl_id'
-            ,name: 'certificate_tpl_id'
+            ,dataIndex: 'certificate_type_id'
+            ,name: 'certificate_type_id'
         },{
             header: 'level_id'
             ,hidden: true
@@ -36,8 +36,8 @@ StudentCentre.grid.Certificates = function(config) {
             ,name: 'level_id'
         },{
             header: _('studentcentre.type')
-            ,dataIndex: 'certificate_tpl_type'
-            ,name: 'certificate_tpl_type'
+            ,dataIndex: 'certificate_type'
+            ,name: 'certificate_type'
             ,sortable: true
             ,width: 40
         },{
@@ -46,6 +46,12 @@ StudentCentre.grid.Certificates = function(config) {
             ,name: 'username'
             ,sortable: true
             ,width: 40
+        },{
+            header: _('studentcentre.level')
+            ,dataIndex: 'level_name'
+            ,name: 'level_name'
+            ,sortable: true
+            ,width: 50
         },{
             header: _('studentcentre.hours')
             ,dataIndex: 'hours'

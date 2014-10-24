@@ -1,30 +1,18 @@
 <?php
-class scCertificateGetList extends modObjectGetListProcessor {
+class scCertificateTypeGetList extends modObjectGetListProcessor {
     
-    public $classKey = 'scCertificate';
+    public $classKey = 'scCertificateType';
     public $languageTopics = array('studentcentre:default');
-    public $defaultSortField = 'date_created';
-    public $defaultSortDirection = 'DESC';
-    public $objectType = 'studentcentre.certificate';
+    public $defaultSortField = 'name';
+    public $defaultSortDirection = 'ASC';
+    public $objectType = 'studentcentre.certificate_type_class';
     
     public function prepareQueryBeforeCount(xPDOQuery $c) {
 	    	    
-	    $c->innerJoin('scModUser', 'Student', array (
-			'scCertificate.student_id = Student.id'
-		));
-		$c->innerJoin('scCertificateType', 'CertificateType', array (
-			'scCertificate.certificate_type_id = CertificateType.id'
-		));
-		$c->leftJoin('scClassLevel', 'ClassLevel', array (
-			'scCertificate.level_id = ClassLevel.id'
-		));
-	    
 	    $query = $this->getProperty('query');
 	    if (!empty($query)) {
 	        $c->where(array(
-	            'CertificateType.name:LIKE' => '%'.$query.'%'
-	            ,'OR:ClassLevel.name:LIKE' => '%'.$query.'%'
-	            ,'OR:Student.username:LIKE' => '%'.$query.'%'
+	            'scCertificateType.name:LIKE' => '%'.$query.'%'
 	        ));
 	    }
 	    	    
@@ -33,17 +21,10 @@ class scCertificateGetList extends modObjectGetListProcessor {
 		$activeOnly = $this->getProperty('activeOnly');
 		if (!empty($activeOnly)) {
 	        $c->where(array(
-	            'scCertificate.active' => $activeOnly
+	            'scCertificateType.active' => $activeOnly
 	        ));
 	    }
-	    
-	    $c->select(array('
-			scCertificate.*
-			,CertificateType.name AS `certificate_type`
-			,ClassLevel.name AS `level_name`
-			,Student.username
-		'));
-					    
+	    			    
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
 	    return $c;
@@ -64,4 +45,4 @@ class scCertificateGetList extends modObjectGetListProcessor {
     
 }
 
-return 'scCertificateGetList';
+return 'scCertificateTypeGetList';

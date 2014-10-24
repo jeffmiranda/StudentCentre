@@ -334,19 +334,22 @@
     <!-- !scCertificateTpl -->
     <object class="scCertificateTpl" table="certificate_templates" extends="xPDOSimpleObject">
 		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
-		<field key="type" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="certificate_type_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
 		<field key="description" dbtype="text" phptype="string" null="false" />
 		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
 		<field key="date_created" dbtype="date" phptype="date" null="false" />
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
 		
+		<aggregate alias="CertificateType" class="scCertificateType" local="certificate_type_id" foreign="id" cardinality="one" owner="foreign" />
 		<aggregate alias="ClassLevel" class="scClassLevel" local="level_id" foreign="id" cardinality="one" owner="foreign" />
-		<composite alias="Certificate" class="scCertificate" local="id" foreign="cert_tpl_id" cardinality="many" owner="local" />
+		<!-- <composite alias="Certificate" class="scCertificate" local="id" foreign="cert_tpl_id" cardinality="many" owner="local" /> -->
 	</object>
 	<!-- !scCertificate -->
     <object class="scCertificate" table="certificates" extends="xPDOSimpleObject">
 		<field key="student_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
-		<field key="certificate_tpl_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<!-- <field key="certificate_tpl_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" /> -->
+		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="true" />
+		<field key="certificate_type_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
 		<field key="hours" dbtype="float" attributes="unsigned" phptype="float" null="true" />
 		<field key="anniversary" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="true" />
 		<field key="flag" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
@@ -354,6 +357,19 @@
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
 		
 		<aggregate alias="Student" class="scModUser" local="student_id" foreign="id" cardinality="one" owner="foreign" />
-		<aggregate alias="CertificateTpl" class="scCertificateTpl" local="certificate_tpl_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="CertificateType" class="scCertificateType" local="certificate_type_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="ClassLevel" class="scClassLevel" local="level_id" foreign="id" cardinality="one" owner="foreign" />
+		<!-- <aggregate alias="CertificateTpl" class="scCertificateTpl" local="certificate_tpl_id" foreign="id" cardinality="one" owner="foreign" /> -->
+	</object>
+	<!-- !scCertificateType -->
+	<!-- Look up table for Certificate types -->
+    <object class="scCertificateType" table="certificate_types" extends="xPDOSimpleObject">
+		<field key="name" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
+		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
+		
+		<composite alias="Certificate" class="scCertificate" local="id" foreign="certificate_type_id" cardinality="many" owner="local" />
+		<composite alias="CertificateTpl" class="scCertificateTpl" local="id" foreign="certificate_type_id" cardinality="many" owner="local" />
 	</object>
 </model>

@@ -9,15 +9,19 @@ class scCertificateTplGetList extends modObjectGetListProcessor {
     
     public function prepareQueryBeforeCount(xPDOQuery $c) {
 	    	    
-	    $c->leftJoin('scClassLevel', 'ClassLevel', array (
+	    $c->innerJoin('scCertificateType', 'CertificateType', array (
+			'scCertificateTpl.certificate_type_id = CertificateType.id'
+		));
+		
+		$c->leftJoin('scClassLevel', 'ClassLevel', array (
 			'scCertificateTpl.level_id = ClassLevel.id'
 		));
 	    
 	    $query = $this->getProperty('query');
 	    if (!empty($query)) {
 	        $c->where(array(
-	            'scCertificateTpl.type:LIKE' => '%'.$query.'%'
-	            ,'OR:scCertificateTpl.description:LIKE' => '%'.$query.'%'
+	            'scCertificateTpl.description:LIKE' => '%'.$query.'%'
+	            ,'OR:CertificateType.name:LIKE' => '%'.$query.'%'
 	            ,'OR:ClassLevel.name:LIKE' => '%'.$query.'%'
 	        ));
 	    }
@@ -33,11 +37,12 @@ class scCertificateTplGetList extends modObjectGetListProcessor {
 	    
 	    $c->select(array('
 			scCertificateTpl.*
+			,CertificateType.name AS `certificate_type`
 			,ClassLevel.name AS `level_name`
 		'));
 					    
-		//$c->prepare();
-		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
+		$c->prepare();
+		$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
 	    return $c;
 	    
 	}
