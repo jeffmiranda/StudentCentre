@@ -11,6 +11,7 @@ $xpdo_meta_map['scScheduledClass']= array (
     'duration' => 1,
     'start_date' => NULL,
     'end_date' => NULL,
+    'description' => NULL,
     'active' => 1,
     'date_created' => NULL,
     'last_modified' => 'CURRENT_TIMESTAMP',
@@ -51,6 +52,13 @@ $xpdo_meta_map['scScheduledClass']= array (
     array (
       'dbtype' => 'date',
       'phptype' => 'date',
+      'null' => false,
+    ),
+    'description' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '20',
+      'phptype' => 'string',
       'null' => false,
     ),
     'active' => 

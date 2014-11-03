@@ -296,6 +296,7 @@
 		<field key="duration" dbtype="float" attributes="unsigned" phptype="float" null="false" default="1" />
 		<field key="start_date" dbtype="date" phptype="date" null="false" />
 		<field key="end_date" dbtype="date" phptype="date" null="false" />
+		<field key="description" dbtype="varchar" precision="20" phptype="string" null="false" />
 		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
 		<field key="date_created" dbtype="date" phptype="date" null="false" />
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
