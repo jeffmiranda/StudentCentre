@@ -10,6 +10,7 @@ class scModUser extends modUser {
 	 * Gets the students total hours practiced
 	 * from all rank categories
 	 */
+/*
 	public function getGrandTotalHours() {
 		
 		$gt = null;
@@ -27,5 +28,6 @@ class scModUser extends modUser {
 		
 		return $gt;
 	}
+*/
 
 }

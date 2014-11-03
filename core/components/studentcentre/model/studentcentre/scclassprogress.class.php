@@ -155,4 +155,76 @@ class scClassProgress extends xPDOSimpleObject {
 		return $level;
 	}
 	
+	/**
+	 * Gets the students total hours practiced
+	 * from all rank categories
+	 * returns float
+	 */
+	public function getGrandTotalHours() {
+		
+		$gt = null;
+		
+		$rankProgressCollection = $this->xpdo->getCollection('scClassProgress', array(
+			'student_id' => $this->get('student_id')
+		));
+		
+		if (!empty($rankProgressCollection)) {
+			$gt = 0;
+			foreach ($rankProgressCollection as $rankProgress) {
+				$gt = $gt + $rankProgress->get('total_hours');
+			}
+		}
+		
+		return $gt;
+	}
+
+	/**
+	 * Checks to see if an hourly milestone was reached
+	 * when given an hour value. If so, will return the hourly milestone.
+	 * If no milestone, it will return false.
+	 * If an error occurred, NULL will be returned.
+	 * @param $hours (float)
+	 * returns mixed
+	 */
+	public function isHourlyMilestone($hours) {
+		
+		$milestoneResult = false;
+		
+		$gtHours = $this->getGrandTotalHours();
+		// get the hourly milestones from the system settings
+		$hourlyMilestones = $this->xpdo->getOption('studentcentre.hourly_milestones', $scriptProperties, '');
+		if (empty($hourlyMilestones)) {
+			$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Hourly milestones are empty! Please set them in System Settings.');
+			return null;
+		}
+		// get the certificate tpl type for hourly milestones
+		$certType = $modx->getObject('scCertificateType', array(
+			'name' => 'Hour'
+		));
+		if (!$certType) {
+			$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Could not get the certificate type object.');
+			return null;
+		}
+		// loop through each hourly milestone and check if one was passed
+		$arrHourlyMilestones = explode(',', str_replace(' ', '', $hourlyMilestones));
+		foreach ($arrHourlyMilestones as $milestone) {
+			if ($gtHours < $milestone && $milestone <= ($gtHours + $hours)) {
+				// create the certificate
+				$newCertificate = $this->xpdo->newObject('scCertificate', array(
+					'student_id' => $this->xpdo->get('student_id')
+					,'certificate_type_id' => $certType->get('id')
+					,'hours' => $milestone
+					,'flag' => 1
+					,'date_created' => date('Y-m-d')
+				));
+				if (!$newCertificate->save()) {
+				   $this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Could not save the newly created hourly certificate for studentId: ' . $this->xpdo->get('student_id'));
+				   return null;
+				}
+				$milestoneResult = $milestone;
+			}
+		}
+		return $milestoneResult;
+	}
+	
 }

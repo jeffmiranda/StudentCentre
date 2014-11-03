@@ -96,22 +96,6 @@ if (!empty($attendees)) {
 				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the first level of the class!');
 				return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
 			}
-/*
-			$q = $modx->newQuery('scClassLevel');
-			$q->where(array(
-				'class_level_category_id' => $class->get('class_level_category_id')
-				,'active' => 1
-			));
-			$q->sortby('`order`', 'ASC');
-			$q->limit(1);
-			//$q->prepare();
-			//$modx->log(1,print_r('SQL Statement: ' . $q->toSQL(),true));			
-			$classLevel = $modx->getObject('scClassLevel', $q);
-			if (!$classLevel) {
-				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the first level of the class!');
-				return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
-			}
-*/
 			$classProgress = $modx->newObject('scClassProgress', array(
 				'class_level_category_id' => $class->get('class_level_category_id'),
 				'student_id' => $attendee->get('student_id'),
@@ -124,12 +108,15 @@ if (!empty($attendees)) {
 		}
 		
 		// get student object and begin determining hourly milestone
+/*
 		$student = $modx->getObject('scModUser', $attendee->get('student_id'));
 		if (!$student) {
 			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the student object!');
 			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
 		}
 		$gtHours = $student->getGrandTotalHours();
+*/
+		$gtHours = $classProgress->getGrandTotalHours();
 		$hourlyMilestones = $modx->getOption('studentcentre.hourly_milestones', $scriptProperties, '');
 		if (empty($hourlyMilestones)) {
 			$modx->log(modX::LOG_LEVEL_ERROR, 'Hourly milestones are empty! Please set them in System Settings.');
