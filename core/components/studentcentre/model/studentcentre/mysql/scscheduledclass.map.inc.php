@@ -36,7 +36,8 @@ $xpdo_meta_map['scScheduledClass']= array (
     ),
     'duration' => 
     array (
-      'dbtype' => 'float',
+      'dbtype' => 'decimal',
+      'precision' => '3,2',
       'attributes' => 'unsigned',
       'phptype' => 'float',
       'null' => false,

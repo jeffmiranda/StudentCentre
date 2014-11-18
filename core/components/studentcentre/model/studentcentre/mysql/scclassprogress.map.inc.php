@@ -52,14 +52,16 @@ $xpdo_meta_map['scClassProgress']= array (
     ),
     'hours_since_leveling' => 
     array (
-      'dbtype' => 'float',
+      'dbtype' => 'decimal',
+      'precision' => '6,2',
       'attributes' => 'unsigned',
       'phptype' => 'float',
       'null' => false,
     ),
     'total_hours' => 
     array (
-      'dbtype' => 'float',
+      'dbtype' => 'decimal',
+      'precision' => '8,2',
       'attributes' => 'unsigned',
       'phptype' => 'float',
       'null' => false,

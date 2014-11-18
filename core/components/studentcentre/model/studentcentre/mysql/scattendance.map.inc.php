@@ -43,7 +43,8 @@ $xpdo_meta_map['scAttendance']= array (
     ),
     'hours' => 
     array (
-      'dbtype' => 'float',
+      'dbtype' => 'decimal',
+      'precision' => '3,2',
       'attributes' => 'unsigned',
       'phptype' => 'float',
       'null' => false,

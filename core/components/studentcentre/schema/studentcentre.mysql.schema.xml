@@ -18,6 +18,8 @@
 		<field key="firstname" dbtype="varchar" precision="100" phptype="string" null="false" default="" />
 		<field key="middlename" dbtype="varchar" precision="100" phptype="string" null="false" default="" />
 		<field key="lastname" dbtype="varchar" precision="100" phptype="string" null="false" default="" />
+		<field key="start_date" dbtype="int" precision="10" phptype="integer" null="false" default="0"/>
+		<field key="japanesename" dbtype="varchar" precision="100" phptype="string" null="false" default="" />
 		<field key="postalcode" dbtype="varchar" precision="25" phptype="string" null="false" default="" />
 		<field key="province" dbtype="varchar" precision="25" phptype="string" null="false" default="" />
 		<field key="contactname1" dbtype="varchar" precision="100" phptype="string" null="false" default="" />
@@ -196,8 +198,8 @@
 		<field key="name" dbtype="varchar" precision="100" phptype="string" null="false" />
 		<field key="description" dbtype="text" phptype="string" null="false" />
 		<field key="hours_required" dbtype="smallint" precision="5" attributes="unsigned" phptype="integer" null="false" />
-		<field key="test_threshold" dbtype="float" attributes="unsigned" phptype="float" null="false" default="0.75" />
-		<field key="order" dbtype="float" attributes="unsigned" phptype="float" null="false" />
+		<field key="test_threshold" dbtype="decimal" precision="3,2" attributes="unsigned" phptype="float" null="false" default="0.75" />
+		<field key="order" dbtype="decimal" precision="5,2" attributes="unsigned" phptype="float" null="false" />
 		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
 		<field key="date_created" dbtype="date" phptype="date" null="false" />
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
@@ -223,7 +225,7 @@
 	<object class="scLevelTechnique" table="level_techniques" extends="xPDOSimpleObject">
 		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
 		<field key="technique_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
-		<field key="order" dbtype="float" attributes="unsigned" phptype="float" null="false" />
+		<field key="order" dbtype="decimal" precision="5,2" attributes="unsigned" phptype="float" null="false" />
 		<field key="date_created" dbtype="date" phptype="date" null="false" />
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
 		
@@ -268,8 +270,8 @@
 		<field key="class_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
 		<field key="student_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
 		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
-		<field key="hours_since_leveling" dbtype="float" attributes="unsigned" phptype="float" null="false" />
-		<field key="total_hours" dbtype="float" attributes="unsigned" phptype="float" null="false" />
+		<field key="hours_since_leveling" dbtype="decimal" precision="6,2" attributes="unsigned" phptype="float" null="false" />
+		<field key="total_hours" dbtype="decimal" precision="8,2" attributes="unsigned" phptype="float" null="false" />
 		<field key="test_ready" dbtype="tinyint" precision="1" attributes="unsigned" phptype="integer" null="false" default="0" />
 		<field key="date_created" dbtype="date" phptype="date" null="false" />
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
@@ -293,7 +295,7 @@
 	<object class="scScheduledClass" table="scheduled_classes" extends="xPDOSimpleObject">
 		<field key="class_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
 		<field key="location_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
-		<field key="duration" dbtype="float" attributes="unsigned" phptype="float" null="false" default="1" />
+		<field key="duration" dbtype="decimal" precision="3,2" attributes="unsigned" phptype="float" null="false" default="1" />
 		<field key="start_date" dbtype="date" phptype="date" null="false" />
 		<field key="end_date" dbtype="date" phptype="date" null="false" />
 		<field key="description" dbtype="varchar" precision="20" phptype="string" null="false" />
@@ -322,7 +324,7 @@
 		<field key="student_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
 		<field key="scheduled_class_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
 		<field key="test" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="0" />
-		<field key="hours" dbtype="float" attributes="unsigned" phptype="float" null="false" />
+		<field key="hours" dbtype="decimal" precision="3,2" attributes="unsigned" phptype="float" null="false" />
 		<field key="date" dbtype="date" phptype="date" null="false" />
 		<field key="date_created" dbtype="date" phptype="date" null="false" />
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
@@ -351,7 +353,7 @@
 		<!-- <field key="certificate_tpl_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" /> -->
 		<field key="level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="true" />
 		<field key="certificate_type_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
-		<field key="hours" dbtype="float" attributes="unsigned" phptype="float" null="true" />
+		<field key="hours" dbtype="decimal" precision="8,2" attributes="unsigned" phptype="float" null="true" />
 		<field key="anniversary" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="true" />
 		<field key="flag" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="1" />
 		<field key="date_created" dbtype="date" phptype="date" null="false" />

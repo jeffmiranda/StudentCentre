@@ -32,7 +32,8 @@ $xpdo_meta_map['scLevelTechnique']= array (
     ),
     'order' => 
     array (
-      'dbtype' => 'float',
+      'dbtype' => 'decimal',
+      'precision' => '5,2',
       'attributes' => 'unsigned',
       'phptype' => 'float',
       'null' => false,

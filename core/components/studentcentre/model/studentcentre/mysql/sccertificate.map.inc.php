@@ -43,7 +43,8 @@ $xpdo_meta_map['scCertificate']= array (
     ),
     'hours' => 
     array (
-      'dbtype' => 'float',
+      'dbtype' => 'decimal',
+      'precision' => '8,2',
       'attributes' => 'unsigned',
       'phptype' => 'float',
       'null' => true,

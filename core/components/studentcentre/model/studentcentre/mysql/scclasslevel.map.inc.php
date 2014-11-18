@@ -49,7 +49,8 @@ $xpdo_meta_map['scClassLevel']= array (
     ),
     'test_threshold' => 
     array (
-      'dbtype' => 'float',
+      'dbtype' => 'decimal',
+      'precision' => '3,2',
       'attributes' => 'unsigned',
       'phptype' => 'float',
       'null' => false,
@@ -57,7 +58,8 @@ $xpdo_meta_map['scClassLevel']= array (
     ),
     'order' => 
     array (
-      'dbtype' => 'float',
+      'dbtype' => 'decimal',
+      'precision' => '5,2',
       'attributes' => 'unsigned',
       'phptype' => 'float',
       'null' => false,
