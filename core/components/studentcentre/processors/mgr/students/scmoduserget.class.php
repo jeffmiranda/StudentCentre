@@ -17,6 +17,7 @@ class scModUserGetProcessor extends modObjectGetProcessor {
     public function beforeOutput() {
 
         $this->getStudentProfile();
+        $this->formatStartDate();
         $this->formatBirthDate();
         return parent::beforeOutput();
 
@@ -38,6 +39,22 @@ class scModUserGetProcessor extends modObjectGetProcessor {
     
     }
     
+    public function formatStartDate() {
+
+    	$success = false;
+    	
+    	if ($this->object->get('start_date')) {
+	    	$startDate = date('d-m-Y', $this->object->get('start_date'));
+	    	$this->object->set('start_date', $startDate);
+	    	$success = true;
+    	} else {
+	    	$this->object->set('start_date', '');
+    	}
+    	
+    	return $success;
+    
+    }
+    
     public function formatBirthDate() {
 
     	$success = false;
@@ -46,6 +63,8 @@ class scModUserGetProcessor extends modObjectGetProcessor {
 	    	$dob = date('d-m-Y', $this->object->get('dob'));
 	    	$this->object->set('dob', $dob);
 	    	$success = true;
+    	} else {
+	    	$this->object->set('dob', '');
     	}
     	
     	return $success;

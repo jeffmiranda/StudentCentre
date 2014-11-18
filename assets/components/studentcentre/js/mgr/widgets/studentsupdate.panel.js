@@ -96,6 +96,11 @@ StudentCentre.panel.StudentsUpdate = function(config) {
 			            ,allowBlank: false
 			            ,anchor: '100%'
 			        },{
+			            xtype: 'datefield'
+			            ,name: 'start_date'
+			            ,fieldLabel: _('studentcentre.start_date')
+			            ,format: 'd-m-Y'
+			        },{
 			        	xtype: 'combo-gender-status'
 			        	,fieldLabel: _('studentcentre.gender')
 			            ,name: 'gender'
@@ -361,7 +366,7 @@ Ext.extend(StudentCentre.panel.StudentsUpdate,MODx.FormPanel,{
 			            ,id: this.config.studentId
 		            }
 		            ,success: function(form, action) {
-		                Ext.MessageBox.alert(_('studentcentre.success'), action.result.message, function() {
+		                Ext.MessageBox.alert(_('studentcentre.success'), _('studentcentre.stu_student_update_success'), function() {
 			                location.href = '?a='+StudentCentre.action+'&action=studentshome';
 		                });
 		            }

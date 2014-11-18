@@ -1,5 +1,6 @@
 <?php
 require_once MODX_CORE_PATH.'model/modx/processors/security/user/create.class.php';
+require_once (dirname(__FILE__).'/_scvalidation.php');
 
 class scModUserCreateProcessor extends modUserCreateProcessor {
     public $classKey = 'scModUser';
@@ -8,6 +9,8 @@ class scModUserCreateProcessor extends modUserCreateProcessor {
  
     /** @var modUserProfile $profile */
     public $studentProfile;
+    /** @var scModUserValidation $scValidator */
+    public $scValidator;
     
     public function initialize() {
         $this->setDefaultProperties(array(
@@ -20,7 +23,7 @@ class scModUserCreateProcessor extends modUserCreateProcessor {
     }
     
     public function beforeSet() {
-    
+    	
 		$date = date('Y-m-d');
 		$this->setProperty('date_created',$date);
 		return parent::beforeSet();
@@ -33,6 +36,9 @@ class scModUserCreateProcessor extends modUserCreateProcessor {
      */
     public function beforeSave() {
         $this->addStudentProfile();
+        $this->scValidator = new scModUserValidation($this, $this->object, $this->studentProfile);
+        $this->scValidator->validate();
+        
         return parent::beforeSave();
     }
     

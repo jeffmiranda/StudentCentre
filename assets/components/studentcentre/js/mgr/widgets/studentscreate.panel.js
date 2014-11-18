@@ -24,6 +24,7 @@ Ext.reg('combo-gender-status', StudentCentre.combo.Gender);
 // !Student Create
 StudentCentre.panel.StudentsCreate = function(config) {
     config = config || {};
+    var today = new Date();
     Ext.apply(config,{
         border: false
         ,url: StudentCentre.config.connectorUrl
@@ -94,6 +95,12 @@ StudentCentre.panel.StudentsCreate = function(config) {
 			            ,name: 'lastname'
 			            ,allowBlank: false
 			            ,anchor: '100%'
+			        },{
+			            xtype: 'datefield'
+			            ,name: 'start_date'
+			            ,fieldLabel: _('studentcentre.start_date')
+			            ,format: 'd-m-Y'
+			            ,value: today
 			        },{
 			        	xtype: 'combo-gender-status'
 			        	,fieldLabel: _('studentcentre.gender')
@@ -333,7 +340,7 @@ Ext.extend(StudentCentre.panel.StudentsCreate,MODx.FormPanel,{
 			            action: 'mgr/students/scModUserCreate'
 		            }
 		            ,success: function(form, action) {
-		                Ext.MessageBox.alert(_('studentcentre.success'), action.result.message, function() {
+		                Ext.MessageBox.alert(_('studentcentre.success'), _('studentcentre.stu_student_create_success'), function() {
 			                location.href = '?a='+StudentCentre.action+'&action=studentshome';
 		                });
 		            }

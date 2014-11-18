@@ -72,6 +72,7 @@ $_lang['studentcentre.male'] = 'Male';
 $_lang['studentcentre.female'] = 'Female';
 $_lang['studentcentre.yes'] = 'Yes';
 $_lang['studentcentre.no'] = 'No';
+$_lang['studentcentre.start_date'] = 'Start date';
 $_lang['studentcentre.birth_date'] = 'Birth date';
 $_lang['studentcentre.create_student'] = 'Create student';
 $_lang['studentcentre.update_student'] = 'Update student';
@@ -140,6 +141,10 @@ $_lang['studentcentre.description'] = 'Description';
 $_lang['studentcentre.search...'] = 'Search...';
 $_lang['studentcentre.active'] = 'Active';
 $_lang['studentcentre.top_downloaded'] = 'Top Downloaded Doodles';
+
+$_lang['studentcentre.stu_student_create_success'] = 'Student successfully created!';
+$_lang['studentcentre.stu_student_update_success'] = 'Student successfully updated!';
+$_lang['studentcentre.stu_err_invalid_start_date'] = 'Invalid start date';
 
 $_lang['studentcentre.ass'] = 'Student Centre - Assignments';
 $_lang['studentcentre.ass_desc'] = 'Manage all of your students\' assignments.';
@@ -322,6 +327,7 @@ $_lang['studentcentre.att_err_upd_attendance'] = 'Could not update the attendanc
 $_lang['studentcentre.att_err_test_load'] = 'Could not load the test!';
 $_lang['studentcentre.att_err_test_no_techniques'] = 'Could not load the test because there are no techniques for this level!';
 $_lang['studentcentre.att_err_getting_students'] = 'Could not retrieve the sorted list of students';
+$_lang['studentcentre.att_err_creating_classprogress'] = 'There was an error creating the classProgress record.';
 $_lang['studentcentre.stu'] = 'Student Centre - Student Manager';
 $_lang['studentcentre.stu_desc'] = 'Manage your students and profiles.';
 $_lang['user_created_password_message'] = 'Student successfully created!';

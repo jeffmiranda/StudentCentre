@@ -1,5 +1,6 @@
 <?php
 require_once MODX_CORE_PATH.'model/modx/processors/security/user/update.class.php';
+require_once (dirname(__FILE__).'/_scvalidation.php');
 /**
  * Update a student.
  *
@@ -13,6 +14,8 @@ class scModUserUpdateProcessor extends modUserUpdateProcessor {
 
     /** @var modUserProfile $profile */
     public $studentProfile;
+    /** @var scModUserValidation $scValidator */
+    public $scValidator;
 
     /**
      * {@inheritDoc}
@@ -20,6 +23,8 @@ class scModUserUpdateProcessor extends modUserUpdateProcessor {
      */
     public function beforeSave() {
         $this->setStudentProfile();
+        $this->scValidator = new scModUserValidation($this, $this->object, $this->studentProfile);
+        $this->scValidator->validate();
         return parent::beforeSave();
     }
 

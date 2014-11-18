@@ -10,6 +10,8 @@ $xpdo_meta_map['scStudentProfile']= array (
     'firstname' => '',
     'middlename' => '',
     'lastname' => '',
+    'start_date' => 0,
+    'japanesename' => '',
     'postalcode' => '',
     'province' => '',
     'contactname1' => '',
@@ -75,6 +77,22 @@ $xpdo_meta_map['scStudentProfile']= array (
       'default' => '',
     ),
     'lastname' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '100',
+      'phptype' => 'string',
+      'null' => false,
+      'default' => '',
+    ),
+    'start_date' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'null' => false,
+      'default' => 0,
+    ),
+    'japanesename' => 
     array (
       'dbtype' => 'varchar',
       'precision' => '100',
