@@ -36,8 +36,17 @@ class scAttendanceUpdateProcessor extends modObjectUpdateProcessor {
 			
 			// If hours have been removed...
 			if ($hourDiff < 0) {
+				// delete hours
 				$progress->deleteHours(abs($hourDiff), $this->object->get('date'));
 			} else { // hours have been added
+				// Begin determining hourly milestone
+				$milestone = $progress->isHourlyMilestone($hourDiff);
+				if (is_numeric($milestone) && $milestone > 0) {
+					// Do something if you want (perhaps notify of milestone?)
+				} else {
+					$this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to determine hourly milestone');
+				}
+				// increment hours
 				$progress->addHours($hourDiff);
 			}
 			

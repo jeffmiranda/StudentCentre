@@ -83,7 +83,7 @@ if (!empty($attendees)) {
 			'class_level_category_id' => $class->get('class_level_category_id'),
 			'student_id' => $attendee->get('student_id')
 		));
-		// else create a new one and assign the first level to it
+		// else create a new one and assign the first level to it (for visitors to the class)
 		if (!$classProgress) {
 			// get the first level of the class
 			$classLevelCategory = $modx->getObject('scClassLevelCategory', $class->get('class_level_category_id'));
@@ -107,46 +107,26 @@ if (!empty($attendees)) {
 			));
 		}
 		
-		// get student object and begin determining hourly milestone
-/*
-		$student = $modx->getObject('scModUser', $attendee->get('student_id'));
-		if (!$student) {
-			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the student object!');
-			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
+		// Begin determining hourly milestone
+		$hourlyMilestone = $classProgress->isHourlyMilestone($attendee->get('hours'));
+		if (is_numeric($hourlyMilestone) && ($hourlyMilestone > 0)) {
+			// A milestone was returned. Do something if you want (perhaps notify of milestone?).
+		} elseif ($hourlyMilestone === false) {
+			// A milestone does not exist. Do something if you want.
+		} else {
+			// An error occurred trying to determine if a milestone was passed
+			$modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to determine hourly milestone');
 		}
-		$gtHours = $student->getGrandTotalHours();
-*/
-		$gtHours = $classProgress->getGrandTotalHours();
-		$hourlyMilestones = $modx->getOption('studentcentre.hourly_milestones', $scriptProperties, '');
-		if (empty($hourlyMilestones)) {
-			$modx->log(modX::LOG_LEVEL_ERROR, 'Hourly milestones are empty! Please set them in System Settings.');
-			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
-		}
-		// get the certificate tpl type for hourly milestones
-		$certType = $modx->getObject('scCertificateType', array(
-			'name' => 'Hour'
-		));
-		if (!$certType) {
-			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate type object.');
-			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
-		}
-		// get the hourly milestones from the system settings
-		$arrHourlyMilestones = explode(',', str_replace(' ', '', $hourlyMilestones));
-		foreach ($arrHourlyMilestones as $milestone) {
-			if ($gtHours < $milestone && $milestone <= ($gtHours + $attendee->get('hours'))) {
-				// create the certificate
-				$newCertificate = $modx->newObject('scCertificate', array(
-					'student_id' => $attendee->get('student_id')
-					,'certificate_type_id' => $certType->get('id')
-					,'hours' => $milestone
-					,'flag' => 1
-					,'date_created' => date('Y-m-d')
-				));
-				if (!$newCertificate->save()) {
-				   $modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the newly created hourly certificate for studentId: ' . $attendee->get('student_id'));
-				   return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_stu_progress'));
-				}
-			}
+		
+		// Begin determining anniversary milestone
+		$annMilestone = $classProgress->isAnniversaryMilestone($classDate);
+		if (is_numeric($annMilestone) && ($annMilestone > 0)) {
+			// A milestone was returned. Do something if you want (perhaps notify of milestone?).
+		} elseif ($annMilestone === false) {
+			// A milestone does not exist. Do something if you want.
+		} else {
+			// An error ocurred trying to determine if a milestone exists
+			$modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to determine anniversary milestone');
 		}
 			
 		// increment hours of class progress object
@@ -155,6 +135,13 @@ if (!empty($attendees)) {
 		// !Threshold Test
 		if ($classProgress->isTestReady() || ($attendee->get('test') == 1)) {
 			$classProgress->set('test_ready', 1);
+			// Create leveling certificate
+			$nextLevel = $classProgress->getNextLevel();
+			if ($nextLevel) {
+				$classProgress->createCertificate($attendee->get('student_id'), 'Level', $nextLevel->get('id'));
+			} else {
+				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the next level for this student. studentId: ' . $attendee->get('student_id'));
+			}
 		} else {
 			$classProgress->set('test_ready', 0);
 		}

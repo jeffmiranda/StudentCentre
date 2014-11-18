@@ -41,8 +41,8 @@ class scCertificateTplGetList extends modObjectGetListProcessor {
 			,ClassLevel.name AS `level_name`
 		'));
 					    
-		$c->prepare();
-		$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
+		//$c->prepare();
+		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
 	    return $c;
 	    
 	}

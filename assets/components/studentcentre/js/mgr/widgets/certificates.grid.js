@@ -7,7 +7,7 @@ StudentCentre.grid.Certificates = function(config) {
         ,baseParams: {
         	action: 'mgr/certificates/scCertificateGetList'
         }
-        ,fields: ['id','student_id','certificate_type_id','level_id','certificate_type','username','hours','anniversary','flag','date_created']
+        ,fields: ['id','student_id','certificate_type_id','level_id','certificate_type','username','level_name','hours','anniversary','flag','date_created']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'

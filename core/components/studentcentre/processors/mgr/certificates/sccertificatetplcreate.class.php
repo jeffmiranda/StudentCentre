@@ -19,18 +19,16 @@ class scCertificateTplCreateProcessor extends modObjectCreateProcessor {
             $this->addFieldError('certificate_type_id',$this->modx->lexicon('studentcentre.cert_err_ns_tpl_type'));
         }
         
-        // get the certificate types
-		$certTypeAnn = $modx->getObject('scCertificateType', array('name' => 'Anniversary'));
-		$certTypeHour = $modx->getObject('scCertificateType', array('name' => 'Hour'));
-		$certTypeLevel = $modx->getObject('scCertificateType', array('name' => 'Level'));
-		if (!$certTypeAnn || !$certTypeHour || !$certTypeLevel) {
-			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate type object(s).');
+        // get the certificate type object
+		$certType = $this->modx->getObject('scCertificateType', $typeId);
+		if (!$certType) {
+			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate type object.');
 			return $modx->error->failure($modx->lexicon('studentcentre.cert_err_ns_tpl_type'));
 		}
 		
 	    // if template type is ANNIVERSARY or HOUR
 	    // There can only be one of these types
-        } elseif ($typeId == $certTypeAnn->get('id') || $typeId == $certTypeHour->get('id')) {
+        if (($certType->get('name') == 'Anniversary') || ($certType->get('name') == 'Hour')) {
 	        $certTplNum = $this->modx->getCount('scCertificateTpl', array(
 	        	'certificate_type_id' => $typeId
 	        ));
@@ -40,9 +38,9 @@ class scCertificateTplCreateProcessor extends modObjectCreateProcessor {
 
         // if template type is LEVEL
         // There can only be one template per level
-        } elseif ($typeId == $certTypeLevel->get('id')) {
+        } elseif ($certType->get('name') == 'Level') {
         	$levelId = $this->getProperty('level_id');
-	        if ($levelId == 0 || empty($levelId)) {
+	        if (($levelId == 0) || empty($levelId)) {
 		    	$this->addFieldError('level_id',$this->modx->lexicon('studentcentre.cert_err_ns_level_id'));
 	        } else {
 		        $certTplNum = $this->modx->getCount('scCertificateTpl', array(

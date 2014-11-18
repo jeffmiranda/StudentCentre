@@ -41,7 +41,17 @@ class Certificate extends PDF_Japanese {
 	// Set anniversary
 	function setAnniversary(int $years) {
 		
-		// do something
+		// set the anniversary year
+		$this->SetXY(562, 520);
+		$this->SetFont('Helvetica', 'B', 72);
+		$this->Cell(100, 50, $years, 0, 0, 'C');
+		
+		// set the anniversary footer text
+		$this->SetXY(562, 590);
+		$this->SetFont('Helvetica', '', 38);
+		$plural = '';
+		if ($years > 1) $plural = 's';
+		$this->Cell(100, 50, "year$plural of sincere training.", 0, 0, 'C');
 
 	}
 	
@@ -116,22 +126,22 @@ class scCertificateGenerateProcessor extends modProcessor {
     	
     	// get the certificate template
     	$typeName = $certType->get('name');
-    	switch ($typeName) {
-			case 'Anniversary':
+    	switch (strtolower($typeName)) {
+			case 'anniversary':
 				$certTpl = $this->modx->getObject('scCertificateTpl', array('certificate_type_id' => $certType->get('id')));
 				if (!$certTpl) {
 			    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the anniversary template object!');
 			    	return false;
 				}
 				break;
-			case 'Hour':
+			case 'hour':
 				$certTpl = $this->modx->getObject('scCertificateTpl', array('certificate_type_id' => $certType->get('id')));
 				if (!$certTpl) {
 			    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the hour template object!');
 			    	return false;
 				}
 				break;
-			case 'Level':
+			case 'level':
 				$certTpl = $this->modx->getObject('scCertificateTpl', array(
 					'certificate_type_id' => $certType->get('id')
 					,'level_id' => $certObj->get('level_id')
@@ -165,18 +175,26 @@ class scCertificateGenerateProcessor extends modProcessor {
 		// set name
 		$certificate->setName($studentProfile->get('firstname') . ' ' . $studentProfile->get('lastname'));
 		
+		// begin creating filename
+		$fileName = 'certificate_' . strtolower($typeName) . '_';
+		
 		// set value depending on type
-		switch ($typeName) {
-			case 'Anniversary':
+		switch (strtolower($typeName)) {
+			case 'anniversary':
 				$certificate->setAnniversary($certObj->get('anniversary'));
+				$fileName .= $certObj->get('anniversary') . '_';
 				break;
-			case 'Hour':
+			case 'hour':
 				$certificate->setHours($certObj->get('hours'));
+				$fileName .= $certObj->get('hours') . '_';
 				break;
-			case 'Level':
-				// do something?
+			case 'level':
+				$classLevel = $certTpl->getOne('ClassLevel');
+				$levelName = str_replace(' ', '_', strtolower($classLevel->get('name')));
+				$fileName .= $levelName . '_';
 				break;
 		}
+		$fileName .= $student->get('username') . '.pdf';
 		
 		// set date
 		$date = $certObj->get('date_created');
@@ -194,7 +212,7 @@ class scCertificateGenerateProcessor extends modProcessor {
 		// set headers and get ready to output!
 		header('Content-type: application/pdf');
         header('Content-Disposition: attachment; filename="certificate.pdf"');
-		return $certificate->Output('certificate.pdf', 'I');
+		return $certificate->Output($fileName, 'I');
 
     }
 
