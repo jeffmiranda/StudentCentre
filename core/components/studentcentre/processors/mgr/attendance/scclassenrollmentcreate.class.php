@@ -4,6 +4,14 @@ class scClassEnrollmentCreateProcessor extends modObjectCreateProcessor {
     public $languageTopics = array('studentcentre:default');
     public $objectType = 'studentcentre.att';
  
+    public function beforeSet() {
+    
+		$date = date('Y-m-d');
+		$this->setProperty('date_created',$date);
+		return parent::beforeSet();
+    
+    }
+    
     public function beforeSave() {
         
         $studentId = $this->getProperty('student_id');
@@ -18,6 +26,40 @@ class scClassEnrollmentCreateProcessor extends modObjectCreateProcessor {
                 
         return parent::beforeSave();
         
+    }
+    
+    public function afterSave() {
+	    
+	    // Create the scClassProgress record
+		$scheduledClass = $this->object->getOne('ScheduledClass');
+		$class = $scheduledClass->getOne('Class');
+		$classLevelCategory = $class->getOne('ClassLevelCategory');
+		if (!$classLevelCategory) {
+			$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the class level category object!');
+			return $this->failure($this->modx->lexicon('studentcentre.att_err_creating_classprogress'));
+		}
+		$firstLevel = $classLevelCategory->getFirstLevel();
+		if (!$firstLevel) {
+			$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the first level of the class!');
+			return $this->failure($this->modx->lexicon('studentcentre.att_err_creating_classprogress'));
+		}
+		$classProgress = $this->modx->newObject('scClassProgress', array(
+			'class_level_category_id' => $classLevelCategory->get('id')
+			,'student_id' => $this->object->get('student_id')
+			,'level_id' => $firstLevel->get('id')
+			,'hours_since_leveling' => 0
+			,'total_hours' => 0
+			,'test_ready' => 0
+			,'date_created' => date('Y-m-d')
+		));
+		// save class progress object to db
+		if (!$classProgress->save()) {
+			$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the class progress object!');
+			return $this->failure($this->modx->lexicon('studentcentre.att_err_creating_classprogress'));
+		}
+		
+		return parent::afterSave();
+	    
     }
 }
 return 'scClassEnrollmentCreateProcessor';
