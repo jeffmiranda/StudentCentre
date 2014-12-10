@@ -258,7 +258,7 @@ Ext.extend(StudentCentre.panel.AttendanceHome,MODx.Panel, {
 						Ext.each(students, function(student, index, allItems) {
 							var row = {
 								xtype: 'compositefield'
-								,fieldLabel: student.student_name
+								,fieldLabel: student.username
 								//,id: 'student_id_' + student.student_id
 								,flex: 1
 								,items: [{

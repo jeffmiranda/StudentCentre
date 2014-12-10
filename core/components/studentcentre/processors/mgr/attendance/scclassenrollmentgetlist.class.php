@@ -3,7 +3,7 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
     
     public $classKey = 'scClassEnrollment';
     public $languageTopics = array('studentcentre:default');
-    public $defaultSortField = 'student_name';
+    public $defaultSortField = 'username';
     public $defaultSortDirection = 'ASC';
     public $objectType = 'studentcentre.att';
     
@@ -69,8 +69,7 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
 	    $query = $this->getProperty('query');
 	    if (!empty($query)) {
 	        $c->where(array(
-	            'StudentProfile.firstname:LIKE' => '%'.$query.'%'
-	            ,'OR:StudentProfile.lastname:LIKE' => '%'.$query.'%'
+	            'Student.username:LIKE' => '%'.$query.'%'
 	            ,'OR:Class.name:LIKE' => '%'.$query.'%'
 	            ,'OR:Location.name:LIKE' => '%'.$query.'%'
 	        ));
@@ -92,10 +91,11 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
 	            'scClassEnrollment.active' => $activeOnly
 	        ));
 	    }
-	    	    	    
+	    
+	    // CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`   	    
 	    $c->select(array('
 			scClassEnrollment.*
-			,CONCAT(StudentProfile.firstname, " ", StudentProfile.lastname) AS `student_name`
+			,Student.username
 			,Class.name AS `class_name`
 			,Location.name AS `location_name`
 			,ScheduledClass.description AS `description`

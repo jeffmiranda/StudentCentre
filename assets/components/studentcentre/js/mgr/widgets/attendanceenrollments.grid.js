@@ -5,11 +5,11 @@ StudentCentre.grid.AttendanceClassEnrollments = function(config) {
         id: 'studentcentre-grid-attendance-class-enrollments'
         ,url: StudentCentre.config.connectorUrl
         ,baseParams: { action: 'mgr/attendance/scClassEnrollmentGetList' }
-        ,fields: ['id', 'student_id', 'scheduled_class_id', 'student_name', 'class_name', 'description', 'location_name', 'day', 'date_created', 'active']
+        ,fields: ['id', 'student_id', 'scheduled_class_id', 'username', 'class_name', 'description', 'location_name', 'day', 'date_created', 'active']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
-        ,autoExpandColumn: 'student_name'
+        ,autoExpandColumn: 'username'
         ,sortBy: 'scheduled_class_id'
         ,grouping: true
         ,groupBy: 'class_name'
@@ -33,9 +33,9 @@ StudentCentre.grid.AttendanceClassEnrollments = function(config) {
             ,dataIndex: 'scheduled_class_id'
             ,name: 'scheduled_class_id'
         },{
-            header: _('studentcentre.student_name')
-            ,dataIndex: 'student_name'
-            ,name: 'student_name'
+            header: _('studentcentre.username')
+            ,dataIndex: 'username'
+            ,name: 'username'
             ,sortable: true
             ,width: 100
         },{
@@ -311,8 +311,8 @@ StudentCentre.window.UpdateClassEnrollment = function(config) {
             ,name: 'id'
         },{
             xtype: 'displayfield'
-            ,fieldLabel: _('studentcentre.student_name')
-            ,name: 'student_name'
+            ,fieldLabel: _('studentcentre.username')
+            ,name: 'username'
         },{
             xtype: 'displayfield'
             ,fieldLabel: _('studentcentre.class')
