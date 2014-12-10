@@ -76,11 +76,24 @@ class scAttendanceCreateProcessor extends modObjectCreateProcessor {
 		}
 		
 		// Begin determining hourly milestone
-		$milestone = $classProgress->isHourlyMilestone($this->object->get('hours'));
-		if (is_numeric($milestone) && $milestone > 0) {
+		$hourlyMilestone = $classProgress->isHourlyMilestone($this->object->get('hours'));
+		if (is_numeric($hourlyMilestone) && ($hourlyMilestone > 0)) {
 			// Do something if you want (perhaps notify of milestone?)
+		} elseif ($hourlyMilestone === false) {
+			// A milestone does not exist. Do something if you want.
 		} else {
 			$this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to determine hourly milestone');
+		}
+		
+		// Begin determining anniversary milestone
+		$annMilestone = $classProgress->isAnniversaryMilestone($this->object->get('date'));
+		if (is_numeric($annMilestone) && ($annMilestone > 0)) {
+			// A milestone was returned. Do something if you want (perhaps notify of milestone?).
+		} elseif ($annMilestone === false) {
+			// A milestone does not exist. Do something if you want.
+		} else {
+			// An error ocurred trying to determine if a milestone exists
+			$this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to determine anniversary milestone');
 		}
 			
 		// increment hours of class progress object
