@@ -22,7 +22,7 @@ class Certificate extends PDF_Japanese {
 	function Footer() { }
 	
 	// Set template image
-	function setTpl(string $path) {
+	function setTpl($path) {
 		if (file_exists($path)) {
 			$this->Image($path, 0, 0, 1224);
 			return true;
@@ -32,14 +32,14 @@ class Certificate extends PDF_Japanese {
 	}
 	
 	// Set name
-	function setName(string $name) {
+	function setName($name) {
 		$this->SetXY(562, 310);
 		$this->SetFont('Helvetica', '', 72);
 		$this->Cell(100, 50, $name, 0, 0, 'C');
 	}
 	
 	// Set anniversary
-	function setAnniversary(int $years) {
+	function setAnniversary($years) {
 		
 		// set the anniversary year
 		$this->SetXY(562, 520);
@@ -56,7 +56,7 @@ class Certificate extends PDF_Japanese {
 	}
 	
 	// Set hours
-	function setHours(float $hours) {
+	function setHours($hours) {
 		
 		$this->SetXY(562, 520);
 		$this->SetFont('Helvetica', 'B', 72);
@@ -65,7 +65,7 @@ class Certificate extends PDF_Japanese {
 	}
 	
 	// Set date
-	function setDate(string $date) {
+	function setDate($date) {
 		
 		$this->SetXY(1041, 685);
 		$this->SetFont('Helvetica', '', 22);
@@ -83,7 +83,7 @@ class scCertificateGenerateProcessor extends modProcessor {
         $cId = $this->getProperty('cid');
         if (!empty($cId)) {
             $o = $this->generate($cId);
-            if (!$o) {
+            if ($o === false) {
             	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Certificate failed to generate!');
 	            $o = $this->failure($this->modx->lexicon('studentcentre.cert_err_generation'));
             }
@@ -105,22 +105,22 @@ class scCertificateGenerateProcessor extends modProcessor {
     	// get the certificate objects
     	$certObj = $this->modx->getObject('scCertificate', $cId);
     	if (!$certObj) {
-	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate object!');
+	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate object with ID: ' . $cId);
 	    	return false;
     	}
     	$student = $certObj->getOne('Student');
     	if (!$student) {
-	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the student object!');
+	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the student object! Certificate ID: ' . $cId . '; Student ID: ' . $certObj->get('student_id'));
 	    	return false;
     	}
     	$studentProfile = $student->getOne('StudentProfile');
     	if (!$studentProfile) {
-	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the student profile object!');
+	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the student profile object! Certificate ID: ' . $cId . '; Student ID: ' . $certObj->get('student_id'));
 	    	return false;
     	}
     	$certType = $certObj->getOne('CertificateType');
     	if (!$certType) {
-	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate type object!');
+	    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the certificate type object! Certificate ID: ' . $cId . '; Student ID: ' . $certObj->get('student_id'));
 	    	return false;
     	}
     	
@@ -130,14 +130,14 @@ class scCertificateGenerateProcessor extends modProcessor {
 			case 'anniversary':
 				$certTpl = $this->modx->getObject('scCertificateTpl', array('certificate_type_id' => $certType->get('id')));
 				if (!$certTpl) {
-			    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the anniversary template object!');
+			    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the anniversary template object! Certificate ID: ' . $cId . '; Student ID: ' . $certObj->get('student_id'));
 			    	return false;
 				}
 				break;
 			case 'hour':
 				$certTpl = $this->modx->getObject('scCertificateTpl', array('certificate_type_id' => $certType->get('id')));
 				if (!$certTpl) {
-			    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the hour template object!');
+			    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the hour template object! Certificate ID: ' . $cId . '; Student ID: ' . $certObj->get('student_id'));
 			    	return false;
 				}
 				break;
@@ -147,7 +147,7 @@ class scCertificateGenerateProcessor extends modProcessor {
 					,'level_id' => $certObj->get('level_id')
 				));
 				if (!$certTpl) {
-			    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the level template object!');
+			    	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the level template object! Certificate ID: ' . $cId . '; Student ID: ' . $certObj->get('student_id'));
 			    	return false;
 				}
 				break;
