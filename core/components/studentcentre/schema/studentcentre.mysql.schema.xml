@@ -239,7 +239,7 @@
 		<field key="type" dbtype="varchar" precision="100" phptype="string" null="false" />
 		<field key="comment" dbtype="text" phptype="string" null="false" />
 		<field key="pass" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="0" />
-		<field key="date_created" dbtype="date" phptype="date" null="false" />
+		<field key="date_created" dbtype="datetime" phptype="datetime" null="false" />
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
 		
 		<aggregate alias="Student" class="scModUser" local="student_id" foreign="id" cardinality="one" owner="foreign" />
