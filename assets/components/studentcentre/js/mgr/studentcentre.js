@@ -3,7 +3,7 @@ var StudentCentre = function(config) {
     StudentCentre.superclass.constructor.call(this,config);
 };
 Ext.extend(StudentCentre,Ext.Component,{
-    page:{},window:{},grid:{},tree:{},panel:{},combo:{},config:{},tabs:{},store:{},toolbar:{}
+    page:{},window:{},grid:{},tree:{},container:{},panel:{},combo:{},config:{},tabs:{},store:{},toolbar:{}
 });
 Ext.reg('studentcentre',StudentCentre);
 StudentCentre = new StudentCentre();
