@@ -56,8 +56,8 @@ $xpdo_meta_map['scStudentTest']= array (
     ),
     'date_created' => 
     array (
-      'dbtype' => 'date',
-      'phptype' => 'date',
+      'dbtype' => 'datetime',
+      'phptype' => 'datetime',
       'null' => false,
     ),
     'last_modified' => 
