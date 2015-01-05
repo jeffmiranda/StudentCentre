@@ -34,12 +34,12 @@ class Certificate extends PDF_Japanese {
 	// Set name
 	function setName($name) {
 		$this->SetXY(562, 310);
-		$this->SetFont('Helvetica', '', 72);
+		$this->SetFont('Helvetica', '', 56);
 		$this->Cell(100, 50, $name, 0, 0, 'C');
 	}
 	
 	// Set anniversary
-	function setAnniversary($years) {
+	function setAnniversary($years, $anniversaryDate) {
 		
 		// set the anniversary year
 		$this->SetXY(562, 520);
@@ -52,6 +52,11 @@ class Certificate extends PDF_Japanese {
 		$plural = '';
 		if ($years > 1) $plural = 's';
 		$this->Cell(100, 50, "year$plural of sincere training.", 0, 0, 'C');
+		
+		// set the anniversary date
+		$this->SetXY(1041, 685);
+		$this->SetFont('Helvetica', '', 22);
+		$this->Cell(100, 50, $anniversaryDate, 0, 0, 'R');
 
 	}
 	
@@ -181,7 +186,16 @@ class scCertificateGenerateProcessor extends modProcessor {
 		// set value depending on type
 		switch (strtolower($typeName)) {
 			case 'anniversary':
-				$certificate->setAnniversary($certObj->get('anniversary'));
+				$startDate = $studentProfile->get('start_date');
+				if (empty($startDate)) {
+					$this->modx->log(modX::LOG_LEVEL_ERROR, 'Start date for student (Student ID: ' . $studentProfile->get('internalKey') . ') is empty!');
+			    	return false;
+				}
+				$startDate = date('Ymd', $startDate);
+				$startDate = new DateTime($startDate);
+				$startDate->add(new DateInterval('P'.$certObj->get('anniversary').'Y'));
+				$anniversaryDate = $startDate->format('F j, Y');
+				$certificate->setAnniversary($certObj->get('anniversary'), $anniversaryDate);
 				$fileName .= $certObj->get('anniversary') . '_';
 				break;
 			case 'hour':
@@ -197,10 +211,12 @@ class scCertificateGenerateProcessor extends modProcessor {
 		$fileName .= $student->get('username') . '.pdf';
 		
 		// set date
+/*
 		$date = $certObj->get('date_created');
 		$date = strtotime($date);
         $displayDate = date("F, Y", $date);
 		$certificate->setDate($displayDate);
+*/
 		
 		// toggle certificate flag
 		$certObj->set('flag', 0);
