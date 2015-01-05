@@ -31,6 +31,7 @@ $_lang['studentcentre.processing'] = 'Processing...';
 $_lang['studentcentre.success'] = 'Success';
 $_lang['studentcentre.error'] = 'Error';
 $_lang['studentcentre.comment'] = 'Comment';
+$_lang['studentcentre.pass'] = 'Pass';
 $_lang['studentcentre.summary'] = 'Summary';
 $_lang['studentcentre.clear_search'] = 'Clear search';
 $_lang['studentcentre.desc'] = 'Manage all aspects of your students.';
