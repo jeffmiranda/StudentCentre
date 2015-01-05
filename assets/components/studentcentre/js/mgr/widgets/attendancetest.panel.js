@@ -2,6 +2,7 @@
 var monthNames = new Array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
 
 // !Comment Window
+/*
 StudentCentre.window.TestTechniqueComments = function(config) {
     config = config || {};
     Ext.applyIf(config,{
@@ -45,8 +46,10 @@ Ext.extend(StudentCentre.window.TestTechniqueComments,MODx.Window, {
 	}
 });
 Ext.reg('sc-window-test-technique-comments',StudentCentre.window.TestTechniqueComments);
+*/
 
 // !Technique Comments Grid
+/*
 StudentCentre.grid.TestTechniqueComments = function(config) {
     config = config || {};
     Ext.applyIf(config,{
@@ -81,6 +84,7 @@ StudentCentre.grid.TestTechniqueComments = function(config) {
 };
 Ext.extend(StudentCentre.grid.TestTechniqueComments,MODx.grid.Grid);
 Ext.reg('sc-grid-test-technique-comments',StudentCentre.grid.TestTechniqueComments);
+*/
 
 // !Test
 StudentCentre.panel.AttendanceTest = function(config) {
@@ -259,6 +263,7 @@ Ext.extend(StudentCentre.panel.AttendanceTest,MODx.FormPanel,{
                     var testSetup = response.object;
                     //console.log(testSetup);
                     var lastTest = testSetup.last_test;
+                    var prevComments = testSetup.prev_comments;
                     var techniques = testSetup.techniques;
                     // loop through object and add to extjs mixed collection
                     var mcTechniques = new Ext.util.MixedCollection();
@@ -272,7 +277,8 @@ Ext.extend(StudentCentre.panel.AttendanceTest,MODx.FormPanel,{
                     if (lastTest) { 
                     	var ltInfo = lastTest.info;
 						var fieldsetPrevTest = Ext.getCmp('fldLastTest'); // get the Previous Test fieldset
-						var ltDateInfo = new Date(ltInfo.date_created + ' 12:00:00');
+						/* var ltDateInfo = new Date(ltInfo.date_created + ' 12:00:00'); */
+						var ltDateInfo = new Date(ltInfo.date_created);
 						var ltDate = ltDateInfo.getDate();
 						var ltMonth = ltDateInfo.getMonth();
 						var ltYear = ltDateInfo.getFullYear();
@@ -315,47 +321,51 @@ Ext.extend(StudentCentre.panel.AttendanceTest,MODx.FormPanel,{
                     var fncShowComments = this.showComments;
                     // Loop through each technique and build the techniques for the test
 					mcTechniques.each(function(item, index, length) {
+						var techPass = '';
 						var comment = '';
-						var techPass = false;
-						// also check to ensure lastTest exists and isn't FALSE
+						// Check to ensure lastTest and the specific technique exists and isn't FALSE
+						// so we can get the technique's pass status
 						if (lastTest && lastTest.techniques.hasOwnProperty(item.technique_id)) {
-							comment = '<em>Previous test comment: ' + lastTest.techniques[item.technique_id].comment + '</em>'
-							techPass = (lastTest.techniques[item.technique_id].pass == 1) ? true : false;
+							techPass = (lastTest.techniques[item.technique_id].pass == 1) ? 1 : '';
+							//console.log(techPass);
+						}
+						// Check to ensure prevComments and the specific technique ID exists
+						// so we can get the comment history (which is just a string)
+						if (prevComments && prevComments.hasOwnProperty(item.technique_id)) {
+							comment = '<em>' + prevComments[item.technique_id] + '</em>'
 						}
 						var technique = {
-							xtype: 'compositefield'
-							,fieldLabel: item.name
-							,labelWidth: 0
-							,flex: 1
+							xtype: 'displayfield'
 							,hideLabel: true
-							,style: {
-					            marginTop: '20px'
-					            ,marginLeft: '10px'
-					        }
-							,items: [{
-								xtype: 'displayfield'
-								,value: index+1 + '.'
-							},{
-								xtype: 'spacer'
-								,width: 10
-							},{
-								xtype: 'xcheckbox'
-								,id: 'technique_id_' + item.technique_id
-								,name: 'techniques[' + item.technique_id + '][pass]'
-								,value: 1
-								,checked: techPass
-							},{
-								xtype: 'displayfield'
-								,value: item.name
-							}]
+							,value: index+1 + '.&nbsp;' + item.name
+							,style: { marginTop: '20px', marginLeft: '10px', fontWeight: 'bold' }
 						};
 						var prevComment = {
 							xtype: 'displayfield'
 							,hideLabel: true
 							,value: comment
-							,style: { marginLeft: '40px' }
+							,style: { marginLeft: '10px' }
 						};
 						var commentField = {
+							xtype: 'textfield'
+							,name: 'techniques[' + item.technique_id + '][comment]'
+							,width: 200
+							,hideLabel: true
+							,autoCreate: {tag: 'input', type: 'text', autocomplete: 'off', placeholder: _('studentcentre.comment')}
+							,style: { marginLeft: '10px' }
+						};
+						var passField = {
+							xtype: 'textfield'
+							,id: 'technique_id_' + item.technique_id
+							,name: 'techniques[' + item.technique_id + '][pass]'
+							,value: techPass
+							,width: 40
+							,hideLabel: true
+							,autoCreate: {tag: 'input', type: 'text', autocomplete: 'off', maxlength: '1', placeholder: _('studentcentre.pass')}
+							,style: { marginLeft: '10px' }
+						};
+/*
+						var inputFields = {
 							xtype: 'compositefield'
 							,hideLabel: true
 							,style: {
@@ -364,11 +374,22 @@ Ext.extend(StudentCentre.panel.AttendanceTest,MODx.FormPanel,{
 					        }
 							,items: [{
 								xtype: 'displayfield'
+								,value: _('studentcentre.pass')
+							},{
+								xtype: 'textfield'
+								,id: 'technique_id_' + item.technique_id
+								,name: 'techniques[' + item.technique_id + '][pass]'
+								,value: techPass
+								,width: 30
+								,autoCreate: {tag: 'input', type: 'text', autocomplete: 'off', maxlength: '1'}
+							},{
+								xtype: 'displayfield'
 								,value: _('studentcentre.comment')
 							},{
 								xtype: 'textfield'
 								,name: 'techniques[' + item.technique_id + '][comment]'
 								,width: 200
+								,autoCreate: {tag: 'input', type: 'text', autocomplete: 'off', placeholder: 'Comment'}
 							},{
 								xtype : 'container'
 				                ,layout : 'form'
@@ -385,9 +406,11 @@ Ext.extend(StudentCentre.panel.AttendanceTest,MODx.FormPanel,{
 				                }
 							}]
 						};
+*/
 						fieldsetTechniques.add(technique);
 						fieldsetTechniques.add(prevComment);
 						fieldsetTechniques.add(commentField);
+						fieldsetTechniques.add(passField);
 					});
 					
 					// redraw the layout to make the new components appear
