@@ -223,77 +223,72 @@ class scClassProgress extends xPDOSimpleObject {
 	}
 	
 	/**
-	 * Checks to see if a yearly anniversary milestone was reached
-	 * when given a date value. If so, will return the anniversary number
+	 * When given a date value, checks to see if a 
+	 * yearly anniversary milestone has passed or will pass
+	 * and is within the day range (system setting).
+	 * If so, will return the anniversary number
 	 * milestone (even if the certificate already exists).
-	 * By default, $accuracy is set to month but the user can specify
-	 * "day", "month", or "year" as the accuracy.
 	 * If no milestone, it will return false.
 	 * If an error occurred, NULL will be returned.
+	 * 
 	 * @param $date (date)
-	 * @param $accuracy (string)
 	 * returns mixed
 	 */
-	public function isAnniversaryMilestone($date = null, $accuracy = 'month') {
+	public function isAnniversaryMilestone($date = null) {
 		
 		$result = false;
-		if (is_null($date)) $date = time();
 		
-		// parse out the date, month, year
-		$dateTimeStamp = strtotime($date);
-		$d = (int) date('d', $dateTimeStamp);
-		$m = (int) date('m', $dateTimeStamp);
-		$y = (int) date('Y', $dateTimeStamp);
-
+		// if $date is null, get today's date
+		if (is_null($date)) $date = date('Ymd');
+		// convert to DateTime object
+		$date = new DateTime($date);
+		
+		// get the day range
+		$range = (int) $this->xpdo->getOption('studentcentre.ann_day_range', null, 30);
+		$range = abs($range);
+		// $range can't be greater than 90. Don't want ranges to start overlapping!!!
+		if ($range > 180) $range = 180;
+		
 		// get the student's start date
 		$student = $this->getOne('Student');
 		$studentProfile = $student->getOne('StudentProfile');
 		$startDate = $studentProfile->get('start_date');
 		if (empty($startDate)) {
-			// get earliest enrolled record
-			$q = $this->xpdo->newQuery('scClassEnrollment');
-			$q->where(array(
-				'student_id' => $this->get('student_id')
-				,'active' => 1
-			));
-			$q->sortby('date_created', 'ASC');
-			$q->limit(1);
-			$classEnrollment = $this->xpdo->getObject('scClassEnrollment', $q);
-			if (!$classEnrollment) {
-				$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Could not get the earliest class enrollment record to determine anniversary milestone.');
-				return null;
-			}
-			$startDate = strtotime($classEnrollment->get('date_created'));
+			$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Could not get the student\'s start_date to determine anniversary milestone.');
+			return null;
 		}
+		$startDate = date('Ymd', $startDate);
+		$startDate = new DateTime($startDate);
 		
-		// parse out the start_date date, month, year
-		$sd = (int) date('d', $startDate);
-		$sm = (int) date('m', $startDate);
-		$sy = (int) date('Y', $startDate);
+		$anniversary = null;
 
-		$isAnniversary = false;
-
-		// only if the year is greater than the start_date year
-		if ($y > $sy) {
-			switch (strtolower($accuracy)) {
-				case 'year':
-					$isAnniversary = true;
-				    break;
-				case 'day':
-					if ($m == $sm) {
-						if ($d >= $sd) $isAnniversary = true;
-					} elseif ($m > $sm) {
-						$isAnniversary = true;
-					}
-					break;
-				default:
-					if ($m >= $sm) $isAnniversary = true;
-			}
+		// determine if an anniversary has passed or is coming and is within the day range
+		$interval = $startDate->diff($date);
+		if ($interval->invert === 1) {
+			$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Negative time interval between startDate and given date!');
+			return null;
+		}
+		// Create 0000-00-00 DateTime object
+		$diff = new DateTime('0000-00-00');
+		// Clone the zero DateTime object
+		$zeroDate = clone $diff;
+		// Add the $interval to it
+		$diff->add($interval);
+		// Subtract the years ($interval->y) if any
+		$diff->sub(new DateInterval('P'.$interval->y.'Y'));
+		// Find the absolute difference between the cloned DateTime object and the original DateTime object
+		$remainder = $zeroDate->diff($diff, true);
+		$days = (int) $remainder->format('%a');
+		// If $days is less than the day range, an anniversary has just passed
+		if ($days <= $range) {
+			$anniversary = $interval->y;
+		// If $days is greater than 365days - $range, an anniversary is coming
+		} elseif ($days >= (365 - $range)) {
+			$anniversary = $interval->y + 1;
 		}
 		
 		// create certificate if anniversary is true
-		if ($isAnniversary) {
-			$anniversary = $y - $sy;
+		if (!is_null($anniversary)) {
 			if (!$this->createCertificate($this->get('student_id'), 'Anniversary', $anniversary)) {
 				$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Could not create the anniversary milestone certificate. studentId: ' . $this->get('student_id') . ', type: Anniversary, value: ' . $anniversary);
 				return null;
