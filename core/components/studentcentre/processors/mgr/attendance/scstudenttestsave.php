@@ -26,7 +26,7 @@ $studentId = $modx->getOption('student_id', $scriptProperties, '');
 $testType = $modx->getOption('test_type', $scriptProperties, 'Pre-test');
 $pass = $modx->getOption('pass', $scriptProperties, 0);
 $comment = $modx->getOption('comment', $scriptProperties, '');
-$dateCreated = date('Y-m-d');
+$dateCreated = date('Y-m-d H:i:s');
 
 if (empty($nextLevelId) || empty($studentId)) {
 	$modx->log(modX::LOG_LEVEL_ERROR, 'Next Level ID or Student ID are empty!');
@@ -52,9 +52,11 @@ if (empty($techniques)) {
 // Get the technique values and create the techniques
 $techObjects = array(); // used to store the new technique objects we'll be creating
 foreach($techniques as $key => $value) {
+	// any character in the pass field will be interpreted as a pass (except for "0")
+	$passValue = empty($value['pass']) ? 0 : 1;
 	$t = $modx->newObject('scStudentTestTechnique');
 	$t->set('technique_id', $key);
-	$t->set('pass', $value['pass']);
+	$t->set('pass', $passValue);
 	$t->set('comment', $value['comment']);
 	$t->set('date_created', $dateCreated);
 	$techObjects[] = $t;
