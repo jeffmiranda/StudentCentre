@@ -26,6 +26,7 @@ StudentCentre.combo.AttendanceScheduledClass = function(config) {
     Ext.applyIf(config, {
 	     emptyText: _('studentcentre.att_select_class')
 	    ,typeAhead: true
+	    ,pageSize: 20
 	    ,valueField: 'id'
 	    ,displayField: 'class_name_description'
 	    ,fields: ['id','class_name_description']
@@ -102,7 +103,7 @@ StudentCentre.panel.AttendanceCreate = function(config) {
 	        ,title: _('studentcentre.att_enrolled_students')
 			,collapsible: true
 			,autoHeight: true
-			,labelWidth: 150
+			,labelWidth: 250
 			,items: [{
 	            xtype: 'toolbar'
 	            ,id: 'student-attendance-toolbar'
