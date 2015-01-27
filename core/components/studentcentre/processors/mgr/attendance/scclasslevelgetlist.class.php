@@ -24,10 +24,10 @@ class scClassLevelGetList extends modObjectGetListProcessor {
 	    
 	    // if categoryId parameter exists,
 		// then only get the levels for that category
-		$categoryId = $this->getProperty('category_id');
+		$categoryId = $this->getProperty('class_level_category_id');
 		if (!empty($categoryId)) {
 	        $c->where(array(
-	            'scClassLevel.category_id' => $categoryId
+	            'scClassLevel.class_level_category_id' => $categoryId
 	        ));
 	    }
 	    
