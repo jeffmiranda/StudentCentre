@@ -183,6 +183,11 @@ class scCertificateGenerateProcessor extends modProcessor {
 		// begin creating filename
 		$fileName = 'certificate_' . strtolower($typeName) . '_';
 		
+		// prepare date created
+		$date = $certObj->get('date_created');
+		$date = strtotime($date);
+		$displayDate = date("F, Y", $date);
+		
 		// set value depending on type
 		switch (strtolower($typeName)) {
 			case 'anniversary':
@@ -200,6 +205,7 @@ class scCertificateGenerateProcessor extends modProcessor {
 				break;
 			case 'hour':
 				$certificate->setHours($certObj->get('hours'));
+				$certificate->setDate($displayDate);
 				$fileName .= $certObj->get('hours') . '_';
 				break;
 			case 'level':
@@ -209,15 +215,7 @@ class scCertificateGenerateProcessor extends modProcessor {
 				break;
 		}
 		$fileName .= $student->get('username') . '.pdf';
-		
-		// set date
-/*
-		$date = $certObj->get('date_created');
-		$date = strtotime($date);
-        $displayDate = date("F, Y", $date);
-		$certificate->setDate($displayDate);
-*/
-		
+				
 		// toggle certificate flag
 		$certObj->set('flag', 0);
 		if (!$certObj->save()) {
