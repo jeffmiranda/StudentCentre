@@ -367,3 +367,4 @@ $_lang['studentcentre.cert_err_updating_tpl'] = 'Sorry, but there was an error u
 $_lang['studentcentre.cert_err_generation'] = 'Sorry, but there was an error generating the certificate';
 $_lang['studentcentre.cert_err_tpl_level_id_exists'] = 'A template for this level already exists!';
 $_lang['studentcentre.cert_err_tpl_type_exists'] = 'A template for this type already exists!';
+$_lang['studentcentre.cert_err_cert_exists'] = 'Sorry, but this certificate already exists for this student.';
