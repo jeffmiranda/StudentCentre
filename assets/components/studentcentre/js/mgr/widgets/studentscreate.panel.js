@@ -245,7 +245,7 @@ StudentCentre.panel.StudentsCreate = function(config) {
 			        },{
 			        	xtype: 'textfield'
 			        	,fieldLabel: _('studentcentre.emerg_rel2')
-			            ,name: 'emergrel1'
+			            ,name: 'emergrel2'
 			            ,anchor: '100%'
 			        },{
 			        	xtype: 'textfield'
@@ -305,7 +305,7 @@ StudentCentre.panel.StudentsCreate = function(config) {
 			        },{
 			        	xtype: 'textfield'
 			        	,fieldLabel: _('studentcentre.notes')
-			            ,name: 'phone'
+			            ,name: 'notes'
 			            ,anchor: '100%'
 			        }]
             }]
