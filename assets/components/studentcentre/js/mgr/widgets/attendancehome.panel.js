@@ -101,6 +101,18 @@ StudentCentre.panel.AttendanceHome = function(config) {
                     ,preventRender: true
                 }]
             },{
+	            title: _('studentcentre.journal')
+                ,defaults: { autoHeight: true }
+                ,items: [{
+                    html: '<p>'+_('studentcentre.journal_desc')+'</p>'
+                    ,border: false
+                    ,bodyCssClass: 'panel-desc'
+                },{
+                    xtype: 'sc-journal-container'
+                    ,cls: 'main-wrapper'
+                    ,preventRender: true
+                }]
+            },{
 	            title: _('studentcentre.att_level_categories')
                 ,defaults: { autoHeight: true }
                 ,items: [{

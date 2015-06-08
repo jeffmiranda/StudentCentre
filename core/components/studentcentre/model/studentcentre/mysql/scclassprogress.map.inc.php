@@ -90,6 +90,17 @@ $xpdo_meta_map['scClassProgress']= array (
       'extra' => 'on update current_timestamp',
     ),
   ),
+  'composites' => 
+  array (
+    'Journal' => 
+    array (
+      'class' => 'scJournal',
+      'local' => 'id',
+      'foreign' => 'class_progress_id',
+      'cardinality' => 'one',
+      'owner' => 'local',
+    ),
+  ),
   'aggregates' => 
   array (
     'Student' => 
