@@ -387,12 +387,14 @@
 		<field key="test_fee" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="0" />
 		<field key="test_date" dbtype="date" phptype="date" null="true" />
 		<field key="pre_test_qty" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" default="0" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="0" />
 		<field key="date_created" dbtype="date" phptype="date" null="false" />
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
 		
 		<aggregate alias="ClassProgress" class="scClassProgress" local="class_progress_id" foreign="id" cardinality="one" owner="foreign" />
 		<composite alias="JournalComment" class="scJournalComment" local="id" foreign="journal_id" cardinality="many" owner="local" />
     </object>
+    <!-- !scJournalComment -->
     <object class="scJournalComment" table="journal_comments" extends="xPDOSimpleObject">
 		<field key="journal_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
 		<field key="comment" dbtype="text" phptype="string" null="false" />

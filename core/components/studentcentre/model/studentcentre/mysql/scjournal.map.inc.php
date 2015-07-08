@@ -13,6 +13,7 @@ $xpdo_meta_map['scJournal']= array (
     'test_fee' => 0,
     'test_date' => NULL,
     'pre_test_qty' => 0,
+    'active' => 0,
     'date_created' => NULL,
     'last_modified' => 'CURRENT_TIMESTAMP',
   ),
@@ -69,6 +70,15 @@ $xpdo_meta_map['scJournal']= array (
       'precision' => '3',
       'attributes' => 'unsigned',
       'phptype' => 'integer',
+      'null' => false,
+      'default' => 0,
+    ),
+    'active' => 
+    array (
+      'dbtype' => 'tinyint',
+      'precision' => '1',
+      'phptype' => 'integer',
+      'attributes' => 'unsigned',
       'null' => false,
       'default' => 0,
     ),

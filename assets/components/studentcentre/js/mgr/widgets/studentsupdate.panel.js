@@ -24,6 +24,7 @@ Ext.reg('combo-gender-status', StudentCentre.combo.Gender);
 // !Student Update
 StudentCentre.panel.StudentsUpdate = function(config) {
     config = config || {};
+    //console.log(config);
     Ext.apply(config,{
         border: false
         ,url: StudentCentre.config.connectorUrl
@@ -335,7 +336,7 @@ Ext.extend(StudentCentre.panel.StudentsUpdate,MODx.FormPanel,{
             this.fireEvent('ready');
             return false;
         }
-        console.log(this.config.studentId);
+        //console.log(this.config.studentId);
         MODx.Ajax.request({
             url: StudentCentre.config.connectorUrl
             ,params: {
@@ -345,8 +346,8 @@ Ext.extend(StudentCentre.panel.StudentsUpdate,MODx.FormPanel,{
             ,listeners: {
                 'success': {fn:function(r) {
                     this.getForm().setValues(r.object);
-                    console.log(this.getForm());
-                    console.log(r.object);
+                    //console.log(this.getForm());
+                    //console.log(r.object);
                     Ext.get('sc-student-header').update('<h2>'+_('studentcentre.student')+': '+r.object.username+'</h2>');
                     this.fireEvent('ready',r.object);
                     MODx.fireEvent('ready');
@@ -371,7 +372,7 @@ Ext.extend(StudentCentre.panel.StudentsUpdate,MODx.FormPanel,{
 		                });
 		            }
 		            ,failure: function(form, action){
-		            	console.log(action);
+		            	//console.log(action);
 		            	var responseObj = Ext.decode(action.response.responseText);
 		                Ext.MessageBox.alert(_('studentcentre.error'), responseObj.message);
 		            }
