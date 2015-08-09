@@ -135,6 +135,7 @@ if (!empty($attendees)) {
 		// !Threshold Test
 		if ($classProgress->isTestReady() || ($attendee->get('test') == 1)) {
 			$classProgress->set('test_ready', 1);
+			$classProgress->setJournalActive(1);
 			// Create leveling certificate
 			$nextLevel = $classProgress->getNextLevel();
 			if ($nextLevel) {

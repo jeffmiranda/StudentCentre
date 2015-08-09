@@ -361,6 +361,42 @@ class scClassProgress extends xPDOSimpleObject {
 		return $result;
 		
 	}
+	
+	/**
+     * Sets the status of associated journal
+     * Returns true on success. False on failure.
+     */
+	public function setJournalActive($value) {
+		
+		$success = false;
+		$value = (int) $value;
+		$value = ($value == 1) ? 1 : 0;
+		
+		$journal = $this->getOne('Journal');
+		
+		if ($journal) {
+			
+			$journal->set('active', $value);
+			
+			if ($journal->save()) {
+				
+				$success = true;
+				
+			} else {
+				
+				$this->xpdo->log(modX::LOG_LEVEL_ERROR, 'Could not save the journal object ID: ' . $journal->get('id'));
+			
+			}
+			
+		} else {
+			
+			$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Could not get the associated journal for scClassProgress object with ID: ' . $this->get('id'));
+		
+		}
+		
+		return $success;
+		
+	}
 
 	
 }
