@@ -5,13 +5,14 @@ StudentCentre.combo.Belt = function(config) {
         store: new Ext.data.ArrayStore({
             fields: ['value','display']
             ,data: [
-                ['','Not received']
+                ['notreceived','Not received']
                 ,['awarded','Awarded']
             ]
         })
         ,mode: 'local'
         ,displayField: 'display'
         ,valueField: 'value'
+        ,hiddenName: 'belt'
     });
     
     StudentCentre.combo.Belt.superclass.constructor.call(this, config);
@@ -27,7 +28,7 @@ StudentCentre.combo.Certificate = function(config) {
         store: new Ext.data.ArrayStore({
             fields: ['value','display']
             ,data: [
-                ['','Not received']
+                ['notreceived','Not received']
                 ,['printed','Printed']
                 ,['awarded','Awarded']
             ]
@@ -35,6 +36,7 @@ StudentCentre.combo.Certificate = function(config) {
         ,mode: 'local'
         ,displayField: 'display'
         ,valueField: 'value'
+        ,hiddenName: 'certificate'
     });
     
     StudentCentre.combo.Certificate.superclass.constructor.call(this, config);
@@ -192,13 +194,13 @@ StudentCentre.window.UpdateJournal = function(config) {
             ,width: '50%'
         },{
             xtype: 'attendance-combo-belt'
-            ,id: 'attendance-combo-belt-update-journal'
+            //,id: 'attendance-combo-belt-update-journal'
             ,fieldLabel: _('studentcentre.belt')
             ,name: 'belt'
             ,width: '50%'
         },{
             xtype: 'attendance-combo-certificate'
-            ,id: 'attendance-combo-cert-update-journal'
+            //,id: 'attendance-combo-cert-update-journal'
             ,fieldLabel: _('studentcentre.certificate')
             ,name: 'certificate'
             ,width: '50%'
@@ -223,10 +225,10 @@ StudentCentre.window.UpdateJournal = function(config) {
         },{
 			xtype: 'datefield'
             ,id: 'attendance-test-date-update-journal'
-            ,name: 'test_date'
+            ,name: 'date_created'
             ,allowBlank: true
             ,fieldLabel: _('studentcentre.test_date')
-            ,format: 'd/m/Y'
+            ,format: 'Y-m-d'
             ,width: '50%'
 		},{
 			xtype: 'textarea'
@@ -295,7 +297,7 @@ StudentCentre.grid.AttendanceJournal = function(config) {
             ,sortable: true
             ,width: 50
             ,name: 'belt'
-            ,id: 'journal-combo-belt-status'
+            //,id: 'journal-combo-belt-status'
             ,editor: { xtype: 'attendance-combo-belt', renderer: true}
         },{
             header: _('studentcentre.certificate')
@@ -303,7 +305,7 @@ StudentCentre.grid.AttendanceJournal = function(config) {
             ,sortable: true
             ,width: 50
             ,name: 'certificate'
-            ,id: 'journal-combo-certificate-status'
+            //,id: 'journal-combo-certificate-status'
             ,editor: { xtype: 'attendance-combo-certificate', renderer: true}
         },{
             header: _('studentcentre.written_test_progress')
@@ -337,7 +339,7 @@ StudentCentre.grid.AttendanceJournal = function(config) {
             ,width: 50
             ,name: 'test_date'
             ,allowBlank: true
-			,editor: { xtype: 'datefield', format: 'd/m/Y' }
+			,editor: { xtype: 'datefield', format: 'Y-m-d' }
         },{
             header: _('studentcentre.last_comment')
             ,sortable: true
@@ -417,7 +419,6 @@ Ext.extend(StudentCentre.grid.AttendanceJournal,MODx.grid.Grid,{
 	,updateJournal: function(btn,e) {
 		var selRow = this.getSelectionModel().getSelected();
         if (selRow.length <= 0) return false;
-        console.log(selRow.data);
 	    if (!this.updateJournalWindow) {
 		    this.updateJournalWindow = MODx.load({
 		        xtype: 'sc-window-journal-update'

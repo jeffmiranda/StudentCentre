@@ -330,6 +330,7 @@ $_lang['studentcentre.att_err_ns_student_id'] = 'Please select a student';
 $_lang['studentcentre.att_err_ns_scheduled_class_id'] = 'Please select a class';
 $_lang['studentcentre.att_err_already_enrolled'] = 'Student is already enrolled in this class!';
 $_lang['studentcentre.att_err_saving_student_test'] = 'Sorry, but the student test could not be saved';
+$_lang['studentcentre.att_err_saving_journal_comment'] = 'Sorry, but the journal comment could not be saved';
 $_lang['studentcentre.att_err_promoting_student'] = 'Sorry, but there was an error promoting the student';
 $_lang['studentcentre.att_err_saving_stu_progress'] = 'Unable to update student progress';
 $_lang['studentcentre.att_err_removing_attendance'] = 'Unable to remove the attendance';
