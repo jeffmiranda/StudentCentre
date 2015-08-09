@@ -90,8 +90,9 @@ Ext.reg('sc-grid-test-technique-comments',StudentCentre.grid.TestTechniqueCommen
 StudentCentre.panel.AttendanceTest = function(config) {
     config = config || {};
     var today = new Date();
-    var todayDate = ("0" + today.getDate()).slice(-2);
-	var todayMonth = ("0" + (today.getMonth() + 1)).slice(-2);
+    var todayDate = today.getDate();
+	var todayMonth = today.getMonth();
+	todayMonth++;
 	var todayYear = today.getFullYear();
 	//console.log(config.testData);
     Ext.apply(config,{
@@ -127,21 +128,10 @@ StudentCentre.panel.AttendanceTest = function(config) {
 						xtype: 'hidden'
 						,name: 'class_progress_id'
 						,value: config.testData.id
-					}/*
-,{
+					},{
 						xtype: 'displayfield'
 						,fieldLabel: _('studentcentre.date')
 						,value: todayDate + '/' + todayMonth + '/' + todayYear
-					}
-*/,{
-						xtype: 'datefield'
-			            ,id: 'att-test-panel-test-date'
-			            ,name: 'test_date'
-			            ,allowBlank: false
-			            ,fieldLabel: _('studentcentre.date')
-			            ,format: 'Y-m-d'
-			            ,value: todayYear + '-' + todayMonth + '-' + todayDate
-			            //,width: '50%'
 					},{
 						xtype: 'compositefield'
 						,fieldLabel: _('studentcentre.type')
@@ -289,14 +279,14 @@ Ext.extend(StudentCentre.panel.AttendanceTest,MODx.FormPanel,{
 						var fieldsetPrevTest = Ext.getCmp('fldLastTest'); // get the Previous Test fieldset
 						/* var ltDateInfo = new Date(ltInfo.date_created + ' 12:00:00'); */
 						var ltDateInfo = new Date(ltInfo.date_created);
-						var ltDate = ("0" + ltDateInfo.getDate()).slice(-2);
-						var ltMonth = ("0" + (ltDateInfo.getMonth() + 1)).slice(-2);
+						var ltDate = ltDateInfo.getDate();
+						var ltMonth = ltDateInfo.getMonth();
 						var ltYear = ltDateInfo.getFullYear();
                     	// create the xtype component to hold the date
                     	var ltDateCreated = {
 			                xtype: 'displayfield'
 			                ,fieldLabel: _('studentcentre.date')
-			                ,value: ltYear + '-' + ltMonth + '-' + ltDate
+			                ,value: ltDate + '/' + ltMonth + '/' + ltYear
 		                };
 		                // create the xtype component to hold the pass status of the previous test
 		                var ltType = {

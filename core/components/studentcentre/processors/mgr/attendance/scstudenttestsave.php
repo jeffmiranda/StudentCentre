@@ -26,7 +26,7 @@ $studentId = $modx->getOption('student_id', $scriptProperties, '');
 $testType = $modx->getOption('test_type', $scriptProperties, 'Pre-test');
 $pass = $modx->getOption('pass', $scriptProperties, 0);
 $comment = $modx->getOption('comment', $scriptProperties, '');
-$dateCreated = $modx->getOption('date_created', $scriptProperties, date('Y-m-d'));
+$dateCreated = date('Y-m-d H:i:s');
 
 if (empty($nextLevelId) || empty($studentId)) {
 	$modx->log(modX::LOG_LEVEL_ERROR, 'Next Level ID or Student ID are empty!');
