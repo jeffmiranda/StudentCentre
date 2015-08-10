@@ -21,6 +21,7 @@ if (!$modx->hasPermission('save_document')) return $modx->error->failure($modx->
 //$modx->log(1,print_r($scriptProperties,true));
 
 // Get and sanitize the test variables
+$classProgressId = $modx->getOption('class_progress_id', $scriptProperties, '');
 $nextLevelId = $modx->getOption('next_level_id', $scriptProperties, '');
 $studentId = $modx->getOption('student_id', $scriptProperties, '');
 $testType = $modx->getOption('test_type', $scriptProperties, 'Pre-test');
@@ -41,6 +42,38 @@ $studentTest->set('type', $testType);
 $studentTest->set('pass', $pass);
 $studentTest->set('comment', $comment);
 $studentTest->set('date_created', $dateCreated);
+
+// If a journal object exists
+$journal = $modx->getObject('scJournal', array(
+	'class_progress_id' => $classProgressId
+));
+if ($journal) {
+	
+	// If the comment isn't empty, create and save the comment to the journal comments
+	if (!empty($comment)) {
+		$journalComment = $modx->newObject('scJournalComment', array(
+			'journal_id' => $journal->get('id')
+			,'comment' => $comment
+			,'date_created' => date('Y-m-d')
+		));
+		$journal->addMany($journalComment);
+	}
+	
+	// check if it's a pre-test or a real test
+	if ($testType == 'Pre-test') {
+		$preTestQty = $journal->get('pre_test_qty');
+		$journal->set('pre_test_qty', ++$preTestQty);
+	} else {
+		$journal->set('test_date', $dateCreated);
+	}
+	
+	if (!$journal->save()) {
+		$modx->log(modX::LOG_LEVEL_ERROR, 'Could not save journal with ID: ' . $journal->get('id'));
+	}
+	
+} else {
+	$modx->log(modX::LOG_LEVEL_ERROR, 'Journal object does not exist for ClassProgress ID: ' . $classProgressId);
+}
 
 // Get and sanitize the technique variables
 $techniques = $modx->getOption('techniques', $scriptProperties, '');
