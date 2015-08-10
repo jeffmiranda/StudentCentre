@@ -93,7 +93,7 @@ StudentCentre.panel.AttendanceTest = function(config) {
     var todayDate = ("0" + today.getDate()).slice(-2);
 	var todayMonth = ("0" + (today.getMonth() + 1)).slice(-2);
 	var todayYear = today.getFullYear();
-	//console.log(config.testData);
+	console.log(config.testData);
     Ext.apply(config,{
         border: false
         ,url: StudentCentre.config.connectorUrl

@@ -56,6 +56,8 @@ class scJournalGetList extends modObjectGetListProcessor {
 	    	    
 	    $c->select(array('
 			scJournal.*
+			,ClassProgress.hours_since_leveling
+			,ClassProgress.level_id
 			,Student.id AS `student_id`
 			,Student.username AS `username`
 		'));
@@ -65,48 +67,21 @@ class scJournalGetList extends modObjectGetListProcessor {
 	    return $c;
 	    
 	}
-	
-/*
-	public function afterIteration(array $list) {
-		
-		// grab all the journal IDs first
-		$arrJournalIds = array();
-		foreach ($list as $row) {
-			$arrJournalIds[] = $row['id'];
-		}
-		
-		// create the query to get the journal comments
-		$q = $this->modx->newQuery('scJournalComment');
-		$q->where(array(
-			'journal_id:IN' => $arrJournalIds
-		));
-		$q->sortby('journal_id','ASC');
-		$q->sortby('date_created','DESC');
-		$q->groupby('journal_id');
-		
-		$q->prepare();
-		$this->modx->log(1,print_r('SQL Statement: ' . $q->toSQL(),true));
-		
-		$journalComments = $this->modx->getCollection('scJournalComment', $q);
-		
-		$this->modx->log(1,print_r($list,true));
-        return $list;
-    }
-*/
-    
+	    
     public function prepareRow(xPDOObject $object) {
 	
         $ta = $object->toArray();
         
+        // add the latest journal comment to the row
         $q = $this->modx->newQuery('scJournalComment');
 		$q->where(array(
 			'journal_id:=' => $ta['id']
 		));
-		$q->sortby('date_created','DESC');
+		$q->sortby('last_modified','DESC');
 		$q->limit(1);
 		
-		$q->prepare();
-		$this->modx->log(1,print_r('SQL Statement: ' . $q->toSQL(),true));
+		//$q->prepare();
+		//$this->modx->log(1,print_r('SQL Statement: ' . $q->toSQL(),true));
 		
 		$journalComment = $this->modx->getObject('scJournalComment', $q);
 		
@@ -116,12 +91,17 @@ class scJournalGetList extends modObjectGetListProcessor {
 			$ta['last_comment'] = '';
 		}
 		
-/*
-        //$this->modx->log(1,print_r($ta,true));
-        $timePosted = strtotime($ta['last_modified']);
-        $displayTime = date("M d, Y - g:i a", $timePosted);
-        $ta['last_modified'] = $displayTime; //($ta['last_modified'] > 0) ? date('Y-m-d',$ta['last_modified']) : '';
-*/
+		// add the next level and the hours required for next level
+		$progress = $this->modx->getObject('scClassProgress', $ta['class_progress_id']);
+		$nextLevel = $progress->getNextLevel();
+		if ($nextLevel) {
+			$ta['next_level'] = $nextLevel->get('name');
+			$ta['next_level_hours_required'] = $nextLevel->get('hours_required');
+		} else {
+			$ta['next_level'] = '';
+			$ta['next_level_hours_required'] = '';
+		}
+		
         return $ta;
         
     }  

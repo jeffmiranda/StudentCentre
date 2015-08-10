@@ -172,6 +172,7 @@ Ext.reg('sc-journal-container',StudentCentre.container.AttendanceJournal);
 // !Update Journal Window
 StudentCentre.window.UpdateJournal = function(config) {
     config = config || {};
+    console.log(config);
     Ext.applyIf(config,{
         title: _('studentcentre.update_journal')
         ,width: '600'
@@ -193,54 +194,72 @@ StudentCentre.window.UpdateJournal = function(config) {
             ,name: 'username'
             ,width: '50%'
         },{
+            xtype: 'displayfield'
+            ,fieldLabel: _('studentcentre.next_level')
+            ,name: 'next_level'
+            ,width: '50%'
+        },{
+            xtype: 'displayfield'
+            ,fieldLabel: _('studentcentre.att_hours_required')
+            ,name: 'next_level_hours_required'
+            ,width: '50%'
+        },{
+            xtype: 'displayfield'
+            ,fieldLabel: _('studentcentre.att_hours_since_leveling')
+            ,name: 'hours_since_leveling'
+            ,width: '50%'
+        },{
             xtype: 'attendance-combo-belt'
-            //,id: 'attendance-combo-belt-update-journal'
             ,fieldLabel: _('studentcentre.belt')
             ,name: 'belt'
             ,width: '50%'
         },{
             xtype: 'attendance-combo-certificate'
-            //,id: 'attendance-combo-cert-update-journal'
             ,fieldLabel: _('studentcentre.certificate')
             ,name: 'certificate'
             ,width: '50%'
         },{
             xtype: 'attendance-combo-progress'
-            ,id: 'attendance-combo-progress-update-journal'
+            //,id: 'attendance-combo-progress-update-journal'
             ,fieldLabel: _('studentcentre.written_test_progress')
             ,name: 'written_test_progress'
             ,width: '50%'
         },{
             xtype: 'attendance-combo-active-status'
-            ,id: 'attendance-combo-test-fee-update-journal'
+            //,id: 'attendance-combo-test-fee-update-journal'
             ,fieldLabel: _('studentcentre.test_fee')
             ,name: 'test_fee'
             ,width: '50%'
         },{
 	        xtype: 'numberfield'
-            ,id: 'attendance-num-pre-tests-update-journal'
+            //,id: 'attendance-num-pre-tests-update-journal'
             ,fieldLabel: _('studentcentre.pre_test_qty')
             ,name: 'pre_test_qty'
             ,width: '50%'
         },{
 			xtype: 'datefield'
-            ,id: 'attendance-test-date-update-journal'
-            ,name: 'date_created'
+            //,id: 'attendance-test-date-update-journal'
+            ,name: 'test_date'
             ,allowBlank: true
             ,fieldLabel: _('studentcentre.test_date')
             ,format: 'Y-m-d'
             ,width: '50%'
 		},{
 			xtype: 'textarea'
-			,id: 'attendance-new-comment-update-journal'
+			//,id: 'attendance-new-comment-update-journal'
 			,name: 'comment'
 			,fieldLabel: _('studentcentre.comment')
 			,width: '97%'
 		},{
 			xtype: 'sc-grid-journal-comments'
-			,id: 'sc-grid-journal-comments'
+			//,id: 'sc-grid-journal-comments'
 			,fieldLabel: _('studentcentre.comments')
 			,width: '97%'
+			,height: '200'
+			,baseParams: {
+		        action: 'mgr/attendance/scJournalCommentGetList'
+		        ,journalId: config.record.id
+		    }
 		}]
     });
     StudentCentre.window.UpdateJournal.superclass.constructor.call(this,config);
@@ -257,7 +276,7 @@ StudentCentre.grid.AttendanceJournal = function(config) {
         ,baseParams: {
 	        action: 'mgr/attendance/scJournalGetList'
 	    }
-        ,fields: ['id','class_progress_id','student_id','username','belt','certificate','written_test_progress','test_fee','test_date','pre_test_qty','active','last_comment']
+        ,fields: ['id','class_progress_id','student_id','username','next_level','next_level_hours_required','hours_since_leveling','belt','certificate','written_test_progress','test_fee','test_date','pre_test_qty','active','last_comment']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
@@ -266,7 +285,7 @@ StudentCentre.grid.AttendanceJournal = function(config) {
         ,autosave: true
         ,columns: [{
             header: _('studentcentre.id')
-            ,hidden: false
+            ,hidden: true
             ,dataIndex: 'id'
             ,name: 'id'
             ,width: 30
@@ -290,14 +309,31 @@ StudentCentre.grid.AttendanceJournal = function(config) {
             ,sortable: true
             ,dataIndex: 'username'
             ,name: 'username'
-            ,width: 100
+            ,width: 50
+        },{
+            header: _('studentcentre.next_level')
+            ,sortable: true
+            ,dataIndex: 'next_level'
+            ,name: 'next_level'
+            ,width: 50
+        },{
+            header: _('studentcentre.att_hours_required')
+            ,sortable: true
+            ,dataIndex: 'next_level_hours_required'
+            ,name: 'next_level_hours_required'
+            ,width: 50
+        },{
+            header: _('studentcentre.att_hours_since_leveling')
+            ,sortable: true
+            ,dataIndex: 'hours_since_leveling'
+            ,name: 'hours_since_leveling'
+            ,width: 50
         },{
             header: _('studentcentre.belt')
             ,dataIndex: 'belt'
             ,sortable: true
             ,width: 50
             ,name: 'belt'
-            //,id: 'journal-combo-belt-status'
             ,editor: { xtype: 'attendance-combo-belt', renderer: true}
         },{
             header: _('studentcentre.certificate')
@@ -305,7 +341,6 @@ StudentCentre.grid.AttendanceJournal = function(config) {
             ,sortable: true
             ,width: 50
             ,name: 'certificate'
-            //,id: 'journal-combo-certificate-status'
             ,editor: { xtype: 'attendance-combo-certificate', renderer: true}
         },{
             header: _('studentcentre.written_test_progress')
@@ -357,9 +392,9 @@ StudentCentre.grid.AttendanceJournal = function(config) {
         },{
             xtype: 'button'
             ,id: 'attendance-toggle-active-journal-button'
-            ,text: _('studentcentre.toggle_active_status')
+            ,text: _('studentcentre.deactivate')
             ,listeners: {
-                'click': {fn: this.toggleActiveStatus, scope: this}
+                'click': {fn: this.toggleActive, scope: this}
             }
         },'->',{ // This defines the toolbar for the search
 		    xtype: 'textfield' // Here we're defining the search field for the toolbar
@@ -412,14 +447,14 @@ Ext.extend(StudentCentre.grid.AttendanceJournal,MODx.grid.Grid,{
 	        text: _('studentcentre.update')
 	        ,handler: this.updateJournal
 	    },'-',{
-	        text: _('studentcentre.toggle_active_status')
-	        ,handler: this.toggleActiveStatus
+	        text: _('studentcentre.deactivate')
+	        ,handler: this.toggleActive
 	    }];
 	}
 	,updateJournal: function(btn,e) {
 		var selRow = this.getSelectionModel().getSelected();
         if (selRow.length <= 0) return false;
-	    if (!this.updateJournalWindow) {
+	    //if (!this.updateJournalWindow) {
 		    this.updateJournalWindow = MODx.load({
 		        xtype: 'sc-window-journal-update'
 		        ,record: selRow.data
@@ -432,10 +467,29 @@ Ext.extend(StudentCentre.grid.AttendanceJournal,MODx.grid.Grid,{
 		            }
 		        }
 		    });
-	    }
+	    //}
 		this.updateJournalWindow.setValues(selRow.data);
 		this.updateJournalWindow.show(e.target);
 	}
+	,toggleActive: function(btn,e) {
+        var selRow = this.getSelectionModel().getSelected();
+        if (selRow.length <= 0) return false;
+        MODx.Ajax.request({
+            url: this.config.url
+            ,params: {
+                action: 'mgr/attendance/scJournalUpdate'
+                ,id: selRow.data.id
+                ,toggleActive: 1
+            }
+            ,listeners: {
+                'success': {fn:function(r) {
+                    this.refresh();
+                    Ext.getCmp('studentcentre-grid-journal').refresh();
+                },scope:this}
+            }
+        });
+        return true;
+    }
 /*
 	,updateAttendance: function(btn,e) {
 		var selRow = this.getSelectionModel().getSelected();
@@ -486,6 +540,7 @@ StudentCentre.grid.AttendanceJournalComments = function(config) {
         ,baseParams: {
 	        action: 'mgr/attendance/scJournalCommentGetList'
 	    }
+	    ,autoHeight: false
         ,fields: ['id','comment','date_created']
         ,paging: true
         ,remoteSort: true
