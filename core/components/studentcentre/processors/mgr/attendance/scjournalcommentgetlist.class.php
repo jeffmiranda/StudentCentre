@@ -3,7 +3,7 @@ class scJournalCommentGetList extends modObjectGetListProcessor {
     
     public $classKey = 'scJournalComment';
     public $languageTopics = array('studentcentre:default');
-    public $defaultSortField = 'date_created';
+    public $defaultSortField = 'last_modified';
     public $defaultSortDirection = 'DESC';
     public $objectType = 'scJournalComment';
     
@@ -11,7 +11,7 @@ class scJournalCommentGetList extends modObjectGetListProcessor {
 	    	    
 	    $journalId = $this->getProperty('journalId');
 	    if ($journalId) {
-			$c->where(array('scJournalComment.id:=' => $journalId));
+			$c->where(array('scJournalComment.journal_id:=' => $journalId));
 	    }
 	    
 	    $query = $this->getProperty('query');
@@ -21,8 +21,8 @@ class scJournalCommentGetList extends modObjectGetListProcessor {
 	        ));
 	    }
 	    
-		//$c->prepare();
-		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
+		$c->prepare();
+		$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
 	    return $c;
 	    
 	}
