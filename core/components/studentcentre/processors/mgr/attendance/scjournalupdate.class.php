@@ -5,20 +5,20 @@ class scJournalUpdateProcessor extends modObjectUpdateProcessor {
     public $languageTopics = array('studentcentre:default');
     public $objectType = 'studentcentre.journal';
     
-/*
     public function beforeSet() {
-		
-		// Properly format test date
-		$testDate = $this->getProperty('test_date');
-        if (!empty($testDate)) {
-			$this->setProperty('test_date', date('Y-m-d', strtotime(str_replace('/','-',$testDate))));
-		}
-		        
+    
+        $toggleActive = $this->getProperty('toggleActive');
+        if (!empty($toggleActive)) {
+	        if ($this->object->get('active') == 1) {
+		        $this->setProperty('active', 0);
+	        } else {
+		        $this->setProperty('active', 1);
+	        }
+        }
+        
         return parent::beforeSet();
-        		
     }
-*/
-
+    
     public function afterSave() {
 		
 		// Check to see if a comment was submitted
