@@ -44,7 +44,7 @@ class scModUserGetProcessor extends modObjectGetProcessor {
     	$success = false;
     	
     	if ($this->object->get('start_date')) {
-	    	$startDate = date('d-m-Y', $this->object->get('start_date'));
+	    	$startDate = date('Y-m-d', $this->object->get('start_date'));
 	    	$this->object->set('start_date', $startDate);
 	    	$success = true;
     	} else {
@@ -60,7 +60,7 @@ class scModUserGetProcessor extends modObjectGetProcessor {
     	$success = false;
     	
     	if ($this->object->get('dob')) {
-	    	$dob = date('d-m-Y', $this->object->get('dob'));
+	    	$dob = date('Y-m-d', $this->object->get('dob'));
 	    	$this->object->set('dob', $dob);
 	    	$success = true;
     	} else {

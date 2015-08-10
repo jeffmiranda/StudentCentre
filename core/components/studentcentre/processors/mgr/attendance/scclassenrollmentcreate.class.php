@@ -68,6 +68,11 @@ class scClassEnrollmentCreateProcessor extends modObjectCreateProcessor {
 				,'test_ready' => 0
 				,'date_created' => date('Y-m-d')
 			));
+			// and create the accompanying journal object
+			$journal = $this->modx->newObject('scJournal', array(
+				'date_created' => date('Y-m-d')
+			));
+			$classProgress->addOne($journal);
 			// save class progress object to db
 			if (!$classProgress->save()) {
 				$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the class progress object!');

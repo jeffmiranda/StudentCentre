@@ -99,7 +99,7 @@ StudentCentre.panel.StudentsCreate = function(config) {
 			            xtype: 'datefield'
 			            ,name: 'start_date'
 			            ,fieldLabel: _('studentcentre.start_date')
-			            ,format: 'd-m-Y'
+			            ,format: 'Y-m-d'
 			            ,value: today
 			        },{
 			        	xtype: 'combo-gender-status'
@@ -110,7 +110,7 @@ StudentCentre.panel.StudentsCreate = function(config) {
 			            xtype: 'datefield'
 			            ,name: 'dob'
 			            ,fieldLabel: _('studentcentre.birth_date')
-			            ,format: 'd-m-Y'
+			            ,format: 'Y-m-d'
 			        },{
 			        	xtype: 'textfield'
 			        	,fieldLabel: _('studentcentre.email')

@@ -152,6 +152,8 @@ $_lang['studentcentre.name'] = 'Name';
 $_lang['studentcentre.description'] = 'Description';
 $_lang['studentcentre.search...'] = 'Search...';
 $_lang['studentcentre.active'] = 'Active';
+$_lang['studentcentre.deactivate'] = 'Deactivate';
+$_lang['studentcentre.activate'] = 'Activate';
 $_lang['studentcentre.top_downloaded'] = 'Top Downloaded Doodles';
 
 $_lang['studentcentre.stu_student_create_success'] = 'Student successfully created!';

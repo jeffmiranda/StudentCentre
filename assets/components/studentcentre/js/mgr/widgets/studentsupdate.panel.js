@@ -63,23 +63,7 @@ StudentCentre.panel.StudentsUpdate = function(config) {
 	                    ,fieldLabel: _('studentcentre.active')
 	                    ,xtype: 'xcheckbox'
 	                    ,inputValue: 1
-	                }/*
-,{
-			            xtype: 'textfield'
-			            ,fieldLabel: _('studentcentre.password')
-			            ,name: 'specifiedpassword'
-			            ,allowBlank: false
-			            ,inputType: 'password'
-			            ,anchor: '100%'
-			        },{
-			            xtype: 'textfield'
-			            ,fieldLabel: _('studentcentre.confirm')
-			            ,name: 'confirmpassword'
-			            ,allowBlank: false
-			            ,inputType: 'password'
-			            ,anchor: '100%'
-			        }
-*/,{
+	                },{
 			        	xtype: 'textfield'
 			        	,fieldLabel: _('studentcentre.first_name')
 			            ,name: 'firstname'
@@ -100,7 +84,7 @@ StudentCentre.panel.StudentsUpdate = function(config) {
 			            xtype: 'datefield'
 			            ,name: 'start_date'
 			            ,fieldLabel: _('studentcentre.start_date')
-			            ,format: 'd-m-Y'
+			            ,format: 'Y-m-d'
 			        },{
 			        	xtype: 'combo-gender-status'
 			        	,fieldLabel: _('studentcentre.gender')
@@ -110,7 +94,7 @@ StudentCentre.panel.StudentsUpdate = function(config) {
 			            xtype: 'datefield'
 			            ,name: 'dob'
 			            ,fieldLabel: _('studentcentre.birth_date')
-			            ,format: 'd-m-Y'
+			            ,format: 'Y-m-d'
 			        },{
 			        	xtype: 'textfield'
 			        	,fieldLabel: _('studentcentre.email')
@@ -347,7 +331,7 @@ Ext.extend(StudentCentre.panel.StudentsUpdate,MODx.FormPanel,{
                 'success': {fn:function(r) {
                     this.getForm().setValues(r.object);
                     //console.log(this.getForm());
-                    //console.log(r.object);
+                    console.log(r.object);
                     Ext.get('sc-student-header').update('<h2>'+_('studentcentre.student')+': '+r.object.username+'</h2>');
                     this.fireEvent('ready',r.object);
                     MODx.fireEvent('ready');
