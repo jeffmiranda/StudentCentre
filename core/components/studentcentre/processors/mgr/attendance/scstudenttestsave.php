@@ -64,7 +64,10 @@ if ($journal) {
 		$preTestQty = $journal->get('pre_test_qty');
 		$journal->set('pre_test_qty', ++$preTestQty);
 	} else {
-		$journal->set('test_date', $dateCreated);
+		// it's a real test so check to see if it was passed
+		if ($pass) {
+			$journal->set('test_date', $dateCreated);
+		}
 	}
 	
 	if (!$journal->save()) {
