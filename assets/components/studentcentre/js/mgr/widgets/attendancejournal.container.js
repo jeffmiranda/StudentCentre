@@ -230,6 +230,7 @@ StudentCentre.window.UpdateJournal = function(config) {
             ,fieldLabel: _('studentcentre.test_fee')
             ,name: 'test_fee'
             ,width: '50%'
+            ,hiddenName: 'test_fee'
         },{
 	        xtype: 'numberfield'
             //,id: 'attendance-num-pre-tests-update-journal'
@@ -352,6 +353,7 @@ StudentCentre.grid.AttendanceJournal = function(config) {
             ,editor: { xtype: 'attendance-combo-progress', renderer: true}
         },{
             header: _('studentcentre.test_fee')
+            //,id: 'attendance-combo-test-fee-grid-journal'
             ,dataIndex: 'test_fee'
             ,sortable: true
             ,width: 50
@@ -454,7 +456,7 @@ Ext.extend(StudentCentre.grid.AttendanceJournal,MODx.grid.Grid,{
 	,updateJournal: function(btn,e) {
 		var selRow = this.getSelectionModel().getSelected();
         if (selRow.length <= 0) return false;
-	    //if (!this.updateJournalWindow) {
+	    if (!this.updateJournalWindow) {
 		    this.updateJournalWindow = MODx.load({
 		        xtype: 'sc-window-journal-update'
 		        ,record: selRow.data
@@ -467,7 +469,7 @@ Ext.extend(StudentCentre.grid.AttendanceJournal,MODx.grid.Grid,{
 		            }
 		        }
 		    });
-	    //}
+	    }
 		this.updateJournalWindow.setValues(selRow.data);
 		this.updateJournalWindow.show(e.target);
 	}
