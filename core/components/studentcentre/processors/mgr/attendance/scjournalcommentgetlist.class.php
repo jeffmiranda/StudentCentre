@@ -21,8 +21,8 @@ class scJournalCommentGetList extends modObjectGetListProcessor {
 	        ));
 	    }
 	    
-		$c->prepare();
-		$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
+		//$c->prepare();
+		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
 	    return $c;
 	    
 	}
