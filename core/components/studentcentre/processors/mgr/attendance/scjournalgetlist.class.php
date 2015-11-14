@@ -23,7 +23,11 @@ class scJournalGetList extends modObjectGetListProcessor {
 		    $schedClass = $this->modx->getObject('scScheduledClass', $schedClassId);
 		    $class = $schedClass->getOne('Class');
 		    $classCat = $class->getOne('ClassLevelCategory');
-		    $enrolledStudents = $schedClass->getMany('ClassEnrollment');
+		    // Only get the active class enrollment
+	        $q = $this->modx->newQuery('scClassEnrollment', array(
+	        	'active:=' => 1
+	        ));
+		    $enrolledStudents = $schedClass->getMany('ClassEnrollment', $q);
 		    
 		    // create array for IN clause
 		    // this array contains all the student IDs that are enrolled in the scheduled class
