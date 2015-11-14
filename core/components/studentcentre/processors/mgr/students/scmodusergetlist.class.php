@@ -12,6 +12,9 @@ class scModUserGetList extends modObjectGetListProcessor {
 	    $c->innerJoin('scStudentProfile', 'StudentProfile', array (
 			'scModUser.id = StudentProfile.internalKey'
 		));
+		$c->innerJoin('modUserProfile', 'Profile', array (
+			'scModUser.id = Profile.internalKey'
+		));
 		
 		$query = $this->getProperty('query');
 	    if (!empty($query)) {
@@ -33,11 +36,21 @@ class scModUserGetList extends modObjectGetListProcessor {
 		$c->select(array('
 			scModUser.*
 			,StudentProfile.*
+			,Profile.*
 		'));
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
 	    return $c;
 	    
+	}
+	
+	public function prepareRow(xPDOObject $object) {
+		
+		$ta = $object->toArray();
+		$ta['dob'] = !empty($ta['dob']) ? strftime('%Y-%m-%d',$ta['dob']) : '';
+		
+		return $ta;
+		
 	}
 	      
 }

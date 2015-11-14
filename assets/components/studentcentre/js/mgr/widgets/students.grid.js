@@ -8,7 +8,7 @@ StudentCentre.grid.Students = function(config) {
         	action: 'mgr/students/scModUserGetList'
         	,activeOnly: 1
         }
-        ,fields: ['id','internalKey','username','firstname','lastname','email','phone','active']
+        ,fields: ['id','internalKey','username','firstname','lastname','dob','email','phone','active']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
@@ -30,19 +30,28 @@ StudentCentre.grid.Students = function(config) {
             header: _('studentcentre.username')
             ,dataIndex: 'username'
             ,name: 'username'
+            ,sortable: true
         },{
             header: _('studentcentre.first_name')
             ,dataIndex: 'firstname'
             ,name: 'firstname'
+            ,sortable: true
         },{
             header: _('studentcentre.last_name')
             ,dataIndex: 'lastname'
             ,name: 'lastname'
+            ,sortable: true
+        },{
+            header: _('studentcentre.birth_date')
+            ,dataIndex: 'dob'
+            ,name: 'dob'
+            ,sortable: true
         },{
             header: _('studentcentre.active')
             ,dataIndex: 'active'
             ,name: 'active'
             ,editor: { xtype: 'combo-active-status', renderer: true}
+            ,sortable: true
         }]
         ,tbar:[{
             xtype: 'button'
