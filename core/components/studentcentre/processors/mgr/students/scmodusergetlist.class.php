@@ -35,8 +35,9 @@ class scModUserGetList extends modObjectGetListProcessor {
 	    
 		$c->select(array('
 			scModUser.*
+			,scModUser.id AS `student_id`
 			,StudentProfile.*
-			,Profile.*
+			,Profile.dob
 		'));
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));

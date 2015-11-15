@@ -294,7 +294,7 @@ StudentCentre.combo.StudentName = function(config) {
 	    ,fields: ['student_id', 'username']
 	    ,url: StudentCentre.config.connectorUrl
 	    ,baseParams: {
-	        action: 'mgr/attendance/scModUserGetList'
+	        action: 'mgr/students/scModUserGetList'
 	        ,activeOnly: 1
 	    }
     });
