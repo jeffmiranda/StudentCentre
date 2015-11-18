@@ -80,10 +80,10 @@ class scClassProgress extends xPDOSimpleObject {
 		
 		$answer = false;
 		
-		// get the level object
-		$classLevel = $this->getOne('ClassLevel');
+		// get the next level object
+		$classLevel = $this->getNextLevel();
 		if (!$classLevel) {
-			$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Could not get the associated class level of the scClassProgress object!');
+			$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Could not get the associated next class level of the scClassProgress object!');
 		}
 		
 		// if hours since leveling / hours required is greater than test threshold
