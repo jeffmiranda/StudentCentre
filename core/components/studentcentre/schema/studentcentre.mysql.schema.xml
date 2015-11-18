@@ -381,7 +381,7 @@
 	<!-- !scJournal -->
 	<object class="scJournal" table="journal" extends="xPDOSimpleObject">
 		<field key="class_progress_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
-		<field key="belt" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="belt" dbtype="varchar" precision="100" phptype="string" null="false" default="notreceived" />
 		<field key="certificate" dbtype="varchar" precision="100" phptype="string" null="false" />
 		<field key="written_test_progress" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
 		<field key="test_fee" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="0" />
