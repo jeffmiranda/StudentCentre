@@ -7,9 +7,11 @@ $xpdo_meta_map['scJournal']= array (
   'fields' => 
   array (
     'class_progress_id' => NULL,
-    'belt' => NULL,
-    'certificate' => NULL,
-    'written_test_progress' => NULL,
+    'next_level_id' => NULL,
+    'hours_since_leveling' => NULL,
+    'belt' => 'notreceived',
+    'certificate' => 'notreceived',
+    'written_test_progress' => 0,
     'test_fee' => 0,
     'test_date' => NULL,
     'pre_test_qty' => 0,
@@ -27,12 +29,29 @@ $xpdo_meta_map['scJournal']= array (
       'phptype' => 'integer',
       'null' => false,
     ),
+    'next_level_id' => 
+    array (
+      'dbtype' => 'tinyint',
+      'precision' => '3',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => false,
+    ),
+    'hours_since_leveling' => 
+    array (
+      'dbtype' => 'decimal',
+      'precision' => '6,2',
+      'attributes' => 'unsigned',
+      'phptype' => 'float',
+      'null' => false,
+    ),
     'belt' => 
     array (
       'dbtype' => 'varchar',
       'precision' => '100',
       'phptype' => 'string',
       'null' => false,
+      'default' => 'notreceived',
     ),
     'certificate' => 
     array (
@@ -40,6 +59,7 @@ $xpdo_meta_map['scJournal']= array (
       'precision' => '100',
       'phptype' => 'string',
       'null' => false,
+      'default' => 'notreceived',
     ),
     'written_test_progress' => 
     array (
@@ -48,6 +68,7 @@ $xpdo_meta_map['scJournal']= array (
       'attributes' => 'unsigned',
       'phptype' => 'integer',
       'null' => false,
+      'default' => 0,
     ),
     'test_fee' => 
     array (
@@ -114,6 +135,14 @@ $xpdo_meta_map['scJournal']= array (
     array (
       'class' => 'scClassProgress',
       'local' => 'class_progress_id',
+      'foreign' => 'id',
+      'cardinality' => 'one',
+      'owner' => 'foreign',
+    ),
+    'ClassLevel' => 
+    array (
+      'class' => 'scClassLevel',
+      'local' => 'next_level_id',
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',

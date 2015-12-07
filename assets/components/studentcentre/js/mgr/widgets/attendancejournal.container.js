@@ -1,81 +1,3 @@
-// !Belt Combobox
-StudentCentre.combo.Belt = function(config) {
-    config = config || {};
-    Ext.applyIf(config, {
-        store: new Ext.data.ArrayStore({
-            fields: ['value','display']
-            ,data: [
-                ['notreceived','Not received']
-                ,['awarded','Awarded']
-            ]
-        })
-        ,mode: 'local'
-        ,displayField: 'display'
-        ,valueField: 'value'
-        ,hiddenName: 'belt'
-    });
-    
-    StudentCentre.combo.Belt.superclass.constructor.call(this, config);
-};
-Ext.extend(StudentCentre.combo.Belt, MODx.combo.ComboBox);
-Ext.reg('attendance-combo-belt', StudentCentre.combo.Belt);
-
-
-// !Certificate Combobox
-StudentCentre.combo.Certificate = function(config) {
-    config = config || {};
-    Ext.applyIf(config, {
-        store: new Ext.data.ArrayStore({
-            fields: ['value','display']
-            ,data: [
-                ['notreceived','Not received']
-                ,['printed','Printed']
-                ,['awarded','Awarded']
-            ]
-        })
-        ,mode: 'local'
-        ,displayField: 'display'
-        ,valueField: 'value'
-        ,hiddenName: 'certificate'
-    });
-    
-    StudentCentre.combo.Certificate.superclass.constructor.call(this, config);
-};
-Ext.extend(StudentCentre.combo.Certificate, MODx.combo.ComboBox);
-Ext.reg('attendance-combo-certificate', StudentCentre.combo.Certificate);
-
-
-// !Progress Combobox
-StudentCentre.combo.Progress = function(config) {
-    config = config || {};
-    Ext.applyIf(config, {
-        store: new Ext.data.ArrayStore({
-            fields: ['value','display']
-            ,data: [
-                [0,'0']
-                ,[10,'10']
-                ,[20,'20']
-                ,[30,'30']
-                ,[40,'40']
-                ,[50,'50']
-                ,[60,'60']
-                ,[70,'70']
-                ,[80,'80']
-                ,[90,'90']
-                ,[100,'100']
-            ]
-        })
-        ,mode: 'local'
-        ,displayField: 'display'
-        ,valueField: 'value'
-    });
-    
-    StudentCentre.combo.Progress.superclass.constructor.call(this, config);
-};
-Ext.extend(StudentCentre.combo.Progress, MODx.combo.ComboBox);
-Ext.reg('attendance-combo-progress', StudentCentre.combo.Progress);
-
-
 // !Journal Container
 StudentCentre.container.AttendanceJournal = function(config) {
     config = config || {};
@@ -92,7 +14,7 @@ StudentCentre.container.AttendanceJournal = function(config) {
                 ,border: false
                 ,items: [{
                 	xtype: 'attendance-combo-location'
-                	,id: 'attendance-combo-location-jouranl'
+                	,id: 'attendance-combo-location-journal'
 		            ,fieldLabel: _('studentcentre.att_location')
 		            ,name: 'location'
 				    ,hiddenName: 'location'
@@ -169,6 +91,132 @@ Ext.extend(StudentCentre.container.AttendanceJournal,Ext.Container,{
 });
 Ext.reg('sc-journal-container',StudentCentre.container.AttendanceJournal);
 
+
+// !Create Journal Window
+/**
+ * This window is temporary. Once all the students are synced up
+ * and have a journal entry, remove this window and button.
+ */
+StudentCentre.window.CreateJournal = function(config) {
+    config = config || {};
+    Ext.applyIf(config,{
+        title: _('studentcentre.create_journal')
+        ,width: '400'
+        ,url: StudentCentre.config.connectorUrl
+        ,labelAlign: 'left'
+        ,baseParams: {
+            action: 'mgr/attendance/scJournalCreate'
+        }
+        ,fields: [{
+        	xtype: 'attendance-combo-location'
+        	,id: 'attendance-combo-location-create-jouranl'
+            ,fieldLabel: _('studentcentre.att_location')
+            ,name: 'location'
+		    ,hiddenName: 'location'
+		    ,anchor: '95%'
+		    ,listeners: {
+	            select: { fn: this.getScheduledClasses, scope: this }
+	        }
+		},{
+            xtype: 'attendance-combo-scheduled-class'
+            ,id: 'attendance-combo-scheduled-class-create-journal'
+            ,fieldLabel: _('studentcentre.att_class')
+            ,name: 'class_id'
+		    ,hiddenName: 'class_id'
+		    ,anchor: '95%'
+		    ,disabled: true
+		    ,listeners: {
+	            select: { fn: this.getEnrolledStudents, scope: this }
+	        }
+		},{
+			xtype: 'attendance-combo-student-name'
+			,id: 'create-journal-win-student-name'
+			,hiddenName: 'student_id'
+			,anchor: '95%'
+			,disabled: true
+			,allowBlank: false
+			,baseParams: {
+		        action: 'mgr/attendance/scModUserGetList'
+		        ,activeOnly: 1
+		    }
+		},{
+            xtype: 'attendance-combo-belt'
+            ,fieldLabel: _('studentcentre.belt')
+            ,name: 'belt'
+            ,width: '50%'
+        },{
+            xtype: 'attendance-combo-certificate'
+            ,fieldLabel: _('studentcentre.certificate')
+            ,name: 'certificate'
+            ,width: '50%'
+        },{
+            xtype: 'attendance-combo-progress'
+            ,fieldLabel: _('studentcentre.written_test_progress')
+            ,name: 'written_test_progress'
+            ,width: '50%'
+        },{
+            xtype: 'attendance-combo-active-status'
+            ,fieldLabel: _('studentcentre.test_fee')
+            ,name: 'test_fee'
+            ,width: '50%'
+            ,hiddenName: 'test_fee'
+        },{
+	        xtype: 'numberfield'
+            ,fieldLabel: _('studentcentre.pre_test_qty')
+            ,name: 'pre_test_qty'
+            ,width: '50%'
+        },{
+			xtype: 'datefield'
+            ,name: 'test_date'
+            ,allowBlank: true
+            ,fieldLabel: _('studentcentre.test_date')
+            ,format: 'Y-m-d'
+            ,width: '50%'
+		},{
+			xtype: 'xcheckbox'
+			,name: 'active'
+			,fieldLabel: _('studentcentre.active')
+			,checked: true
+		}]
+    });
+    StudentCentre.window.CreateJournal.superclass.constructor.call(this,config);
+};
+Ext.extend(StudentCentre.window.CreateJournal,MODx.Window,{
+	// Load the Sched Class combobox with classes at a specific location
+	getScheduledClasses: function(combo, value) {
+		console.log(value);
+		// Get the students combobox disable and clear it
+		var cbStudents = Ext.getCmp('create-journal-win-student-name');
+    	cbStudents.setDisabled(true);
+        var d = cbStudents.store;
+        d.removeAll();
+        d.load();
+        cbStudents.clearValue();
+        
+		// Get the Sched Class combobox
+		var cbScheduledClass = Ext.getCmp('attendance-combo-scheduled-class-create-journal');
+    	cbScheduledClass.setDisabled(false);
+        var s = cbScheduledClass.store;
+        s.baseParams['location_id'] = value.id;
+        s.removeAll();
+        s.load();
+        cbScheduledClass.clearValue();
+    }
+    // Load the Students combobox with students enrolled for the scheduled class
+	,getEnrolledStudents: function(combo, value) {
+		// Get the Students combobox
+		var cbStudents = Ext.getCmp('create-journal-win-student-name');
+    	cbStudents.setDisabled(false);
+        var s = cbStudents.store;
+        s.baseParams['scheduled_class_id'] = value.id;
+        s.removeAll();
+        s.load();
+        cbStudents.clearValue();
+    }
+});
+Ext.reg('sc-window-journal-create',StudentCentre.window.CreateJournal);
+
+
 // !Update Journal Window
 StudentCentre.window.UpdateJournal = function(config) {
     config = config || {};
@@ -193,18 +241,34 @@ StudentCentre.window.UpdateJournal = function(config) {
             ,fieldLabel: _('studentcentre.username')
             ,name: 'username'
             ,width: '50%'
-        },{
+        }/*
+,{
             xtype: 'displayfield'
             ,fieldLabel: _('studentcentre.next_level')
             ,name: 'next_level'
             ,width: '50%'
+        }
+*/,{
+            xtype: 'attendance-class-level-combo'
+            ,id: 'attendance-combo-journal-update-class-level'
+            ,fieldLabel: _('studentcentre.next_level')
+            ,name: 'next_level_id'
+            ,hiddenName: 'next_level_id'
+            ,hiddenValue: 'next_level_id'
+            ,width: '50%'
+/*
+            ,baseParams: {
+		        action: 'mgr/attendance/scClassLevelGetList'
+		        ,activeOnly: 1
+		    }
+*/
         },{
             xtype: 'displayfield'
             ,fieldLabel: _('studentcentre.att_hours_required')
-            ,name: 'next_level_hours_required'
+            ,name: 'hours_required'
             ,width: '50%'
         },{
-            xtype: 'displayfield'
+            xtype: 'textfield'
             ,fieldLabel: _('studentcentre.att_hours_since_leveling')
             ,name: 'hours_since_leveling'
             ,width: '50%'
@@ -277,7 +341,7 @@ StudentCentre.grid.AttendanceJournal = function(config) {
         ,baseParams: {
 	        action: 'mgr/attendance/scJournalGetList'
 	    }
-        ,fields: ['id','class_progress_id','student_id','username','next_level','next_level_hours_required','hours_since_leveling','belt','certificate','written_test_progress','test_fee','test_date','pre_test_qty','active','last_comment']
+        ,fields: ['id','next_level_id','student_id','username','next_level','hours_required','hours_since_leveling','belt','certificate','written_test_progress','test_fee','test_date','pre_test_qty','active','last_comment']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
@@ -291,10 +355,10 @@ StudentCentre.grid.AttendanceJournal = function(config) {
             ,name: 'id'
             ,width: 30
         },{
-            header: _('studentcentre.att_class_progress_id')
+            header: _('studentcentre.next_level_id')
             ,hidden: true
-            ,dataIndex: 'class_progress_id'
-            ,name: 'class_progress_id'
+            ,dataIndex: 'next_level_id'
+            ,name: 'next_level_id'
         },{
             header: _('studentcentre.student_id')
             ,hidden: true
@@ -320,8 +384,8 @@ StudentCentre.grid.AttendanceJournal = function(config) {
         },{
             header: _('studentcentre.att_hours_required')
             ,sortable: true
-            ,dataIndex: 'next_level_hours_required'
-            ,name: 'next_level_hours_required'
+            ,dataIndex: 'hours_required'
+            ,name: 'hours_required'
             ,width: 50
         },{
             header: _('studentcentre.att_hours_since_leveling')
@@ -385,6 +449,14 @@ StudentCentre.grid.AttendanceJournal = function(config) {
             ,width: 100
         }]
         ,tbar:[{
+	        // Remove this button once all the students are synced up
+            xtype: 'button'
+            ,id: 'attendance-create-journal-button'
+            ,text: _('studentcentre.create_journal')
+            ,listeners: {
+                'click': {fn: this.createJournal, scope: this}
+            }
+        },{
             xtype: 'button'
             ,id: 'attendance-update-journal-button'
             ,text: _('studentcentre.update')
@@ -452,6 +524,43 @@ Ext.extend(StudentCentre.grid.AttendanceJournal,MODx.grid.Grid,{
 	        text: _('studentcentre.deactivate')
 	        ,handler: this.toggleActive
 	    }];
+	}
+	,createJournal: function(btn,e) {
+		//var selRow = this.getSelectionModel().getSelected();
+        //if (selRow.length <= 0) return false;
+	    if (!this.createJournalWindow) {
+		    this.createJournalWindow = MODx.load({
+		        xtype: 'sc-window-journal-create'
+		    });
+	    }
+	    this.createJournalWindow.reset();
+	    // get the location and class combo boxes above the grid
+		var locCombo = Ext.getCmp('attendance-combo-location-journal');
+	    var classCombo = Ext.getCmp('attendance-combo-scheduled-class-journal');
+	    // if the class combo is enabled
+	    if (classCombo.disabled == false) {
+		    // enable the class combo in the create window
+		    Ext.getCmp('attendance-combo-scheduled-class-create-journal').setDisabled(false);
+		    var classId = classCombo.getValue();
+		    // if there's a value in the class combo
+		    if (classId) {
+			    // get the students combo and pass it the value of the class combo
+			    // to get a list of students for that class
+				var cbStudents = Ext.getCmp('create-journal-win-student-name');
+	        	cbStudents.setDisabled(false); // enable the combobox
+	            var s = cbStudents.store; // get the store
+	            s.baseParams['scheduled_class_id'] = classId; // set the scheduled_class_id param
+	            s.removeAll(); // removes any existing records from the store
+	            s.load(); // load the store with data
+	            cbStudents.clearValue(); // clear the text value
+		    }
+	    }
+	    // set the values for the combo boxes in the create window
+		this.createJournalWindow.setValues({
+			location: locCombo.getValue()
+			,class_id: classCombo.getValue()
+		});
+		this.createJournalWindow.show(e.target);
 	}
 	,updateJournal: function(btn,e) {
 		var selRow = this.getSelectionModel().getSelected();

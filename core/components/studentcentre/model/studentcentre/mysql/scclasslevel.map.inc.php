@@ -122,6 +122,14 @@ $xpdo_meta_map['scClassLevel']= array (
       'cardinality' => 'one',
       'owner' => 'local',
     ),
+    'Journal' => 
+    array (
+      'class' => 'scJournal',
+      'local' => 'id',
+      'foreign' => 'next_level_id',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
   ),
   'aggregates' => 
   array (

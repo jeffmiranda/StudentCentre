@@ -209,6 +209,7 @@
 		<composite alias="StudentTest" class="scStudentTest" local="id" foreign="level_id" cardinality="many" owner="local" />
 		<composite alias="ClassProgress" class="scClassProgress" local="id" foreign="level_id" cardinality="many" owner="local" />
 		<composite alias="CertificateTpl" class="scCertificateTpl" local="id" foreign="level_id" cardinality="one" owner="local" />
+		<composite alias="Journal" class="scJournal" local="id" foreign="next_level_id" cardinality="many" owner="local" />
 	</object>
 	<!-- !scTechnique -->
 	<object class="scTechnique" table="techniques" extends="xPDOSimpleObject">
@@ -381,9 +382,11 @@
 	<!-- !scJournal -->
 	<object class="scJournal" table="journal" extends="xPDOSimpleObject">
 		<field key="class_progress_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="next_level_id" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="hours_since_leveling" dbtype="decimal" precision="6,2" attributes="unsigned" phptype="float" null="false" />
 		<field key="belt" dbtype="varchar" precision="100" phptype="string" null="false" default="notreceived" />
-		<field key="certificate" dbtype="varchar" precision="100" phptype="string" null="false" />
-		<field key="written_test_progress" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" />
+		<field key="certificate" dbtype="varchar" precision="100" phptype="string" null="false" default="notreceived" />
+		<field key="written_test_progress" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" default="0" />
 		<field key="test_fee" dbtype="tinyint" precision="1" phptype="integer" attributes="unsigned" null="false" default="0" />
 		<field key="test_date" dbtype="date" phptype="date" null="true" />
 		<field key="pre_test_qty" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" default="0" />
@@ -392,6 +395,7 @@
 		<field key="last_modified" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" extra="on update current_timestamp" />
 		
 		<aggregate alias="ClassProgress" class="scClassProgress" local="class_progress_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="ClassLevel" class="scClassLevel" local="next_level_id" foreign="id" cardinality="one" owner="foreign" />
 		<composite alias="JournalComment" class="scJournalComment" local="id" foreign="journal_id" cardinality="many" owner="local" />
     </object>
     <!-- !scJournalComment -->

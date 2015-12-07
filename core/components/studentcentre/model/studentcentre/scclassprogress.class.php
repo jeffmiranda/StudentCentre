@@ -5,6 +5,27 @@ class scClassProgress extends xPDOSimpleObject {
         parent :: __construct($xpdo);
     }
     
+    /**
+     * Update the journal object with the hours_since_leveling
+     * so they stay in sync with each other. Then return to 
+     * the regular save() to save the scClassProgress.
+     */
+	public function save() {
+		
+		$journal = $this->xpdo->getObject('scJournal', array(
+			'class_progress_id' => $this->get('id')
+		));
+		if ($journal) {
+			
+			$journal->set('hours_since_leveling', $this->get('hours_since_leveling'));
+			if (!$journal->save()) { return false; }
+			
+		} else { return false; }
+		
+		return parent::save();
+		
+	}
+
 	/**
      * Adds the new hours to the hours_since_leveling
      * and total_hours properties of the object

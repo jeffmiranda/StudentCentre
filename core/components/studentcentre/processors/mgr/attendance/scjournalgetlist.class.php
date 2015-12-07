@@ -9,6 +9,9 @@ class scJournalGetList extends modObjectGetListProcessor {
     
     public function prepareQueryBeforeCount(xPDOQuery $c) {
 	    	    
+		$c->innerJoin('scClassLevel', 'ClassLevel', array (
+			'scJournal.next_level_id = ClassLevel.id'
+		));
 	    $c->innerJoin('scClassProgress', 'ClassProgress', array (
 			'scJournal.class_progress_id = ClassProgress.id'
 		));
@@ -60,8 +63,9 @@ class scJournalGetList extends modObjectGetListProcessor {
 	    	    
 	    $c->select(array('
 			scJournal.*
-			,ClassProgress.hours_since_leveling
-			,ClassProgress.level_id
+			,ClassLevel.id AS `next_level_id`
+			,ClassLevel.name AS `next_level`
+			,ClassLevel.hours_required
 			,Student.id AS `student_id`
 			,Student.username AS `username`
 		'));
@@ -96,6 +100,7 @@ class scJournalGetList extends modObjectGetListProcessor {
 		}
 		
 		// add the next level and the hours required for next level
+/*
 		$progress = $this->modx->getObject('scClassProgress', $ta['class_progress_id']);
 		$nextLevel = $progress->getNextLevel();
 		if ($nextLevel) {
@@ -105,6 +110,7 @@ class scJournalGetList extends modObjectGetListProcessor {
 			$ta['next_level'] = '';
 			$ta['next_level_hours_required'] = '';
 		}
+*/
 		
         return $ta;
         

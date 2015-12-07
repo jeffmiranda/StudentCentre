@@ -184,29 +184,6 @@ Ext.extend(StudentCentre.grid.StudentAttendance,MODx.grid.Grid,{
 Ext.reg('studentcentre-grid-attendance',StudentCentre.grid.StudentAttendance);
 
 
-// !Tested Combobox
-StudentCentre.combo.Tested = function(config) {
-    config = config || {};
-    Ext.applyIf(config, {
-        store: new Ext.data.ArrayStore({
-            id: 'attendance-combo-tested'
-            ,fields: ['value','display']
-            ,data: [
-                [1,'Yes']
-                ,[0,'No']
-            ]
-        })
-        ,mode: 'local'
-        ,displayField: 'display'
-        ,valueField: 'value'
-    });
-    
-    StudentCentre.combo.Tested.superclass.constructor.call(this, config);
-};
-Ext.extend(StudentCentre.combo.Tested, MODx.combo.ComboBox);
-Ext.reg('attendance-combo-tested', StudentCentre.combo.Tested);
-
-
 // !Create Attendance Window
 StudentCentre.window.CreateAttendance = function(config) {
     config = config || {};

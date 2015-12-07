@@ -15,7 +15,7 @@ class scJournalUpdateProcessor extends modObjectUpdateProcessor {
 		        $this->setProperty('active', 1);
 	        }
         }
-        
+                
         return parent::beforeSet();
     }
     
