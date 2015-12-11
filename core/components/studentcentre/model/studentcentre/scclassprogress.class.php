@@ -8,6 +8,7 @@ class scClassProgress extends xPDOSimpleObject {
 	public function save() {
 		
 		$this->updateJournalHrsSinceLvl();
+		$this->activateJournal();
 		
 		return parent::save();
 		
@@ -417,12 +418,12 @@ class scClassProgress extends xPDOSimpleObject {
 		$journal = $this->xpdo->getObject('scJournal', array('class_progress_id' => $this->get('id')));
 		
 		if (!$journal) {
-			$journal = $this->xpdo->newObject('scJournal', array('date_created' => date('Y-m-d')));
-			$this->addOne($journal);
+			$journal = $this->_createJournal();
+			return $journal ? true : false;
 		}
 		
 		$nextLvl = $this->getNextLevel();
-		
+
 		if ($nextLvl) {
 			
 			if ($journal->get('next_level_id') == $nextLvl->get('id')) {
@@ -436,6 +437,58 @@ class scClassProgress extends xPDOSimpleObject {
 
 		return $success;
 
+	}
+	
+	
+	/**
+     * Activate the journal if the classProgress is test ready.
+     * Note that the journal doesn't deactivate if the classProgress
+     * isn't test ready. Journal deactivation is only done when all
+     * of the journal criteria are met or if manually done in the
+     * journal grid.
+     * Returns true on success. False on failure.
+     */
+	public function activateJournal() {
+
+		$success = false;
+		
+		if ($this->get('test_ready') == 1) {
+			
+			$journal = $this->xpdo->getObject('scJournal', array('class_progress_id' => $this->get('id')));
+
+			if (!$journal) {
+				$journal = $this->_createJournal();
+				return $journal ? true : false;
+			}
+			
+			$journal->set('active', 1);
+			if ($journal->save()) { $success = true; }
+			
+		}
+		
+		return $success;
+		
+	}
+
+	/**
+     * Some classProgress records don't have an associated journal record.
+     * They should! This function creates and attaches it.
+     * Returns the newly created journal on success. False otherwise.
+     */
+	private function _createJournal() {
+		
+		$journal = $this->xpdo->newObject('scJournal', array(
+			'hours_since_leveling' => $this->get('hours_since_leveling')
+			,'active' => $this->get('test_ready')
+			,'date_created' => date('Y-m-d')
+		));
+		$nextLevel = $this->getNextLevel();
+		if ($nextLevel) { $journal->set('next_level_id', $nextLevel->get('id')); }
+		if (!$this->addOne($journal)) { return false; }
+		if (!$journal->save()) { return false; }
+		
+		return $journal;
+		
 	}
 
 	
