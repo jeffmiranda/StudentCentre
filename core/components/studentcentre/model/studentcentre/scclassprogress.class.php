@@ -5,22 +5,9 @@ class scClassProgress extends xPDOSimpleObject {
         parent :: __construct($xpdo);
     }
     
-    /**
-     * Update the journal object with the hours_since_leveling
-     * so they stay in sync with each other. Then return to 
-     * the regular save() to save the scClassProgress.
-     */
 	public function save() {
 		
-		$journal = $this->xpdo->getObject('scJournal', array(
-			'class_progress_id' => $this->get('id')
-		));
-		if ($journal) {
-			
-			$journal->set('hours_since_leveling', $this->get('hours_since_leveling'));
-			if (!$journal->save()) { return false; }
-			
-		} else { return false; }
+		$this->updateJournalHrsSinceLvl();
 		
 		return parent::save();
 		
@@ -57,7 +44,7 @@ class scClassProgress extends xPDOSimpleObject {
 		 * the hours since leveling. If it happens before, then simply delete hours
 		 * from the student's total hours. If no previous test can be found,
 		 * then the student is new so delete the hours from both.
-		*/
+		 */
 				
 		// Get the test object
 		$c = $this->xpdo->newQuery('scStudentTest');
@@ -417,6 +404,38 @@ class scClassProgress extends xPDOSimpleObject {
 		
 		return $success;
 		
+	}
+	
+	/**
+     * Updates the associated journal hours_since_leveling
+     * so they stay in sync with each other.
+     * Returns true on success. False on failure.
+     */
+	public function updateJournalHrsSinceLvl() {
+
+		$success = false;
+		$journal = $this->xpdo->getObject('scJournal', array('class_progress_id' => $this->get('id')));
+		
+		if (!$journal) {
+			$journal = $this->xpdo->newObject('scJournal', array('date_created' => date('Y-m-d')));
+			$this->addOne($journal);
+		}
+		
+		$nextLvl = $this->getNextLevel();
+		
+		if ($nextLvl) {
+			
+			if ($journal->get('next_level_id') == $nextLvl->get('id')) {
+				
+				$journal->set('hours_since_leveling', $this->get('hours_since_leveling'));
+				if ($journal->save()) { $success = true; }
+				
+			}
+			
+		}
+
+		return $success;
+
 	}
 
 	
