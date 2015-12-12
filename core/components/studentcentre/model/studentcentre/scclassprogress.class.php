@@ -263,7 +263,7 @@ class scClassProgress extends xPDOSimpleObject {
 		$studentProfile = $student->getOne('StudentProfile');
 		$startDate = $studentProfile->get('start_date');
 		if (empty($startDate)) {
-			$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Could not get the student\'s start_date to determine anniversary milestone.');
+			$this->xpdo->log(xPDO::LOG_LEVEL_ERROR, 'Could not get the student (ID: '.$this->get('student_id').') start_date to determine anniversary milestone.');
 			return null;
 		}
 		$startDate = date('Ymd', $startDate);
