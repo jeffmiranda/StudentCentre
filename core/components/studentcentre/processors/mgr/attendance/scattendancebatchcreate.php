@@ -78,6 +78,13 @@ if (!empty($attendees)) {
 	// loop through all attendees
 	foreach ($attendees as $attendee) {
 				
+		// get the student
+		$stu = $modx->getObject('scModUser', $attendee->get('student_id'));
+		if (!$stu) {
+			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the student (ID: '.$attendee->get('student_id'));
+			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_att'));
+		}
+		
 		// if class progress object exists grab it
 		$classProgress = $modx->getObject('scClassProgress', array(
 			'class_level_category_id' => $class->get('class_level_category_id'),
@@ -115,7 +122,7 @@ if (!empty($attendees)) {
 			// A milestone does not exist. Do something if you want.
 		} else {
 			// An error occurred trying to determine if a milestone was passed
-			$modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to determine hourly milestone');
+			$modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to determine hourly milestone for student (ID: '.$attendee->get('student_id').')');
 		}
 		
 		// Begin determining anniversary milestone
@@ -126,7 +133,7 @@ if (!empty($attendees)) {
 			// A milestone does not exist. Do something if you want.
 		} else {
 			// An error ocurred trying to determine if a milestone exists
-			$modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to determine anniversary milestone');
+			$modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while trying to determine anniversary milestone for student (ID: '.$attendee->get('student_id').')');
 		}
 			
 		// increment hours of class progress object
@@ -135,13 +142,13 @@ if (!empty($attendees)) {
 		// !Threshold Test
 		if ($classProgress->isTestReady() || ($attendee->get('test') == 1)) {
 			$classProgress->set('test_ready', 1);
-			$classProgress->setJournalActive(1);
+			//$classProgress->setJournalActive(1);
 			// Create leveling certificate
 			$nextLevel = $classProgress->getNextLevel();
 			if ($nextLevel) {
 				$classProgress->createCertificate($attendee->get('student_id'), 'Level', $nextLevel->get('id'));
 			} else {
-				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the next level for this student. studentId: ' . $attendee->get('student_id'));
+				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not get the next level for this student (ID: '.$attendee->get('student_id').')');
 			}
 		} else {
 			$classProgress->set('test_ready', 0);
@@ -151,12 +158,12 @@ if (!empty($attendees)) {
 		if ($attendee->save()) {
 			// save class progress object to db
 			if (!$classProgress->save()) {
-				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the class progress object!');
+				$modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the class progress (ID: '.$classProgress->get('id').') for student (ID: '.$classProgress->get('student_id').')');
 				return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_att'));
 			}	
 		} else {
-			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the attendee object!');
-			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_att'));
+			$modx->log(modX::LOG_LEVEL_ERROR, 'Could not save the attendance for student (ID: '.$attendee->get('student_id').')');
+			return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_att_for_stu').$stu->get('username'));
 		}
 	
 	}
