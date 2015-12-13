@@ -223,6 +223,31 @@ class scCertificateGenerateProcessor extends modProcessor {
 	    	return false;
 		}
 		
+		switch (strtolower($typeName)) {
+			
+			case 'anniversary':
+				break;
+				
+			case 'hour':
+				break;
+				
+			case 'level':
+				// get the corresponding journal object and set it's certificate status to 'printed'
+				$progress = $this->modx->getObject('scClassProgress', array(
+					'class_level_category_id' => $classLevel->get('class_level_category_id')
+					,'student_id' => $student->get('id')
+				));
+				$journal = $progress->getOne('Journal');
+				if ($journal) {
+					$journal->set('certificate', 'printed');
+					$journal->save();
+				} else {
+					$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not update the student (ID: '.$student->get('id').') journal. It does not exist for the classProgress (ID: '.$progress->get('id').')');
+				}
+				break;
+				
+		}
+		
 		// set headers and get ready to output!
 		header('Content-type: application/pdf');
         header('Content-Disposition: attachment; filename="certificate.pdf"');
