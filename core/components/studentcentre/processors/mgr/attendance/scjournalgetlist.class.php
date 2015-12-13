@@ -63,12 +63,18 @@ class scJournalGetList extends modObjectGetListProcessor {
 	    	    
 	    $c->select(array('
 			scJournal.*
+			,ClassProgress.total_hours
 			,ClassLevel.id AS `next_level_id`
 			,ClassLevel.name AS `next_level`
 			,ClassLevel.hours_required
+			,ClassLevel.order
 			,Student.id AS `student_id`
 			,Student.username AS `username`
 		'));
+		
+		$c->sortby('ClassLevel.order', 'DESC');
+		$c->sortby('scJournal.hours_since_leveling', 'DESC');
+		$c->sortby('ClassProgress.total_hours', 'DESC');
 	    
 		//$c->prepare();
 		//$this->modx->log(1,print_r('SQL Statement: ' . $c->toSQL(),true));
