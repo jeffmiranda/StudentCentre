@@ -36,9 +36,12 @@ StudentCentre.grid.StudentAttendance = function(config) {
         },{
             header: _('studentcentre.date')
             ,dataIndex: 'date'
+            ,type: 'date'
             ,sortable: true
             ,width: 50
             ,name: 'date'
+            ,dateFormat: 'Y-m-d'
+            ,renderer: Ext.util.Format.dateRenderer('Y-m-d')
         },{
             header: _('studentcentre.username')
             ,dataIndex: 'username'
