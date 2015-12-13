@@ -184,7 +184,7 @@ StudentCentre.window.CreateJournal = function(config) {
 Ext.extend(StudentCentre.window.CreateJournal,MODx.Window,{
 	// Load the Sched Class combobox with classes at a specific location
 	getScheduledClasses: function(combo, value) {
-		console.log(value);
+		//console.log(value);
 		// Get the students combobox disable and clear it
 		var cbStudents = Ext.getCmp('create-journal-win-student-name');
     	cbStudents.setDisabled(true);
@@ -220,7 +220,7 @@ Ext.reg('sc-window-journal-create',StudentCentre.window.CreateJournal);
 // !Update Journal Window
 StudentCentre.window.UpdateJournal = function(config) {
     config = config || {};
-    console.log(config);
+    //console.log(config);
     Ext.applyIf(config,{
         title: _('studentcentre.update_journal')
         ,width: '600'
@@ -241,14 +241,7 @@ StudentCentre.window.UpdateJournal = function(config) {
             ,fieldLabel: _('studentcentre.username')
             ,name: 'username'
             ,width: '50%'
-        }/*
-,{
-            xtype: 'displayfield'
-            ,fieldLabel: _('studentcentre.next_level')
-            ,name: 'next_level'
-            ,width: '50%'
-        }
-*/,{
+        },{
             xtype: 'attendance-class-level-combo'
             ,id: 'attendance-combo-journal-update-class-level'
             ,fieldLabel: _('studentcentre.next_level')
@@ -256,12 +249,6 @@ StudentCentre.window.UpdateJournal = function(config) {
             ,hiddenName: 'next_level_id'
             ,hiddenValue: 'next_level_id'
             ,width: '50%'
-/*
-            ,baseParams: {
-		        action: 'mgr/attendance/scClassLevelGetList'
-		        ,activeOnly: 1
-		    }
-*/
         },{
             xtype: 'displayfield'
             ,fieldLabel: _('studentcentre.att_hours_required')
@@ -317,7 +304,7 @@ StudentCentre.window.UpdateJournal = function(config) {
 			,width: '97%'
 		},{
 			xtype: 'sc-grid-journal-comments'
-			//,id: 'sc-grid-journal-comments'
+			,id: 'sc-grid-journal-comments'
 			,fieldLabel: _('studentcentre.comments')
 			,width: '97%'
 			,height: '200'
@@ -580,6 +567,12 @@ Ext.extend(StudentCentre.grid.AttendanceJournal,MODx.grid.Grid,{
 		    });
 	    }
 		this.updateJournalWindow.setValues(selRow.data);
+	    var jourGrid = Ext.getCmp('sc-grid-journal-comments');
+	    var lastOpt = jourGrid.getStore().lastOptions;
+	    Ext.apply(lastOpt.params, {
+		    journalId: selRow.data.id
+	    });
+	    jourGrid.getStore().reload(lastOpt);
 		this.updateJournalWindow.show(e.target);
 	}
 	,toggleActive: function(btn,e) {
