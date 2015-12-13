@@ -239,8 +239,10 @@ class scCertificateGenerateProcessor extends modProcessor {
 				));
 				$journal = $progress->getOne('Journal');
 				if ($journal) {
-					$journal->set('certificate', 'printed');
-					$journal->save();
+					if ($journal->get('next_level_id') == $certObj->get('level_id')) {
+						$journal->set('certificate', 'printed');
+						$journal->save();
+					}
 				} else {
 					$this->modx->log(modX::LOG_LEVEL_ERROR, 'Could not update the student (ID: '.$student->get('id').') journal. It does not exist for the classProgress (ID: '.$progress->get('id').')');
 				}
