@@ -422,11 +422,13 @@ StudentCentre.grid.AttendanceJournal = function(config) {
             ,editor: { xtype: 'numberfield' }
         },{
 	        header: _('studentcentre.test_date')
+	        ,type: 'date'
             ,dataIndex: 'test_date'
             ,sortable: true
             ,width: 50
             ,name: 'test_date'
             ,allowBlank: true
+            ,renderer: Ext.util.Format.dateRenderer('Y-m-d')
 			,editor: { xtype: 'datefield', format: 'Y-m-d' }
         },{
             header: _('studentcentre.last_comment')
