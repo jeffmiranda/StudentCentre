@@ -45,18 +45,7 @@ class scAttendanceGetListProcessor extends modObjectGetListProcessor {
 	    return $c;
 	    
 	}
-	
-	public function prepareRow(xPDOObject $object) {
-	
-        $ta = $object->toArray('', false, true, true);
-        //$this->modx->log(1,print_r($ta,true));
-        $attDate = strtotime($ta['date']);
-        $displayDate = date("d/m/Y", $attDate);
-        $ta['date'] = $displayDate; //($ta['last_modified'] > 0) ? date('Y-m-d',$ta['last_modified']) : '';
-        return $ta;
-        
-    }  
-      
+	      
 }
 
 return 'scAttendanceGetListProcessor';
