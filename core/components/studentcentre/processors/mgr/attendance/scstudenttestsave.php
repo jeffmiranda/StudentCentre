@@ -73,20 +73,20 @@ if (!$studentTest->save()) {
     return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_student_test'));
 }
 
+// Get the classProgress object
+$classProgressId = $modx->getOption('class_progress_id', $scriptProperties, '');
+if (empty($classProgressId)) {
+	$modx->log(modX::LOG_LEVEL_ERROR, '$classProgressId is empty!');
+    return $modx->error->failure($modx->lexicon('studentcentre.att_err_promoting_student'));
+}
+$classProgress = $modx->getObject('scClassProgress', $classProgressId);
+if (!$classProgress) {
+	$modx->log(modX::LOG_LEVEL_ERROR, 'Class progress not retrieved!');
+	return $modx->error->failure($modx->lexicon('studentcentre.att_err_promoting_student'));
+}
+
 // If the test was real and passed promote the student
 if ($studentTest->get('type') == 'Test' && $studentTest->get('pass') == 1) {
-
-	// Get the classProgress object
-	$classProgressId = $modx->getOption('class_progress_id', $scriptProperties, '');
-	if (empty($classProgressId)) {
-		$modx->log(modX::LOG_LEVEL_ERROR, '$classProgressId is empty!');
-	    return $modx->error->failure($modx->lexicon('studentcentre.att_err_promoting_student'));
-	}
-	$classProgress = $modx->getObject('scClassProgress', $classProgressId);
-	if (!$classProgress) {
-		$modx->log(modX::LOG_LEVEL_ERROR, 'Class progress not retrieved!');
-		return $modx->error->failure($modx->lexicon('studentcentre.att_err_promoting_student'));
-	}
 
 	// Get the next level object
 	$nextLevel = $classProgress->getNextLevel();
@@ -102,49 +102,43 @@ if ($studentTest->get('type') == 'Test' && $studentTest->get('pass') == 1) {
 	//error_log($classProgress->get('level_id'));
 	$classProgress->set('hours_since_leveling', 0);
 	$classProgress->set('test_ready', 0);
-	if ($classProgress->save()) {
-		return $modx->error->success($modx->lexicon('studentcentre.att_student_promoted'));
-	} else {
-		$modx->log(modX::LOG_LEVEL_ERROR, '$classProgress could not be saved!');
-		return $modx->error->failure($modx->lexicon('studentcentre.att_err_promoting_student'));	
-	}
 
 }
 
 // If a journal object exists
-$journal = $modx->getObject('scJournal', array(
-	'class_progress_id' => $classProgressId
-));
-if ($journal) {
-	
-	// If the comment isn't empty, create and save the comment to the journal comments
-	if (!empty($comment)) {
-		$journalComment = $modx->newObject('scJournalComment', array(
-			'journal_id' => $journal->get('id')
-			,'comment' => $comment
-			,'date_created' => date('Y-m-d')
-		));
-		$journal->addMany($journalComment);
-	}
-	
-	// check if it's a pre-test or a real test
-	if ($testType == 'Pre-test') {
-		$preTestQty = $journal->get('pre_test_qty');
-		$journal->set('pre_test_qty', ++$preTestQty);
-	} else {
-		// it's a real test so check to see if it was passed
-		if ($pass) {
-			$journal->set('test_date', $dateCreated);
-		}
-	}
-	
-	if (!$journal->save()) {
-		$modx->log(modX::LOG_LEVEL_ERROR, 'Could not save journal with ID: ' . $journal->get('id'));
-	}
-	
-} else {
-	$modx->log(modX::LOG_LEVEL_ERROR, 'Journal object does not exist for ClassProgress ID: ' . $classProgressId);
+$journal = $classProgress->getOne('Journal');
+if (!$journal) { // if not create it
+	$journal = $classProgress->_createJournal();
 }
 
+// If the comment isn't empty, create and save the comment to the journal comments
+if (!empty($comment)) {
+	$journalComment = $modx->newObject('scJournalComment', array(
+		'journal_id' => $journal->get('id')
+		,'comment' => $comment
+		,'date_created' => date('Y-m-d')
+	));
+	$journal->addMany($journalComment);
+}
 
-return $modx->error->success($modx->lexicon('studentcentre.att_test_saved'));
+// check if it's a pre-test or a real test
+if ($testType == 'Pre-test') {
+	$preTestQty = $journal->get('pre_test_qty');
+	$journal->set('pre_test_qty', ++$preTestQty);
+} else {
+	// it's a real test so check to see if it was passed
+	if ($pass) {
+		$journal->set('test_date', $dateCreated);
+	}
+}
+
+if ($classProgress->save()) {
+	if ($pass) {
+		return $modx->error->success($modx->lexicon('studentcentre.att_student_promoted'));
+	} else {
+		return $modx->error->success($modx->lexicon('studentcentre.att_test_saved'));
+	}
+} else {
+	$modx->log(modX::LOG_LEVEL_ERROR, '$classProgress could not be saved!');
+	return $modx->error->failure($modx->lexicon('studentcentre.att_err_saving_student_test'));
+}

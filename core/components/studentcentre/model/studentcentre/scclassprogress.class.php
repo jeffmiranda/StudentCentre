@@ -475,7 +475,7 @@ class scClassProgress extends xPDOSimpleObject {
      * They should! This function creates and attaches it.
      * Returns the newly created journal on success. False otherwise.
      */
-	private function _createJournal() {
+	public function _createJournal() {
 		
 		$journal = $this->xpdo->newObject('scJournal', array(
 			'hours_since_leveling' => $this->get('hours_since_leveling')
