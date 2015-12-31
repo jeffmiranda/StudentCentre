@@ -109,6 +109,9 @@ if ($studentTest->get('type') == 'Test' && $studentTest->get('pass') == 1) {
 $journal = $classProgress->getOne('Journal');
 if (!$journal) { // if not create it
 	$journal = $classProgress->_createJournal();
+	$modx->log(modX::LOG_LEVEL_ERROR, 'A new journal was created for this classProgress (ID: '.$classProgress->get('id').') for this student (ID: '.$classProgress->get('student_id').')');
+} else {
+	$modx->log(modX::LOG_LEVEL_ERROR, 'An existing journal was retrieved for this classProgress (ID: '.$classProgress->get('id').') for this student (ID: '.$classProgress->get('student_id').')');
 }
 
 // If the comment isn't empty, create and save the comment to the journal comments
@@ -127,8 +130,10 @@ if ($testType == 'Pre-test') {
 	$journal->set('pre_test_qty', ++$preTestQty);
 } else {
 	// it's a real test so check to see if it was passed
+	$modx->log(modX::LOG_LEVEL_ERROR, 'This was a real Test (and not a Pre-test)');
 	if ($pass) {
 		$journal->set('test_date', $dateCreated);
+		$modx->log(modX::LOG_LEVEL_ERROR, 'The test was passed and the journal (ID: '.$journal->get('id').') test_date was updated with: '.$dateCreated);
 	}
 }
 
