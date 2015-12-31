@@ -1,17 +1,14 @@
 // !Certificates Grid
-
 StudentCentre.grid.Certificates = function(config) {
     config = config || {};
     Ext.applyIf(config,{
         id: 'sc-grid-certificates'
-        ,sm: new Ext.grid.RowSelectionModel({singleSelect: false})
         ,url: StudentCentre.config.connectorUrl
         ,baseParams: {
         	action: 'mgr/certificates/scCertificateGetList'
         }
         ,fields: ['id','student_id','certificate_type_id','level_id','certificate_type','username','level_name','hours','anniversary','flag','date_created']
         ,paging: true
-        //,selModel: sm
         ,remoteSort: true
         ,anchor: '97%'
         ,autoExpandColumn: 'username'
@@ -160,36 +157,13 @@ Ext.extend(StudentCentre.grid.Certificates,MODx.grid.Grid,{
 	        ,handler: this.toggleFlag
 	    }];
 	}
-   /* ,generateCertificate: function(btn,e) {
-    	console.log(this.config.url);
-		var selRow = this.getSelectionModel().getSelections();
-        if (selRow.length <= 0) return false;
-//        location.href = this.config.url+'?action=mgr/certificates/scCertificateGenerate&cid='+selRow.data.id+'&HTTP_MODAUTH='+MODx.siteId;
-
-       if (selRow.length > 1) {
-           location.href = 'http://tsn.ca';
-       } else {
-               location.href = this.config.url+'?action=mgr/certificates/scCertificateGenerate&cid='+selRow[0].data.id+'&HTTP_MODAUTH='+MODx.siteId;
-       }//this.config.url+'?action=mgr/certificates/scCertificateGenerate&XXX=2&cid='+selRow[0].data.id+'&HTTP_MODAUTH='+MODx.siteId;}
-
-    }*/
     ,generateCertificate: function(btn,e) {
-        console.log(this.config.url);
-        var selRow = this.getSelectionModel().getSelections();
+    	console.log(this.config.url);
+		var selRow = this.getSelectionModel().getSelected();
         if (selRow.length <= 0) return false;
-        if (selRow.length > 1) {
-            var arr = selRow.join(",");
-            var cids = selRow.map(function(elem){
-                return elem.id;
-            }).join(",");
-            location.href = this.config.url+'?action=mgr/certificates/scCertificateGenerate&cid='+cids+'&HTTP_MODAUTH='+MODx.siteId;
-        } else {
-            location.href = this.config.url+'?action=mgr/certificates/scCertificateGenerate&cid='+selRow[0].data.id+'&HTTP_MODAUTH='+MODx.siteId;
-        }//this.config.url+'?action=mgr/certificates/scCertificateGenerate&XXX=2&cid='+selRow[0].data.id+'&HTTP_MODAUTH='+MODx.siteId;}
-
-    }
-
-    ,toggleFlag: function(btn,e) {
+        location.href = this.config.url+'?action=mgr/certificates/scCertificateGenerate&cid='+selRow.data.id+'&HTTP_MODAUTH='+MODx.siteId;
+	}
+	,toggleFlag: function(btn,e) {
         var selRow = this.getSelectionModel().getSelected();
         if (selRow.length <= 0) return false;
         MODx.Ajax.request({

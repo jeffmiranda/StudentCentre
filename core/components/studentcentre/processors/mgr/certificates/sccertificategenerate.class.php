@@ -81,57 +81,16 @@ class Certificate extends PDF_Japanese {
 
 
 class scCertificateGenerateProcessor extends modProcessor {
-	
-	/**
-	 * The absolute path to where the certificates 
-	 * will be temporarily saved
-	 * @var string $certPath
-	 */
-	public $certPath = '';
-	
-	public function initialize() {
-		
-		$this->certPath = $this->modx->getOption('studentcentre.assets_path', null, $this->modx->getOption('assets_path').'components/studentcentre/') . 'certificates/';
-        // Check if the certificate directory exists. If not create it.
-	    if (!file_exists($this->certPath)) {
-		    if (!mkdir($this->certPath, 0777, true)) {
-			    $this->modx->log(xPDO::LOG_LEVEL_ERROR, 'Error trying to create the certificates directory: ' . $this->certPath);
-			    return $this->failure($this->modx->lexicon('studentcentre.cert_err_generation'));
-		    }
-		}
-		
-		return parent::initialize();
-	}
-	
     public function checkPermissions() { return true; }
-    
     public function getLanguageTopics() { return array('studentcentre:default'); }
 
     public function process() {
-        //$this->g
         $cId = $this->getProperty('cid');
-        $cIds = explode(",", $cId);
         if (!empty($cId)) {
-            if (sizeof($cIds) > 1) {
-
-                $this->clearCertificateFolder();
-
-                // there was more than one certificate to generate so loop
-                foreach ($cIds as $currentId)
-                    $o = $this->generate($currentId, false);
-                if ($o === false) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Certificate failed to generate!');
-                    $o = $this->failure($this->modx->lexicon('studentcentre.cert_err_generation'));
-                }
-                $this->ZipAndDownload();
-            }
-            else {
-                // there was only one certificate to generate
-                $o = $this->generate($cId, true);
-                if ($o === false) {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, 'Certificate failed to generate!');
-                    $o = $this->failure($this->modx->lexicon('studentcentre.cert_err_generation'));
-                }
+            $o = $this->generate($cId);
+            if ($o === false) {
+            	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Certificate failed to generate!');
+	            $o = $this->failure($this->modx->lexicon('studentcentre.cert_err_generation'));
             }
         } else {
         	$this->modx->log(modX::LOG_LEVEL_ERROR, 'Certificate ID was empty!');
@@ -144,10 +103,9 @@ class scCertificateGenerateProcessor extends modProcessor {
      * Generate the certificate
      * 
      * @param int $cId
-     * @param bool $download
      * @return mixed
      */
-    public function generate($cId, $download) {
+    public function generate($cId) {
     	
     	// get the certificate objects
     	$certObj = $this->modx->getObject('scCertificate', $cId);
@@ -256,7 +214,8 @@ class scCertificateGenerateProcessor extends modProcessor {
 				$fileName .= $levelName . '_';
 				break;
 		}
-		//$fileName .= $student->get('username') . '.pdf';
+		$fileName .= $student->get('username') . '.pdf';
+				
 		// toggle certificate flag
 		$certObj->set('flag', 0);
 		if (!$certObj->save()) {
@@ -290,89 +249,13 @@ class scCertificateGenerateProcessor extends modProcessor {
 				break;
 				
 		}
+		
+		// set headers and get ready to output!
+		header('Content-type: application/pdf');
+        header('Content-Disposition: attachment; filename="certificate.pdf"');
+		return $certificate->Output($fileName, 'I');
 
-        if ($download == true)
-        {
-            $filename = $this->certPath . $fileName . $studentProfile->get('firstname') . ' ' . $studentProfile->get('lastname') . ".pdf";
-            $certificate->Output($filename,'F');
-
-            // set headers and get ready to output!
-            header('Content-type: application/pdf');
-            header('Content-Disposition: attachment; filename="certificate.pdf"');
-            header('Content-Length: ' . filesize($filename));
-            readfile($filename);
-        }
-        else
-        {
-            $filename = $this->certPath . $fileName . $studentProfile->get('firstname') . ' ' . $studentProfile->get('lastname') . ".pdf";
-            $certificate->Output($filename,'F');
-        }
     }
 
-    // Empties the certificate folder
-    public function clearCertificateFolder()
-    {
-        $fileToDelete = glob($this->certPath . '*');
-        foreach($fileToDelete as $file){
-            if(is_file($file))
-                unlink($file);
-        }
-    }
-
-    // Zips all the certificates in the specified folder and downloads the zip file. The files that are added to the zip file are then deleted
-    public function ZipAndDownload()
-    {
-        $certificateFileName = "certificates.zip";
-
-        // Initialize archive object
-        $zip = new ZipArchive();
-        $zip->open($this->certPath . $certificateFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-        // Initialize empty "delete list"
-        $filesToDelete = array();
-
-        // Create recursive directory iterator
-        /** @var SplFileInfo[] $files */
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($this->certPath),
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
-
-        foreach ($files as $name => $file)
-        {
-            // Skip directories (they would be added automatically)
-            if (!$file->isDir())
-            {
-                // Get real and relative path for current file
-                $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($this->certPath) + 1);
-
-                // Add current file to archive
-                $zip->addFile($filePath, $relativePath);
-
-                // Add current file to "delete list"
-                // delete it later cause ZipArchive create archive only after calling close function and ZipArchive lock files until archive created)
-                if ($file->getFilename() != $certificateFileName)
-                {
-                    $filesToDelete[] = $filePath;
-                }
-            }
-        }
-
-        // Zip archive will be created only after closing object
-        $zip->close();
-
-        //foreach ($filesToDelete as $file)
-        //{
-        //    unlink($file);
-        //}
-
-        // set headers and get ready to output!
-        header('Content-type: application/zip');
-        header('Content-Disposition: attachment; filename=' . $certificateFileName);
-        header('Content-Length: ' . filesize($certificateFileName));
-        header("Location: " . $this->modx->getOption('studentcentre.assets_url', null, $this->modx->getOption('assets_url').'components/studentcentre/') . 'certificates/' . $certificateFileName);
-        readfile($this->certPath . $certificateFileName);
-    }
 }
 return 'scCertificateGenerateProcessor';
