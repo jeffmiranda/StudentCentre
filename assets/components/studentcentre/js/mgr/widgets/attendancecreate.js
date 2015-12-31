@@ -21,7 +21,7 @@ StudentCentre.panel.AttendanceCreate = function(config) {
             ,allowBlank: false
             ,fieldLabel: _('studentcentre.att_class_date')
             ,labelWidth: 120
-            ,format: 'd/m/Y'
+            ,format: 'Y-m-d'
             ,value: dateToday
         },{
         	html: '<br />'
