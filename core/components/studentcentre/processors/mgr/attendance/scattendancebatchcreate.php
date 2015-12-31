@@ -22,7 +22,7 @@ if (!$modx->hasPermission('save_document')) return $modx->error->failure($modx->
 $scheduledClassId = $modx->getOption('scheduled_class', $scriptProperties, '');
 $classDate = $modx->getOption('class_date', $scriptProperties, date('Y-m-d'));
 // get the class date in the right format
-$classDate = date('Y-m-d', strtotime(str_replace('/','-',$classDate)));
+//$classDate = date('Y-m-d', strtotime(str_replace('/','-',$classDate)));
 $classDuration = $modx->getOption('class_duration', $scriptProperties, '');
 $students = $modx->getOption('students', $scriptProperties, '');
 $visitors = $modx->getOption('visitors', $scriptProperties, '');
