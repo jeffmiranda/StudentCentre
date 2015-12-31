@@ -232,7 +232,7 @@ class scClassProgress extends xPDOSimpleObject {
 	}
 	
 	/**
-	 * When given a date value, checks to see if a 
+	 * When given a date string in Y-m-d, checks to see if a 
 	 * yearly anniversary milestone has passed or will pass
 	 * and is within the day range (system setting).
 	 * If so, will return the anniversary number
@@ -240,7 +240,7 @@ class scClassProgress extends xPDOSimpleObject {
 	 * If no milestone, it will return false.
 	 * If an error occurred, NULL will be returned.
 	 * 
-	 * @param $date (date)
+	 * @param $date (Y-m-d)
 	 * returns mixed
 	 */
 	public function isAnniversaryMilestone($date = null) {
@@ -248,7 +248,7 @@ class scClassProgress extends xPDOSimpleObject {
 		$result = false;
 		
 		// if $date is null, get today's date
-		if (is_null($date)) $date = date('Ymd');
+		if (is_null($date)) $date = date('Y-m-d');
 		// convert to DateTime object
 		$date = new DateTime($date);
 		
