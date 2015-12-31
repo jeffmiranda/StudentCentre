@@ -174,7 +174,7 @@ Ext.extend(StudentCentre.grid.Certificates,MODx.grid.Grid,{
 
     }*/
     ,generateCertificate: function(btn,e) {
-        console.log(this.config.url);
+        //console.log(this.config.url);
         var selRow = this.getSelectionModel().getSelections();
         if (selRow.length <= 0) return false;
         if (selRow.length > 1) {
