@@ -81,7 +81,30 @@ class Certificate extends PDF_Japanese {
 
 
 class scCertificateGenerateProcessor extends modProcessor {
+	
+	/**
+	 * The absolute path to where the certificates 
+	 * will be temporarily saved
+	 * @var string $certPath
+	 */
+	public $certPath = '';
+	
+	public function initialize() {
+		
+		$this->certPath = $this->modx->getOption('studentcentre.assets_path', null, $this->modx->getOption('assets_path').'components/studentcentre/') . 'certificates/';
+        // Check if the certificate directory exists. If not create it.
+	    if (!file_exists($this->certPath)) {
+		    if (!mkdir($this->certPath, 0777, true)) {
+			    $this->modx->log(xPDO::LOG_LEVEL_ERROR, 'Error trying to create the certificates directory: ' . $this->certPath);
+			    return $this->failure($this->modx->lexicon('studentcentre.cert_err_generation'));
+		    }
+		}
+		
+		return parent::initialize();
+	}
+	
     public function checkPermissions() { return true; }
+    
     public function getLanguageTopics() { return array('studentcentre:default'); }
 
     public function process() {
@@ -270,8 +293,7 @@ class scCertificateGenerateProcessor extends modProcessor {
 
         if ($download == true)
         {
-            $rootPath = realpath( $path = $_SERVER['DOCUMENT_ROOT'] . '/pdf/certificates');
-            $filename = $rootPath . "/" . $fileName . $studentProfile->get('firstname') . ' ' . $studentProfile->get('lastname') . ".pdf";
+            $filename = $this->certPath . $fileName . $studentProfile->get('firstname') . ' ' . $studentProfile->get('lastname') . ".pdf";
             $certificate->Output($filename,'F');
 
             // set headers and get ready to output!
@@ -282,8 +304,7 @@ class scCertificateGenerateProcessor extends modProcessor {
         }
         else
         {
-            $rootPath = realpath( $path = $_SERVER['DOCUMENT_ROOT'] . '/pdf/certificates');
-            $filename = $rootPath . "/" . $fileName . $studentProfile->get('firstname') . ' ' . $studentProfile->get('lastname') . ".pdf";
+            $filename = $this->certPath . $fileName . $studentProfile->get('firstname') . ' ' . $studentProfile->get('lastname') . ".pdf";
             $certificate->Output($filename,'F');
         }
     }
@@ -291,8 +312,7 @@ class scCertificateGenerateProcessor extends modProcessor {
     // Empties the certificate folder
     public function clearCertificateFolder()
     {
-        $rootPath = realpath( $path = $_SERVER['DOCUMENT_ROOT'] . '/pdf/certificates');
-        $fileToDelete = glob($rootPath . '/*');
+        $fileToDelete = glob($this->certPath . '*');
         foreach($fileToDelete as $file){
             if(is_file($file))
                 unlink($file);
@@ -303,12 +323,10 @@ class scCertificateGenerateProcessor extends modProcessor {
     public function ZipAndDownload()
     {
         $certificateFileName = "certificates.zip";
-        // Get real path for our folder
-        $rootPath = realpath( $path = $_SERVER['DOCUMENT_ROOT'] . '/pdf/certificates');
 
         // Initialize archive object
         $zip = new ZipArchive();
-        $zip->open($rootPath . '/' . $certificateFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->open($this->certPath . $certificateFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         // Initialize empty "delete list"
         $filesToDelete = array();
@@ -316,7 +334,7 @@ class scCertificateGenerateProcessor extends modProcessor {
         // Create recursive directory iterator
         /** @var SplFileInfo[] $files */
         $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($rootPath),
+            new RecursiveDirectoryIterator($this->certPath),
             RecursiveIteratorIterator::LEAVES_ONLY
         );
 
@@ -327,7 +345,7 @@ class scCertificateGenerateProcessor extends modProcessor {
             {
                 // Get real and relative path for current file
                 $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($rootPath) + 1);
+                $relativePath = substr($filePath, strlen($this->certPath) + 1);
 
                 // Add current file to archive
                 $zip->addFile($filePath, $relativePath);
@@ -353,8 +371,8 @@ class scCertificateGenerateProcessor extends modProcessor {
         header('Content-type: application/zip');
         header('Content-Disposition: attachment; filename=' . $certificateFileName);
         header('Content-Length: ' . filesize($certificateFileName));
-        header("Location: /pdf/certificates/" . $certificateFileName);
-        readfile($rootPath . "/" . $certificateFileName);
+        header("Location: " . $this->modx->getOption('studentcentre.assets_url', null, $this->modx->getOption('assets_url').'components/studentcentre/') . 'certificates/' . $certificateFileName);
+        readfile($this->certPath . $certificateFileName);
     }
 }
 return 'scCertificateGenerateProcessor';
