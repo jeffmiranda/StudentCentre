@@ -428,8 +428,13 @@ StudentCentre.grid.AttendanceJournal = function(config) {
             ,width: 50
             ,name: 'test_date'
             ,allowBlank: true
-            ,renderer: Ext.util.Format.dateRenderer('Y-m-d')
-			,editor: { xtype: 'datefield', format: 'Y-m-d' }
+            ,dateFormat: 'Y-m-d'
+            /**
+	         * Commented out the editor line below because when it's enabled
+	         * the date displays as one day off. Total pain in the ass
+	         * and I haven't been able to fix it.
+	         */
+            //,editor: { xtype: 'datefield', format: 'Y-m-d' }
         },{
             header: _('studentcentre.last_comment')
             ,sortable: true
