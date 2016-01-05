@@ -293,19 +293,18 @@ class scCertificateGenerateProcessor extends modProcessor {
 
         if ($download == true)
         {
-            $filename = $this->certPath . $fileName . $studentProfile->get('firstname') . ' ' . $studentProfile->get('lastname') . ".pdf";
-            $certificate->Output($filename,'F');
+	        $filename = $fileName . $studentProfile->get('firstname') . '_' . $studentProfile->get('lastname') . ".pdf";
 
-            // set headers and get ready to output!
+	        // set headers and get ready to output!
             header('Content-type: application/pdf');
-            header('Content-Disposition: attachment; filename="certificate.pdf"');
-            header('Content-Length: ' . filesize($filename));
-            readfile($filename);
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+            return $certificate->Output($filename,'I');
         }
         else
         {
             $filename = $this->certPath . $fileName . $studentProfile->get('firstname') . ' ' . $studentProfile->get('lastname') . ".pdf";
-            $certificate->Output($filename,'F');
+            return $certificate->Output($filename,'F');
         }
     }
 
@@ -345,7 +344,7 @@ class scCertificateGenerateProcessor extends modProcessor {
             {
                 // Get real and relative path for current file
                 $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($this->certPath) + 1);
+                $relativePath = substr($filePath, strlen($this->certPath));
 
                 // Add current file to archive
                 $zip->addFile($filePath, $relativePath);
