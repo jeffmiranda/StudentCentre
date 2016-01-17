@@ -62,7 +62,7 @@ Ext.extend(StudentCentre.container.AttendanceJournal,Ext.Container,{
 		gridJournal.getStore().baseParams = {
             action: 'mgr/attendance/scJournalGetList'
 		};
-        Ext.getCmp('attendance-search-filter').reset();
+        Ext.getCmp('journal-search-filter').reset();
         gridJournal.getBottomToolbar().changePage(1);
         gridJournal.refresh();
         
@@ -84,7 +84,7 @@ Ext.extend(StudentCentre.container.AttendanceJournal,Ext.Container,{
             action: 'mgr/attendance/scJournalGetList'
 			,schedClassId: value.id
 		};
-        Ext.getCmp('attendance-search-filter').reset();
+        Ext.getCmp('journal-search-filter').reset();
         gridJournal.getBottomToolbar().changePage(1);
         gridJournal.refresh();
     }
@@ -466,7 +466,7 @@ StudentCentre.grid.AttendanceJournal = function(config) {
             }
         },'->',{ // This defines the toolbar for the search
 		    xtype: 'textfield' // Here we're defining the search field for the toolbar
-		    ,id: 'attendance-search-filter'
+		    ,id: 'journal-search-filter'
 		    ,emptyText: _('studentcentre.search...')
 		    ,listeners: {
 		        'change': {fn:this.search,scope:this}
@@ -484,10 +484,9 @@ StudentCentre.grid.AttendanceJournal = function(config) {
 		    }
 		},{
             xtype: 'button'
-            ,id: 'clear-attendance-search'
             ,text: _('studentcentre.ass_clear_search')
             ,listeners: {
-                'click': {fn: this.clearAttendanceSearch, scope: this}
+                'click': {fn: this.clearJournalSearch, scope: this}
             }
         }]
     });
@@ -500,13 +499,13 @@ Ext.extend(StudentCentre.grid.AttendanceJournal,MODx.grid.Grid,{
         this.getBottomToolbar().changePage(1);
         this.refresh();
     }
-    ,clearAttendanceSearch: function() {
+    ,clearJournalSearch: function() {
 	    var cbScheduledClass = Ext.getCmp('attendance-combo-scheduled-class-journal');
 	    this.getStore().baseParams = {
             action: 'mgr/attendance/scJournalGetList'
             ,schedClassId: cbScheduledClass.value
     	};
-        Ext.getCmp('attendance-search-filter').reset();
+        Ext.getCmp('journal-search-filter').reset();
         this.getBottomToolbar().changePage(1);
         this.refresh();
     }
@@ -601,45 +600,6 @@ Ext.extend(StudentCentre.grid.AttendanceJournal,MODx.grid.Grid,{
         });
         return true;
     }
-/*
-	,updateAttendance: function(btn,e) {
-		var selRow = this.getSelectionModel().getSelected();
-        if (selRow.length <= 0) return false;
-        //console.log(selRow.data);
-	    if (!this.updateAttendanceWindow) {
-		    this.updateAttendanceWindow = MODx.load({
-		        xtype: 'sc-window-attendance-update'
-		        ,record: selRow.data
-		        ,listeners: {
-		            'success': {
-		            	fn:function(r){
-		            		this.refresh();
-		            		this.getSelectionModel().clearSelections(true);
-		            	},scope:this
-		            }
-		        }
-		    });
-	    }
-		this.updateAttendanceWindow.setValues(selRow.data);
-		this.updateAttendanceWindow.show(e.target);
-	}
-	,removeAttendance: function() {
-	    if (this.selModel.selections.items.length == 1) {
-		    MODx.msg.confirm({
-		        title: _('studentcentre.att_remove_attendance')
-		        ,text: _('studentcentre.att_remove_attendance_text')
-		        ,url: StudentCentre.config.connectorUrl
-		        ,params: {
-		            action: 'mgr/attendance/scAttendanceRemove'
-		            ,id: this.selModel.selections.items[0].id
-		        }
-		        ,listeners: {
-		            'success': {fn:this.refresh, scope:this}
-		        }
-		    });
-		}
-	}
-*/
 });
 Ext.reg('studentcentre-grid-journal',StudentCentre.grid.AttendanceJournal);
 
@@ -672,55 +632,8 @@ StudentCentre.grid.AttendanceJournalComments = function(config) {
             ,dataIndex: 'date_created'
             ,width: 100
         }]
-/*
-        ,tbar:['->'
-        ,{ // This defines the toolbar for the search
-		    xtype: 'textfield' // Here we're defining the search field for the toolbar
-		    ,id: 'attendance-journal-comments-search-filter'
-		    ,emptyText: _('studentcentre.search...')
-		    ,listeners: {
-		        'change': {fn:this.search,scope:this}
-		        ,'render': {fn: function(cmp) {
-		            new Ext.KeyMap(cmp.getEl(), {
-		                key: Ext.EventObject.ENTER
-		                ,fn: function() {
-		                    this.fireEvent('change',this);
-		                    this.blur();
-		                    return true;
-		                }
-		                ,scope: cmp
-		            });
-		        },scope:this}
-		    }
-		},{
-            xtype: 'button'
-            ,text: _('studentcentre.clear_search')
-            ,listeners: {
-                'click': {fn: this.clearJournalCommentsSearch, scope: this}
-            }
-        }]
-*/
     });
     StudentCentre.grid.AttendanceJournalComments.superclass.constructor.call(this,config)
 };
-Ext.extend(StudentCentre.grid.AttendanceJournalComments,MODx.grid.Grid/*
-,{
-    search: function(tf,nv,ov) {
-        var s = this.getStore();
-        s.baseParams.query = tf.getValue();
-        this.getBottomToolbar().changePage(1);
-        this.refresh();
-    }
-    ,clearJournalCommentsSearch: function() {
-	    var hidJournalId = Ext.getCmp('update_journal_id');
-	    this.getStore().baseParams = {
-            action: 'mgr/attendance/scJournalCommentGetList'
-            ,journalId: hidJournalId.value
-    	};
-        Ext.getCmp('attendance-journal-comments-search-filter').reset();
-        this.getBottomToolbar().changePage(1);
-        this.refresh();
-    }
-}
-*/);
+Ext.extend(StudentCentre.grid.AttendanceJournalComments,MODx.grid.Grid);
 Ext.reg('sc-grid-journal-comments',StudentCentre.grid.AttendanceJournalComments);
