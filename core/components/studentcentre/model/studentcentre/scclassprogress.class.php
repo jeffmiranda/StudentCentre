@@ -461,13 +461,15 @@ class scClassProgress extends xPDOSimpleObject {
 				return $journal ? true : false;
 			}
 			
-			$journal->set('active', 1);
-			$now = date('Y-m-d');
-			$jComm = $this->xpdo->newObject('scJournalComment', array(
-				'comment' => 'Journal reactivated on ' . $now
-				,'date_created' => $now
-			));
-			$journal->addMany($jComm);
+			if ($journal->active != 1) {
+				$journal->set('active', 1);
+				$now = date('Y-m-d');
+				$jComm = $this->xpdo->newObject('scJournalComment', array(
+					'comment' => 'Journal reactivated on ' . $now
+					,'date_created' => $now
+				));
+				$journal->addMany($jComm);
+			}
 
 			if ($journal->save()) { $success = true; }
 			
