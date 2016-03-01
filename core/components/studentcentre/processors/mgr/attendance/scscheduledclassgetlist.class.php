@@ -89,7 +89,33 @@ class scScheduledClassGetList extends modObjectGetListProcessor {
 
         return $ta;
         
-    }  
+    }
+    
+    public function getData() {
+        $data = array();
+        $limit = intval($this->getProperty('limit'));
+        $start = intval($this->getProperty('start'));
+
+        /* query for chunks */
+        $c = $this->modx->newQuery($this->classKey);
+        $c = $this->prepareQueryBeforeCount($c);
+        //$data['total'] = $this->modx->getCount($this->classKey,$c);
+        $totalResults = $this->modx->getCollection($this->classKey,$c);
+        $data['total'] = (!empty($totalResults)) ? count($totalResults) : 0;
+        $c = $this->prepareQueryAfterCount($c);
+
+        $sortClassKey = $this->getSortClassKey();
+        $sortKey = $this->modx->getSelectColumns($sortClassKey,$this->getProperty('sortAlias',$sortClassKey),'',array($this->getProperty('sort')));
+        if (empty($sortKey)) $sortKey = $this->getProperty('sort');
+        $c->sortby($sortKey,$this->getProperty('dir'));
+        if ($limit > 0) {
+            $c->limit($limit,$start);
+        }
+
+        $data['results'] = $this->modx->getCollection($this->classKey,$c);
+        return $data;
+    }
+
  
 }
 

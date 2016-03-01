@@ -62,7 +62,11 @@ Ext.reg('attendance-combo-location', StudentCentre.combo.AttendanceLocation);
 StudentCentre.combo.AttendanceScheduledClass = function(config) {
     config = config || {};
     Ext.applyIf(config, {
-	     emptyText: _('studentcentre.att_select_class')
+	    fieldLabel: _('studentcentre.att_class')
+        ,name: 'class_id'
+        ,width: 300
+	    ,hiddenName: 'class_id'
+	    ,emptyText: _('studentcentre.att_select_class')
 	    ,typeAhead: true
 	    ,pageSize: 20
 	    ,valueField: 'id'
