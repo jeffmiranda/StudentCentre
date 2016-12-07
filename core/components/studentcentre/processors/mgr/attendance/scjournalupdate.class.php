@@ -8,12 +8,19 @@ class scJournalUpdateProcessor extends modObjectUpdateProcessor {
     public function beforeSet() {
     
         $toggleActive = $this->getProperty('toggleActive');
+        $testDate = $this->getProperty('test_date');
+        
         if (!empty($toggleActive)) {
 	        if ($this->object->get('active') == 1) {
 		        $this->setProperty('active', 0);
 	        } else {
 		        $this->setProperty('active', 1);
 	        }
+        }
+        
+        // if test date is empty, set it as null.
+        if (empty($testDate)) {
+	        $this->setProperty('test_date', null);
         }
                 
         return parent::beforeSet();
