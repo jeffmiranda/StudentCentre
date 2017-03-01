@@ -7,6 +7,7 @@ StudentCentre.grid.AttendanceProgress = function(config) {
         ,baseParams: {
         	action: 'mgr/attendance/scClassProgressGetList'
         	,sortByOrder: 1
+        	,activeOnly: 1
         }
         ,fields: ['id', 'class_level_category_id', 'level_id', 'student_id', 'username', 'class_level_category_name', 'level_name', 'hours_since_leveling', 'total_hours', 'test_ready', 'last_modified']
         ,paging: true

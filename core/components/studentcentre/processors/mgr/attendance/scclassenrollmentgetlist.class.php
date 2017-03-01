@@ -66,6 +66,12 @@ class scClassEnrollmentGetList extends modObjectGetListProcessor {
 			));
 	    }
 	    
+	    /**
+		 * Only get the active students. This is different
+		 * than the active enrollments.
+		 */
+	    $c->where(array('Student.active' => 1));
+	    
 	    $query = $this->getProperty('query');
 	    if (!empty($query)) {
 	        $c->where(array(

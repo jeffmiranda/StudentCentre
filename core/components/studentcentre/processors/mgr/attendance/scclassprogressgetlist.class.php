@@ -27,6 +27,15 @@ class scClassProgressGetListProcessor extends modObjectGetListProcessor {
 	            'scClassProgress.test_ready' => $testReadyOnly
 	        ));
 	    }
+	    
+	    // if activeOnly parameter exists and equals 1,
+		// then only get the progress object that are active
+		$activeOnly = $this->getProperty('activeOnly');
+		if (!empty($activeOnly)) {
+	        $c->where(array(
+	            'Student.active' => $activeOnly
+	        ));
+	    }
 		
 		$query = $this->getProperty('query');
 	    if (!empty($query)) {

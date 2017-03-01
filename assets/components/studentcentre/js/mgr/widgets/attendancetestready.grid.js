@@ -7,6 +7,7 @@ StudentCentre.grid.TestReady = function(config) {
         ,baseParams: {
 			action: 'mgr/attendance/scClassProgressGetList'
         	,testReadyOnly: 1
+        	,activeOnly: 1
         }
         ,fields: ['id','student_id','class_level_category_id','level_id','next_level_id','username','class_level_category_name','level_name','next_level_name','hours_since_leveling','total_hours']
         ,paging: true
